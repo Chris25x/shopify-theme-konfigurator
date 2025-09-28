@@ -129,7 +129,7 @@
   letter-spacing: -0.02em !important;
 }
 
-/* Mobile Bild Styling */
+/* Mobile Bild Styling - Nur mobile Bilder verstecken/zeigen */
 .slideshow__media-mobile {
   display: none;
 }
@@ -285,106 +285,70 @@
         tabindex="-1"
       >
         <div class="slideshow__media banner__media media{% if block.settings.image == blank %} placeholder{% endif %}{% if section.settings.image_behavior != 'none' %} animate--{{ section.settings.image_behavior }}{% endif %}">
-          {%- comment -%} Desktop Bild {%- endcomment -%}
-          <div class="slideshow__media-desktop">
-            {%- if block.settings.image -%}
-              {%- liquid
-                assign height = block.settings.image.width | divided_by: block.settings.image.aspect_ratio | round
-                if section.settings.image_behavior == 'ambient'
-                  assign sizes = '120vw'
-                  assign widths = '450, 660, 900, 1320, 1800, 2136, 2400, 3600, 7680'
-                else
-                  assign sizes = '100vw'
-                  assign widths = '375, 550, 750, 1100, 1500, 1780, 2000, 3000, 3840'
-                endif
-                assign fetch_priority = 'auto'
-                if section.index == 1
-                  assign fetch_priority = 'high'
-                endif
-              -%}
-              {%- if forloop.first %}
-                {{
-                  block.settings.image
-                  | image_url: width: 3840
-                  | image_tag: height: height, sizes: sizes, widths: widths, fetchpriority: fetch_priority
-                }}
-              {%- else -%}
-                {{
-                  block.settings.image
-                  | image_url: width: 3840
-                  | image_tag: loading: 'lazy', height: height, sizes: sizes, widths: widths
-                }}
-              {%- endif -%}
-            {%- else -%}
-              {%- assign placeholder_slide = forloop.index | modulo: 2 -%}
-              {%- if placeholder_slide == 1 -%}
-                {{ 'hero-apparel-2' | placeholder_svg_tag: 'placeholder-svg' }}
-              {%- else -%}
-                {{ 'hero-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
-              {%- endif -%}
-            {%- endif -%}
-          </div>
-          
-          {%- comment -%} Mobile Bild {%- endcomment -%}
-          <div class="slideshow__media-mobile">
-            {%- if block.settings.image_mobile -%}
-              {%- liquid
-                assign mobile_image = block.settings.image_mobile
-                assign mobile_height = mobile_image.width | divided_by: mobile_image.aspect_ratio | round
-                assign mobile_sizes = '100vw'
-                assign mobile_widths = '375, 550, 750, 1100, 1500, 1780, 2000, 3000, 3840'
-                assign fetch_priority = 'auto'
-                if section.index == 1
-                  assign fetch_priority = 'high'
-                endif
-              -%}
-              {%- if forloop.first %}
-                {{
-                  mobile_image
-                  | image_url: width: 3840
-                  | image_tag: height: mobile_height, sizes: mobile_sizes, widths: mobile_widths, fetchpriority: fetch_priority
-                }}
-              {%- else -%}
-                {{
-                  mobile_image
-                  | image_url: width: 3840
-                  | image_tag: loading: 'lazy', height: mobile_height, sizes: mobile_sizes, widths: mobile_widths
-                }}
-              {%- endif -%}
-            {%- elsif block.settings.image -%}
-              {%- comment -%} Fallback auf Desktop-Bild wenn kein mobiles Bild vorhanden {%- endcomment -%}
-              {%- liquid
-                assign height = block.settings.image.width | divided_by: block.settings.image.aspect_ratio | round
+          {%- comment -%} Desktop Bild - Original Struktur beibehalten {%- endcomment -%}
+          {%- if block.settings.image -%}
+            {%- liquid
+              assign height = block.settings.image.width | divided_by: block.settings.image.aspect_ratio | round
+              if section.settings.image_behavior == 'ambient'
+                assign sizes = '120vw'
+                assign widths = '450, 660, 900, 1320, 1800, 2136, 2400, 3600, 7680'
+              else
                 assign sizes = '100vw'
                 assign widths = '375, 550, 750, 1100, 1500, 1780, 2000, 3000, 3840'
-                assign fetch_priority = 'auto'
-                if section.index == 1
-                  assign fetch_priority = 'high'
-                endif
-              -%}
-              {%- if forloop.first %}
-                {{
-                  block.settings.image
-                  | image_url: width: 3840
-                  | image_tag: height: height, sizes: sizes, widths: widths, fetchpriority: fetch_priority
-                }}
-              {%- else -%}
-                {{
-                  block.settings.image
-                  | image_url: width: 3840
-                  | image_tag: loading: 'lazy', height: height, sizes: sizes, widths: widths
-                }}
-              {%- endif -%}
+              endif
+              assign fetch_priority = 'auto'
+              if section.index == 1
+                assign fetch_priority = 'high'
+              endif
+            -%}
+            {%- if forloop.first %}
+              {{
+                block.settings.image
+                | image_url: width: 3840
+                | image_tag: height: height, sizes: sizes, widths: widths, fetchpriority: fetch_priority, class: 'slideshow__media-desktop'
+              }}
             {%- else -%}
-              {%- comment -%} Placeholder für Mobile {%- endcomment -%}
-              {%- assign placeholder_slide = forloop.index | modulo: 2 -%}
-              {%- if placeholder_slide == 1 -%}
-                {{ 'hero-apparel-2' | placeholder_svg_tag: 'placeholder-svg' }}
-              {%- else -%}
-                {{ 'hero-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
-              {%- endif -%}
+              {{
+                block.settings.image
+                | image_url: width: 3840
+                | image_tag: loading: 'lazy', height: height, sizes: sizes, widths: widths, class: 'slideshow__media-desktop'
+              }}
             {%- endif -%}
-          </div>
+          {%- else -%}
+            {%- assign placeholder_slide = forloop.index | modulo: 2 -%}
+            {%- if placeholder_slide == 1 -%}
+              {{ 'hero-apparel-2' | placeholder_svg_tag: 'placeholder-svg' | replace: 'placeholder-svg', 'placeholder-svg slideshow__media-desktop' }}
+            {%- else -%}
+              {{ 'hero-apparel-1' | placeholder_svg_tag: 'placeholder-svg' | replace: 'placeholder-svg', 'placeholder-svg slideshow__media-desktop' }}
+            {%- endif -%}
+          {%- endif -%}
+          
+          {%- comment -%} Mobile Bild - Zusätzlich hinzugefügt {%- endcomment -%}
+          {%- if block.settings.image_mobile -%}
+            {%- liquid
+              assign mobile_image = block.settings.image_mobile
+              assign mobile_height = mobile_image.width | divided_by: mobile_image.aspect_ratio | round
+              assign mobile_sizes = '100vw'
+              assign mobile_widths = '375, 550, 750, 1100, 1500, 1780, 2000, 3000, 3840'
+              assign fetch_priority = 'auto'
+              if section.index == 1
+                assign fetch_priority = 'high'
+              endif
+            -%}
+            {%- if forloop.first %}
+              {{
+                mobile_image
+                | image_url: width: 3840
+                | image_tag: height: mobile_height, sizes: mobile_sizes, widths: mobile_widths, fetchpriority: fetch_priority, class: 'slideshow__media-mobile'
+              }}
+            {%- else -%}
+              {{
+                mobile_image
+                | image_url: width: 3840
+                | image_tag: loading: 'lazy', height: mobile_height, sizes: mobile_sizes, widths: mobile_widths, class: 'slideshow__media-mobile'
+              }}
+            {%- endif -%}
+          {%- endif -%}
         </div>
         <div class="slideshow__text-wrapper banner__content banner__content--{{ block.settings.box_align }} page-width{% if block.settings.show_text_box == false %} banner--desktop-transparent{% endif %}{% if settings.animations_reveal_on_scroll and forloop.index == 1 %} scroll-trigger animate--slide-in{% endif %}">
           <div class="slideshow__text banner__box content-container content-container--full-width-mobile color-{{ block.settings.color_scheme }} gradient slideshow__text--{{ block.settings.text_alignment }} slideshow__text-mobile--{{ block.settings.text_alignment_mobile }}">
