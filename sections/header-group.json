@@ -17,37 +17,13 @@
         "announcement_d9UgeE": {
           "type": "announcement",
           "settings": {
-            "text": "VDE-geprüft · Made in Germany · Lieferung in 2–4 Tagen",
-            "link": ""
-          }
-        },
-        "announcement-bar-0": {
-          "type": "announcement",
-          "settings": {
-            "text": "Individuell konfigurieren · Markenqualität · Schnell geliefert",
-            "link": ""
-          }
-        },
-        "announcement_MVJHhq": {
-          "type": "announcement",
-          "settings": {
-            "text": "Dein Projekt. Dein Sicherungskasten. Perfekt geplant.",
-            "link": ""
-          }
-        },
-        "announcement_x3NaWG": {
-          "type": "announcement",
-          "settings": {
-            "text": "Jetzt online konfigurieren · Expressversand · 100% geprüft",
+            "text": "Qualität vom Fachmann • Kostenlose Lieferung • Online konfigurieren",
             "link": ""
           }
         }
       },
       "block_order": [
-        "announcement_d9UgeE",
-        "announcement-bar-0",
-        "announcement_MVJHhq",
-        "announcement_x3NaWG"
+        "announcement_d9UgeE"
       ],
       "settings": {
         "auto_rotate": true,

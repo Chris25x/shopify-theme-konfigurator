@@ -1,4 +1,12 @@
-{%- assign sk_id = 'sk-3dvideo-' | append: section.id | append: '-' | append: block.id | default: section.id -%}
+{%- assign base_id = 'sk-3dvideo-' | append: section.id -%}
+{%- if block and block.id -%}
+  {%- assign sk_id = base_id | append: '-' | append: block.id -%}
+{%- else -%}
+  {%- assign sk_id = base_id -%}
+{%- endif -%}
+
+<!-- Unsichtbarer Anker, beeinflusst das Layout nicht -->
+<span id="3d-video" aria-hidden="true" style="display:block;height:0;line-height:0;"></span>
 
 <!-- 3D Rotator Video – mit Headline im howit__title-Stil und Buttonfarben wie howit__btn -->
 <div id="{{ sk_id }}" class="sk-3dvideo" style="padding-top: {{ section.settings.padding_top | default: 60 }}px; padding-bottom: {{ section.settings.padding_bottom | default: 32 }}px;">
@@ -34,7 +42,7 @@
 <style>
   :root { --ink:#111827; --muted:#6b7280; }
 
-  /* Container bis 1300px */
+  /* Container bis 1300px (unverändert) */
   #{{ sk_id }}{
     max-width:1300px;
     margin:24px auto 0;
@@ -225,34 +233,13 @@
       "id": "title_font_weight",
       "label": "Titel Schriftstärke",
       "options": [
-        {
-          "value": "300",
-          "label": "Leicht (300)"
-        },
-        {
-          "value": "400",
-          "label": "Normal (400)"
-        },
-        {
-          "value": "500",
-          "label": "Mittel (500)"
-        },
-        {
-          "value": "600",
-          "label": "Semi-Fett (600)"
-        },
-        {
-          "value": "700",
-          "label": "Fett (700)"
-        },
-        {
-          "value": "800",
-          "label": "Extra Fett (800)"
-        },
-        {
-          "value": "900",
-          "label": "Ultra Fett (900)"
-        }
+        { "value": "300", "label": "Leicht (300)" },
+        { "value": "400", "label": "Normal (400)" },
+        { "value": "500", "label": "Mittel (500)" },
+        { "value": "600", "label": "Semi-Fett (600)" },
+        { "value": "700", "label": "Fett (700)" },
+        { "value": "800", "label": "Extra Fett (800)" },
+        { "value": "900", "label": "Ultra Fett (900)" }
       ],
       "default": "800"
     },
@@ -270,22 +257,10 @@
       "type": "select",
       "id": "subtitle_font_weight",
       "options": [
-        {
-          "value": "300",
-          "label": "Leicht (300)"
-        },
-        {
-          "value": "400",
-          "label": "Normal (400)"
-        },
-        {
-          "value": "500",
-          "label": "Mittel (500)"
-        },
-        {
-          "value": "600",
-          "label": "Semi-Fett (600)"
-        }
+        { "value": "300", "label": "Leicht (300)" },
+        { "value": "400", "label": "Normal (400)" },
+        { "value": "500", "label": "Mittel (500)" },
+        { "value": "600", "label": "Semi-Fett (600)" }
       ],
       "default": "400",
       "label": "Untertitel Schriftstärke"
@@ -316,9 +291,7 @@
     }
   ],
   "presets": [
-    {
-      "name": "3D Video"
-    }
+    { "name": "3D Video" }
   ]
 }
 {% endschema %}
