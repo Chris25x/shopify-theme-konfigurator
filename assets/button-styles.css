@@ -1,0 +1,129 @@
+/* Einheitliche Button-Styles für alle Sektionen */
+
+/* Primäre Buttons - einheitliches Styling */
+.button--primary,
+.howit__btn,
+.mockup-sticky__btn,
+.sk-3dvideo__toggle,
+.technical-details__btn--primary,
+.use-cases__btn--primary,
+.contact-form-custom__submit,
+.faq-custom__button {
+  background: #005A9C !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 14px 24px !important;
+  font-weight: 600 !important;
+  font-size: 1.5rem !important;
+  text-decoration: none !important;
+  display: inline-block !important;
+  box-shadow: 0 4px 14px rgba(0, 90, 156, 0.3) !important;
+  transition: all 0.3s ease !important;
+  cursor: pointer !important;
+  text-align: center !important;
+  min-width: 200px !important;
+}
+
+/* Primäre Buttons Hover */
+.button--primary:hover,
+.howit__btn:hover,
+.mockup-sticky__btn:hover,
+.sk-3dvideo__toggle:hover,
+.technical-details__btn--primary:hover,
+.use-cases__btn--primary:hover,
+.contact-form-custom__submit:hover,
+.faq-custom__button:hover {
+  background: #00467a !important;
+  box-shadow: 0 6px 20px rgba(0, 90, 156, 0.4) !important;
+  transform: translateY(-2px) !important;
+  color: #fff !important;
+}
+
+/* Sekundäre Buttons - korrektes Styling */
+.button--secondary,
+.button--outline,
+.technical-details__btn--outline,
+.use-cases__btn--outline,
+.faq-custom__btn--outline {
+  background: #fff !important;
+  color: #111827 !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 8px !important;
+  padding: 14px 24px !important;
+  font-weight: 600 !important;
+  font-size: 1.5rem !important;
+  text-decoration: none !important;
+  display: inline-block !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+  transition: all 0.3s ease !important;
+  cursor: pointer !important;
+  text-align: center !important;
+  min-width: 200px !important;
+}
+
+/* Sekundäre Buttons Hover - NICHT blau */
+.button--secondary:hover,
+.button--outline:hover,
+.technical-details__btn--outline:hover,
+.use-cases__btn--outline:hover,
+.faq-custom__btn--outline:hover {
+  background: #f8fafc !important;
+  color: #111827 !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Focus States */
+.button--primary:focus,
+.button--secondary:focus,
+.button--outline:focus,
+.howit__btn:focus,
+.mockup-sticky__btn:focus,
+.sk-3dvideo__toggle:focus,
+.technical-details__btn--primary:focus,
+.technical-details__btn--outline:focus,
+.use-cases__btn--primary:focus,
+.use-cases__btn--outline:focus,
+.contact-form-custom__submit:focus,
+.faq-custom__button:focus {
+  outline: 2px solid #005A9C !important;
+  outline-offset: 2px !important;
+}
+
+/* Mobile Anpassungen */
+@media (max-width: 768px) {
+  .button--primary,
+  .button--secondary,
+  .button--outline,
+  .howit__btn,
+  .mockup-sticky__btn,
+  .technical-details__btn--primary,
+  .technical-details__btn--outline,
+  .use-cases__btn--primary,
+  .use-cases__btn--outline,
+  .contact-form-custom__submit,
+  .faq-custom__button {
+    width: 100% !important;
+    min-width: auto !important;
+    font-size: 1.4rem !important;
+    padding: 12px 20px !important;
+  }
+}
+
+/* Spezielle Anpassungen für bestimmte Buttons */
+.sk-3dvideo__toggle {
+  min-width: auto !important;
+  padding: 8px 10px !important;
+  border-radius: 999px !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+}
+
+.sk-3dvideo__toggle svg {
+  width: 18px !important;
+  height: 18px !important;
+  display: block !important;
+  fill: currentColor !important;
+}

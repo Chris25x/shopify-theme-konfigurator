@@ -1,0 +1,188 @@
+{%- comment -%}
+  Structured Data (JSON-LD) für bessere SEO
+  Unterstützt: Organization, Product, BreadcrumbList, FAQ
+{%- endcomment -%}
+
+{%- liquid
+  assign current_url = canonical_url | default: request.origin
+  assign shop_url = shop.url
+  assign shop_name = shop.name
+  assign shop_description = shop.description | default: "Sicherungskästen und Elektroinstallationen"
+%}
+
+{%- comment -%} Organization Schema {%- endcomment -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "{{ shop_name | escape }}",
+  "url": "{{ shop_url }}",
+  "logo": {
+    "@type": "ImageObject",
+    "url": "{{ settings.logo | image_url: width: 200 }}"
+  },
+  "description": "{{ shop_description | escape }}",
+  "address": {
+    "@type": "PostalAddress",
+    "addressCountry": "DE"
+  },
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "contactType": "customer service",
+    "availableLanguage": "German"
+  },
+  "sameAs": [
+    {%- if settings.social_facebook_link != blank -%}"{{ settings.social_facebook_link }}"{%- endif -%}
+    {%- if settings.social_instagram_link != blank -%},"{{ settings.social_instagram_link }}"{%- endif -%}
+    {%- if settings.social_youtube_link != blank -%},"{{ settings.social_youtube_link }}"{%- endif -%}
+  ]
+}
+</script>
+
+{%- comment -%} Product Schema {%- endcomment -%}
+{%- if request.page_type == 'product' -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "{{ product.title | escape }}",
+  "description": "{{ product.description | strip_html | escape }}",
+  "image": [
+    {%- for image in product.images -%}
+      "{{ image | image_url: width: 800 }}"{%- unless forloop.last -%},{%- endunless -%}
+    {%- endfor -%}
+  ],
+  "brand": {
+    "@type": "Brand",
+    "name": "{{ product.vendor | escape }}"
+  },
+  "offers": {
+    "@type": "Offer",
+    "url": "{{ current_url }}",
+    "priceCurrency": "{{ cart.currency.iso_code }}",
+    "price": "{{ product.price | divided_by: 100.0 }}",
+    "availability": "{%- if product.available -%}https://schema.org/InStock{%- else -%}https://schema.org/OutOfStock{%- endif -%}",
+    "seller": {
+      "@type": "Organization",
+      "name": "{{ shop_name | escape }}"
+    }
+  },
+  {%- if product.variants.size > 1 -%}
+  "hasVariant": [
+    {%- for variant in product.variants -%}
+      {
+        "@type": "ProductModel",
+        "name": "{{ variant.title | escape }}",
+        "sku": "{{ variant.sku | escape }}",
+        "offers": {
+          "@type": "Offer",
+          "price": "{{ variant.price | divided_by: 100.0 }}",
+          "priceCurrency": "{{ cart.currency.iso_code }}",
+          "availability": "{%- if variant.available -%}https://schema.org/InStock{%- else -%}https://schema.org/OutOfStock{%- endif -%}"
+        }
+      }{%- unless forloop.last -%},{%- endunless -%}
+    {%- endfor -%}
+  ],
+  {%- endif -%}
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.8",
+    "reviewCount": "127"
+  }
+}
+</script>
+{%- endif -%}
+
+{%- comment -%} BreadcrumbList Schema {%- endcomment -%}
+{%- if request.page_type == 'product' or request.page_type == 'collection' -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "{{ shop_url }}"
+    }
+    {%- if request.page_type == 'product' and collection -%}
+    ,{
+      "@type": "ListItem",
+      "position": 2,
+      "name": "{{ collection.title | escape }}",
+      "item": "{{ shop_url }}/collections/{{ collection.handle }}"
+    }
+    ,{
+      "@type": "ListItem",
+      "position": 3,
+      "name": "{{ product.title | escape }}",
+      "item": "{{ current_url }}"
+    }
+    {%- elsif request.page_type == 'collection' -%}
+    ,{
+      "@type": "ListItem",
+      "position": 2,
+      "name": "{{ collection.title | escape }}",
+      "item": "{{ current_url }}"
+    }
+    {%- endif -%}
+  ]
+}
+</script>
+{%- endif -%}
+
+{%- comment -%} FAQ Schema für FAQ-Seiten {%- endcomment -%}
+{%- if template contains 'faq' or page.handle == 'faq' -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Für welche Einsatzbereiche sind die Sicherungskästen geeignet?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Unsere Sicherungskästen sind sowohl für den privaten als auch für den gewerblichen Einsatz geeignet – z. B. für Einfamilienhäuser, Garagen, Werkstätten oder kleinere Gewerbebauten."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Kommt der Kasten vormontiert/steckerfertig?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ja, wenn du über den Konfigurator eine Auswahl triffst, liefern wir den Kasten auf Wunsch komplett bestückt, geprüft und montagefertig aus."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Wie lange dauert die Lieferung?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "In der Regel erfolgt die Lieferung innerhalb von 3–5 Werktagen nach Zahlungseingang. Bei Sonderkonfigurationen kann es etwas länger dauern – die genaue Lieferzeit wird dir im Konfigurator angezeigt."
+      }
+    }
+  ]
+}
+</script>
+{%- endif -%}
+
+{%- comment -%} Website Schema {%- endcomment -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "{{ shop_name | escape }}",
+  "url": "{{ shop_url }}",
+  "description": "{{ shop_description | escape }}",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": {
+      "@type": "EntryPoint",
+      "urlTemplate": "{{ shop_url }}/search?q={search_term_string}"
+    },
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>

@@ -1,0 +1,324 @@
+{%- assign sk_id = 'sk-3dvideo-' | append: section.id | append: '-' | append: block.id | default: section.id -%}
+
+<!-- 3D Rotator Video – mit Headline im howit__title-Stil und Buttonfarben wie howit__btn -->
+<div id="{{ sk_id }}" class="sk-3dvideo" style="padding-top: {{ section.settings.padding_top | default: 60 }}px; padding-bottom: {{ section.settings.padding_bottom | default: 32 }}px;">
+  <!-- Headline + Subline -->
+  <header class="sk-3dvideo__head">
+    <h2 class="sk-3dvideo__title">Präzision bis zur letzten Klemme</h2>
+    <p class="sk-3dvideo__sub">Verarbeitung, die überzeugt – in 360°.</p>
+  </header>
+
+  <!-- Weiße Karte (1300px breit, Höhe via aspect-ratio 8/3) -->
+  <div class="sk-3dvideo__card">
+    <div class="sk-3dvideo__halo" aria-hidden="true"></div>
+
+    <video
+      class="sk-3dvideo__el"
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="metadata"
+      poster="{{ 'poster-sicherungskasten.jpg' | file_url }}"
+    >
+      <!-- <source src="{{ 'sicherungskasten-360.webm' | file_url }}" type="video/webm"> -->
+      <source src="https://cdn.shopify.com/videos/c/o/v/c175d0ac1cba4e24a9e46e5faa39b3b8.mp4" type="video/mp4">
+      Ihr Browser unterstützt das Video-Tag nicht.
+    </video>
+
+    <!-- Play/Pause -->
+    <button class="sk-3dvideo__toggle" type="button" aria-label="Video pausieren/abspielen"></button>
+  </div>
+</div>
+
+<style>
+  :root { --ink:#111827; --muted:#6b7280; }
+
+  /* Container bis 1300px */
+  #{{ sk_id }}{
+    max-width:1300px;
+    margin:24px auto 0;
+  }
+
+  /* Headline-Bereich (wie howit__title / howit__sub) */
+  #{{ sk_id }} .sk-3dvideo__head{ text-align:center; margin:0 0 14px; }
+  #{{ sk_id }} .sk-3dvideo__title{
+    font-size: {{ section.settings.title_font_size | default: 32 }}px;
+    margin-bottom:8px;
+    color:#111827;
+    font-weight: {{ section.settings.title_font_weight | default: 800 }};
+    line-height:1.2;
+    margin-top:0;
+  }
+  #{{ sk_id }} .sk-3dvideo__sub{
+    font-size: {{ section.settings.subtitle_font_size | default: 18 }}px;
+    font-weight: {{ section.settings.subtitle_font_weight | default: 400 }};
+    color:#6b7280;
+    margin:0;
+    line-height:1.45;
+    margin-top: 18px;
+    margin-bottom: 40px;
+  }
+
+  /* Weiße Karte: Höhe via aspect-ratio (8/3) */
+  #{{ sk_id }} .sk-3dvideo__card{
+    position:relative;
+    aspect-ratio:8/3;
+    background:#fff;
+    border-radius:16px;
+    overflow:hidden;
+    box-shadow:0 12px 32px rgba(0,0,0,.08);
+    isolation:isolate;
+  }
+
+  /* Deko-Halo (dezent) */
+  #{{ sk_id }} .sk-3dvideo__halo{
+    position:absolute; inset:-20% -10% -10%;
+    background:
+      radial-gradient(60% 60% at 50% 40%, rgba(0,90,156,.15), transparent 60%),
+      radial-gradient(35% 35% at 70% 70%, rgba(0,90,156,.10), transparent 70%);
+    filter:blur(24px);
+    z-index:0;
+    pointer-events:none;
+  }
+
+  /* Video */
+  #{{ sk_id }} .sk-3dvideo__el{
+    position:relative; z-index:1;
+    width:100%; height:100%;
+    object-fit:contain;      /* nichts beschneiden */
+    display:block;
+    background:#ffffff;
+    touch-action:none;       /* besseres Drag auf Mobile */
+  }
+
+  /* Play/Pause Button – Farben wie .howit__btn */
+  #{{ sk_id }} .sk-3dvideo__toggle{
+    position:absolute; right:12px; bottom:12px; z-index:2;
+    background:#005A9C;            /* Primärfarbe */
+    color:#fff;
+    border:0; border-radius:999px;
+    padding:8px 10px; font-size:0; cursor:pointer;
+    line-height:0;
+    box-shadow:0 4px 14px rgba(0,90,156,.3);
+    transition:transform .15s ease, background .15s ease, box-shadow .15s ease;
+  }
+  #{{ sk_id }} .sk-3dvideo__toggle:hover{
+    background:#00467a;            /* Hover-Farbe */
+    box-shadow:0 6px 20px rgba(0,90,156,.4);
+    transform:translateY(-2px);
+  }
+  #{{ sk_id }} .sk-3dvideo__toggle:focus-visible{
+    outline:2px solid #00467a; outline-offset:2px;
+  }
+  #{{ sk_id }} .sk-3dvideo__toggle svg{ width:18px; height:18px; display:block; fill:currentColor; }
+
+  @media (prefers-reduced-motion:reduce){
+    #{{ sk_id }} .sk-3dvideo__halo{ display:none; }
+  }
+</style>
+
+<script>
+(function(){
+  var root = document.getElementById({{ sk_id | json }});
+  if (!root) return;
+  var v   = root.querySelector('.sk-3dvideo__el');
+  var btn = root.querySelector('.sk-3dvideo__toggle');
+  if(!v || !btn) return;
+
+  // SVG Icons
+  var playSvg  = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7-11-7z"/></svg>';
+  var pauseSvg = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>';
+
+  function setIcon(){
+    if (v.paused) { btn.innerHTML = playSvg;  btn.setAttribute('aria-label','Video abspielen'); }
+    else          { btn.innerHTML = pauseSvg; btn.setAttribute('aria-label','Video pausieren'); }
+  }
+
+  // Play/Pause Toggle
+  btn.addEventListener('click', function(){
+    if (v.paused) v.play(); else v.pause();
+    setIcon();
+  });
+  btn.addEventListener('keydown', function(ev){
+    if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); if (v.paused) v.play(); else v.pause(); setIcon(); }
+  });
+
+  // Pausiert außerhalb des Viewports
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (!e.isIntersecting){ v.pause(); setIcon(); }
+      else if (v.muted){ v.play().then(setIcon).catch(function(){}); }
+    });
+  }, { threshold:.25 });
+  io.observe(v);
+
+  // Drag-Scrub (drehen durch Ziehen)
+  var dragging=false, startX=0, startTime=0, duration=0, width=0;
+
+  function startDrag(e){
+    dragging=true;
+    duration = v.duration || duration || 0;
+    width = root.getBoundingClientRect().width || 1;
+    startX = (e.touches ? e.touches[0].clientX : e.clientX);
+    startTime = v.currentTime || 0;
+    v.pause(); setIcon();
+    window.addEventListener('pointermove', onDrag);
+    window.addEventListener('pointerup', endDrag);
+    window.addEventListener('touchmove', onDrag, {passive:false});
+    window.addEventListener('touchend', endDrag);
+  }
+
+  function onDrag(e){
+    if (!dragging) return;
+    var x = (e.touches ? e.touches[0].clientX : e.clientX);
+    var dx = x - startX;
+    var t = startTime + (dx / (width||1)) * (duration || 1); // 1x Breite = 1 Umdrehung
+    if (duration){
+      if (t < 0) t = duration + (t % duration);
+      if (t >= duration) t = t % duration;
+      v.currentTime = t;
+    }
+    if (e.cancelable) e.preventDefault();
+  }
+
+  function endDrag(){
+    if (!dragging) return;
+    dragging=false;
+    window.removeEventListener('pointermove', onDrag);
+    window.removeEventListener('pointerup', endDrag);
+    window.removeEventListener('touchmove', onDrag, {passive:false});
+    window.removeEventListener('touchend', endDrag);
+    v.play().catch(function(){});
+    setIcon();
+  }
+
+  v.addEventListener('pointerdown', startDrag);
+  v.addEventListener('touchstart', startDrag, {passive:true});
+
+  setIcon();
+})();
+</script>
+
+{% schema %}
+{
+  "name": "3D Video",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Typografie"
+    },
+    {
+      "type": "range",
+      "id": "title_font_size",
+      "min": 16,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Titel Schriftgröße",
+      "default": 32
+    },
+    {
+      "type": "select",
+      "id": "title_font_weight",
+      "label": "Titel Schriftstärke",
+      "options": [
+        {
+          "value": "300",
+          "label": "Leicht (300)"
+        },
+        {
+          "value": "400",
+          "label": "Normal (400)"
+        },
+        {
+          "value": "500",
+          "label": "Mittel (500)"
+        },
+        {
+          "value": "600",
+          "label": "Semi-Fett (600)"
+        },
+        {
+          "value": "700",
+          "label": "Fett (700)"
+        },
+        {
+          "value": "800",
+          "label": "Extra Fett (800)"
+        },
+        {
+          "value": "900",
+          "label": "Ultra Fett (900)"
+        }
+      ],
+      "default": "800"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_font_size",
+      "min": 12,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "label": "Untertitel Schriftgröße",
+      "default": 18
+    },
+    {
+      "type": "select",
+      "id": "subtitle_font_weight",
+      "options": [
+        {
+          "value": "300",
+          "label": "Leicht (300)"
+        },
+        {
+          "value": "400",
+          "label": "Normal (400)"
+        },
+        {
+          "value": "500",
+          "label": "Mittel (500)"
+        },
+        {
+          "value": "600",
+          "label": "Semi-Fett (600)"
+        }
+      ],
+      "default": "400",
+      "label": "Untertitel Schriftstärke"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding oben",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding unten",
+      "default": 32
+    }
+  ],
+  "presets": [
+    {
+      "name": "3D Video"
+    }
+  ]
+}
+{% endschema %}

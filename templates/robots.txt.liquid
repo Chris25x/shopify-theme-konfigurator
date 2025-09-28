@@ -1,0 +1,23 @@
+User-agent: *
+Allow: /
+
+# Wichtige Seiten
+Allow: /pages/konfigurator
+Allow: /pages/contact
+Allow: /collections/
+Allow: /products/
+
+# Verbotene Bereiche
+Disallow: /admin/
+Disallow: /cart/
+Disallow: /checkout/
+Disallow: /account/
+Disallow: /search?*
+Disallow: /collections/*?*
+Disallow: /products/*?*
+
+# Sitemap
+Sitemap: {{ shop.url }}/sitemap.xml
+
+# Crawl-Delay für bessere Performance
+Crawl-delay: 1

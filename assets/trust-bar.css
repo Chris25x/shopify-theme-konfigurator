@@ -1,0 +1,58 @@
+.cb-trustbar {
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 14px;
+  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.06);
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1300px;
+}
+
+.cb-trustbar__inner {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cb-trustbar__logos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 64px; /* mehr Abstand für 3 Logos */
+  align-items: center;
+  justify-content: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.cb-trustbar__logos img {
+  height: 80px;
+  width: auto;
+  display: block;
+  transition: transform 0.2s ease;
+}
+
+.cb-trustbar__logos img:hover {
+  transform: scale(1.08);
+}
+
+@media (max-width: 1024px) {
+  .cb-trustbar__logos {
+    gap: 32px;
+  }
+  .cb-trustbar__logos img {
+    height: 64px;
+  }
+}
+
+@media (max-width: 740px) {
+  .cb-trustbar {
+    padding: 14px;
+  }
+  .cb-trustbar__logos {
+    gap: 20px;
+  }
+  .cb-trustbar__logos img {
+    height: 44px;
+  }
+}

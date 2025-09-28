@@ -1,0 +1,162 @@
+/* Section Container */
+.howit {
+  background: #f8f9fc;
+  max-width: 1300px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.howit__inner {
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+/* Titel + Untertitel */
+.howit__title {
+  font-size: clamp(24px, 3vw, 32px);
+  margin-bottom: 8px;
+  color: #111827;
+  font-weight: 600;
+  text-align: center !important;
+  line-height: 1.2 !important;
+  white-space: pre-line !important;
+}
+
+/* Titel Schriftstärke */
+.howit__title--normal {
+  font-weight: normal;
+}
+
+.howit__title--bold,
+.howit__title--bolder {
+  font-weight: 700 !important;
+  letter-spacing: -0.02em !important;
+}
+
+.howit__sub {
+  font-size: 1.8rem;
+  color: #6b7280;
+  margin-bottom: 40px;
+}
+
+/* Grid Layout */
+.howit__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 36px;
+  justify-content: center;
+}
+
+/* Karten */
+.howit__item {
+  background: #fff;
+  border-radius: 16px;
+  padding: 30px 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.howit__item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+}
+
+/* Badge */
+.howit__badge {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  height: 40px;
+  width: 40px;
+  background: #005A9C;
+  color: #fff;
+  font-weight: bold;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.howit__badge:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 14px rgba(0, 90, 156, 0.4);
+}
+
+/* Bilder */
+.howit__img {
+  width: 150px;
+  height: auto;
+  margin-bottom: 16px;
+  display: block;
+}
+
+/* Step Titel */
+.howit__step-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #111827;
+}
+
+/* Text */
+.howit__text {
+  font-size: 1.6rem;
+  color: #4b5563;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Button */
+.howit__cta {
+  margin-top: 40px;
+  padding: 50px;
+}
+
+.howit__btn {
+  background: #005A9C;
+  color: #fff;
+  padding: 16px 34px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.5rem;
+  transition: all 0.3s ease;
+  display: inline-block;
+  box-shadow: 0 4px 14px rgba(0, 90, 156, 0.3);
+}
+
+.howit__btn:hover {
+  background: #00467a;
+  box-shadow: 0 6px 20px rgba(0, 90, 156, 0.4);
+  transform: translateY(-2px);
+}
+
+/* Mobile Ansicht */
+@media (max-width: 768px) {
+  .howit {
+    max-width: 100%;
+    padding: 40px 16px;
+  }
+
+  .howit__grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .howit__img {
+    width: 140px;
+  }
+
+  .howit__badge {
+    height: 36px;
+    width: 36px;
+    font-size: 1.4rem;
+  }
+}

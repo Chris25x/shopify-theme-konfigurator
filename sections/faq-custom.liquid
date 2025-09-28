@@ -1,0 +1,407 @@
+<section class="faq-custom" aria-labelledby="faq-title" style="padding-top: {{ section.settings.padding_top | default: 60 }}px; padding-bottom: {{ section.settings.padding_bottom | default: 60 }}px;">
+  <div class="faq-custom__container">
+    <!-- Header -->
+    <div class="faq-custom__header">
+      <h2 id="faq-title" class="faq-custom__title">{{ section.settings.title | default: 'FAQ' }}</h2>
+      <p class="faq-custom__subtitle">{{ section.settings.subtitle | default: 'Die wichtigsten Fragen auf einen Blick.' }}</p>
+    </div>
+
+    <!-- FAQ Items -->
+    <div class="faq-custom__items">
+      {%- for block in section.blocks -%}
+        <div class="faq-custom__item" {{ block.shopify_attributes }}>
+          <button 
+            class="faq-custom__question" 
+            type="button" 
+            aria-expanded="false" 
+            aria-controls="faq-answer-{{ block.id }}"
+            data-faq-toggle
+          >
+            <span class="faq-custom__question-text">{{ block.settings.question }}</span>
+            <span class="faq-custom__icon" aria-hidden="true">+</span>
+          </button>
+          <div 
+            id="faq-answer-{{ block.id }}" 
+            class="faq-custom__answer" 
+            aria-hidden="true"
+          >
+            <p>{{ block.settings.answer }}</p>
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+
+    <!-- CTA Button -->
+    {%- if section.settings.cta_text != blank -%}
+      <div class="faq-custom__cta">
+        <a href="{{ section.settings.cta_url | default: '/pages/konfigurator' }}" class="faq-custom__button">
+          {{ section.settings.cta_text }}
+        </a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+<style>
+  .faq-custom {
+    background: #f8f9fc;
+    padding: 60px 0;
+  }
+
+  .faq-custom__container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .faq-custom__header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .faq-custom__title {
+    font-size: {{ section.settings.title_font_size | default: 32 }}px;
+    font-weight: {{ section.settings.title_font_weight | default: 800 }};
+    color: #111827;
+    margin: 0 0 12px 0;
+    letter-spacing: -0.02em;
+  }
+
+  .faq-custom__subtitle {
+    font-size: {{ section.settings.subtitle_font_size | default: 18 }}px;
+    font-weight: {{ section.settings.subtitle_font_weight | default: 400 }};
+    color: #6b7280;
+    margin: 0;
+  }
+
+  .faq-custom__items {
+    margin-bottom: 40px;
+  }
+
+  .faq-custom__item {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    margin-bottom: 16px;
+    overflow: hidden;
+    transition: box-shadow 0.2s ease;
+  }
+
+  .faq-custom__item:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .faq-custom__question {
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 20px 24px;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.2s ease;
+  }
+
+  .faq-custom__question:hover {
+    background-color: #f9fafb;
+  }
+
+  .faq-custom__question-text {
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: #111827;
+    flex: 1;
+    margin-right: 16px;
+  }
+
+  .faq-custom__icon {
+    font-size: 2rem;
+    font-weight: 300;
+    color: #9ca3af;
+    transition: transform 0.3s ease, color 0.2s ease;
+    line-height: 1;
+    min-width: 24px;
+    text-align: center;
+  }
+
+  .faq-custom__question[aria-expanded="true"] .faq-custom__icon {
+    transform: rotate(45deg);
+    color: #005A9C;
+  }
+
+  .faq-custom__answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.3s ease;
+    background-color: #f9fafb;
+  }
+
+  .faq-custom__answer[aria-hidden="false"] {
+    max-height: 200px;
+    padding: 0 24px 20px 24px;
+  }
+
+  .faq-custom__answer p {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #4b5563;
+    line-height: 1.6;
+  }
+
+  .faq-custom__cta {
+    text-align: center;
+  }
+
+  .faq-custom__button {
+    display: inline-block;
+    text-decoration: none;
+  }
+
+  /* Mobile Responsive */
+  @media (max-width: 768px) {
+    .faq-custom {
+      padding: 40px 0;
+    }
+
+    .faq-custom__container {
+      padding: 0 16px;
+    }
+
+    .faq-custom__question {
+      padding: 16px 20px;
+    }
+
+    .faq-custom__question-text {
+      font-size: 1.5rem;
+    }
+
+    .faq-custom__answer[aria-hidden="false"] {
+      padding: 0 20px 16px 20px;
+    }
+
+    .faq-custom__answer p {
+      font-size: 1.4rem;
+    }
+  }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const faqItems = document.querySelectorAll('[data-faq-toggle]');
+  
+  faqItems.forEach(button => {
+    button.addEventListener('click', function() {
+      const isExpanded = this.getAttribute('aria-expanded') === 'true';
+      const answer = document.getElementById(this.getAttribute('aria-controls'));
+      
+      // Close all other items
+      faqItems.forEach(otherButton => {
+        if (otherButton !== this) {
+          otherButton.setAttribute('aria-expanded', 'false');
+          const otherAnswer = document.getElementById(otherButton.getAttribute('aria-controls'));
+          otherAnswer.setAttribute('aria-hidden', 'true');
+        }
+      });
+      
+      // Toggle current item
+      this.setAttribute('aria-expanded', !isExpanded);
+      answer.setAttribute('aria-hidden', isExpanded);
+    });
+  });
+});
+</script>
+
+{% schema %}
+{
+  "name": "FAQ Custom",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Überschrift"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titel",
+      "default": "FAQ"
+    },
+    {
+      "type": "range",
+      "id": "title_font_size",
+      "min": 16,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Titel Schriftgröße",
+      "default": 32
+    },
+    {
+      "type": "select",
+      "id": "title_font_weight",
+      "label": "Titel Schriftstärke",
+      "options": [
+        {
+          "value": "300",
+          "label": "Leicht (300)"
+        },
+        {
+          "value": "400",
+          "label": "Normal (400)"
+        },
+        {
+          "value": "500",
+          "label": "Mittel (500)"
+        },
+        {
+          "value": "600",
+          "label": "Semi-Fett (600)"
+        },
+        {
+          "value": "700",
+          "label": "Fett (700)"
+        },
+        {
+          "value": "800",
+          "label": "Extra Fett (800)"
+        },
+        {
+          "value": "900",
+          "label": "Ultra Fett (900)"
+        }
+      ],
+      "default": "800"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_font_size",
+      "min": 12,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "label": "Untertitel Schriftgröße",
+      "default": 18
+    },
+    {
+      "type": "select",
+      "id": "subtitle_font_weight",
+      "options": [
+        {
+          "value": "300",
+          "label": "Leicht (300)"
+        },
+        {
+          "value": "400",
+          "label": "Normal (400)"
+        },
+        {
+          "value": "500",
+          "label": "Mittel (500)"
+        },
+        {
+          "value": "600",
+          "label": "Semi-Fett (600)"
+        }
+      ],
+      "default": "400",
+      "label": "Untertitel Schriftstärke"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Untertitel",
+      "default": "Die wichtigsten Fragen auf einen Blick."
+    },
+    {
+      "type": "header",
+      "content": "Call to Action"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Button-Text",
+      "default": "Los geht's - Kasten planen"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "Button-Link"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding oben",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding unten",
+      "default": 60
+    }
+  ],
+  "blocks": [
+    {
+      "type": "faq_item",
+      "name": "FAQ Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Frage",
+          "default": "Kommt der Kasten vormontiert/steckerfertig?"
+        },
+        {
+          "type": "textarea",
+          "id": "answer",
+          "label": "Antwort",
+          "default": "Du wählst den Vormontagegrad im Konfigurator. Wir liefern geprüft; auf Wunsch steckerfertig."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ Custom",
+      "blocks": [
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "Kommt der Kasten vormontiert/steckerfertig?",
+            "answer": "Du wählst den Vormontagegrad im Konfigurator. Wir liefern geprüft; auf Wunsch steckerfertig."
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "Wie schnell erhalte ich die Lieferung?",
+            "answer": "Meist in 2-4 Werktagen. Abhängig von Konfiguration & Bestand."
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "Ist alles DIN/VDE-konform?",
+            "answer": "Ja. Wir verwenden VDE-konforme Komponenten und dokumentieren die Endprüfung."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

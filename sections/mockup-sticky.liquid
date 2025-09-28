@@ -1,0 +1,426 @@
+<section class="mockup-sticky" aria-labelledby="mockup-sticky-title" style="padding-top: {{ section.settings.padding_top | default: 40 }}px; padding-bottom: {{ section.settings.padding_bottom | default: 52 }}px;">
+  <div class="mockup-sticky__inner">
+    <!-- Linke Spalte: sticky Mockup -->
+    <aside class="mockup-sticky__media" aria-hidden="true">
+      {%- if section.settings.image -%}
+        <img
+          src="{{ section.settings.image | image_url: width: 1600 }}"
+          alt="{{ section.settings.image.alt | default: section.settings.title }}"
+          width="1600" height="1067"
+          loading="lazy" decoding="async"
+          class="mockup-sticky__img"
+        >
+      {%- else -%}
+        <div class="mockup-sticky__placeholder">
+          <p>Bild hinzufügen</p>
+        </div>
+      {%- endif -%}
+    </aside>
+
+    <!-- Rechte Spalte: Content scrollt -->
+    <div class="mockup-sticky__content">
+      <header class="mockup-sticky__head">
+        <h2 id="mockup-sticky-title">{{ section.settings.title | default: 'Konfigurieren – live im Blick' }}</h2>
+        <p class="mockup-sticky__sub">{{ section.settings.subtitle | default: 'Laptop bleibt sichtbar, während du die Vorteile überfliegst. Klar, fokussiert, überzeugend.' }}</p>
+      </header>
+
+      <ul class="mockup-sticky__list" role="list">
+        {%- for block in section.blocks -%}
+          <li class="mockup-sticky__item" {{ block.shopify_attributes }}>
+            <div class="mockup-sticky__badge">{{ forloop.index }}</div>
+            <div>
+              <h3>{{ block.settings.title }}</h3>
+              <p>{{ block.settings.description }}</p>
+            </div>
+          </li>
+        {%- endfor -%}
+      </ul>
+
+      <!-- CTA Button -->
+      {%- if section.settings.cta_text != blank -%}
+        <div class="mockup-sticky__cta mockup-sticky__cta--center">
+          <a href="{{ section.settings.cta_url | default: '/pages/konfigurator' }}" class="mockup-sticky__btn">{{ section.settings.cta_text }}</a>
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+<style>
+  :root { 
+    --brand: #005A9C; 
+    --ink: #111827; 
+    --muted: #6b7280; 
+    --line: rgba(0,0,0,.08); 
+  }
+
+  .mockup-sticky {
+    background: linear-gradient(180deg, #f7f9fc 0%, #ffffff 100%);
+  }
+
+  .mockup-sticky__inner {
+    max-width: 1300px; 
+    margin: 0 auto; 
+    padding: 0 16px;
+    display: grid; 
+    gap: 32px;
+    grid-template-columns: 1fr 1.05fr;
+    align-items: start;
+  }
+
+  .mockup-sticky__media { 
+    position: sticky; 
+    top: 88px; 
+    align-self: start; 
+  }
+
+  .mockup-sticky__img {
+    width: 100%; 
+    height: auto; 
+    display: block; 
+    border-radius: 18px;
+    box-shadow: 0 18px 42px rgba(0,0,0,.14);
+    transform: translateZ(0);
+  }
+
+  .mockup-sticky__placeholder {
+    width: 100%;
+    height: 400px;
+    background: #f3f4f6;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    font-size: 1.6rem;
+    border: 2px dashed #d1d5db;
+  }
+
+  .mockup-sticky__head h2 {
+    margin: 0 0 6px;
+    color: var(--ink);
+    font-size: {{ section.settings.title_font_size | default: 32 }}px;
+    font-weight: {{ section.settings.title_font_weight | default: 800 }};
+    letter-spacing: .2px;
+  }
+
+  .mockup-sticky__sub { 
+    margin: 0 0 18px; 
+    color: var(--muted); 
+    font-size: {{ section.settings.subtitle_font_size | default: 17 }}px;
+    font-weight: {{ section.settings.subtitle_font_weight | default: 400 }};
+  }
+
+  .mockup-sticky__list { 
+    margin: 0; 
+    padding: 0; 
+    display: grid; 
+    gap: 18px; 
+  }
+
+  .mockup-sticky__item {
+    list-style: none; 
+    display: grid; 
+    grid-template-columns: auto 1fr; 
+    gap: 14px;
+    background: #fff; 
+    border: 1px solid var(--line); 
+    border-radius: 14px;
+    padding: 16px 18px; 
+    box-shadow: 0 10px 24px rgba(0,0,0,.06);
+    transform: translateY(0); 
+    transition: transform .2s ease, box-shadow .2s ease;
+  }
+
+  .mockup-sticky__item:hover { 
+    transform: translateY(-2px); 
+    box-shadow: 0 16px 32px rgba(0,0,0,.10); 
+  }
+
+  .mockup-sticky__item h3 { 
+    margin: .1rem 0 .25rem; 
+    font-size: 1.9rem; 
+    color: var(--ink); 
+  }
+
+  .mockup-sticky__item p { 
+    margin: 0; 
+    color: #475569; 
+    line-height: 1.55; 
+  }
+
+  .mockup-sticky__badge {
+    width: 34px; 
+    height: 34px; 
+    border-radius: 50%;
+    background: var(--brand); 
+    color: #fff; 
+    font-weight: 800;
+    display: grid; 
+    place-items: center; 
+    box-shadow: 0 6px 16px rgba(0,90,156,.28);
+    transform: translateY(2px);
+  }
+
+  .mockup-sticky__cta { 
+    margin-top: 24px; 
+  }
+
+  .mockup-sticky__cta--center { 
+    display: flex; 
+    justify-content: center; 
+  }
+
+  .mockup-sticky__btn {
+    background: var(--brand); 
+    color: #fff; 
+    text-decoration: none; 
+    text-align: center;
+    padding: 14px 24px; 
+    min-width: 240px;
+    border-radius: 10px; 
+    font-weight: 700; 
+    letter-spacing: .2px;
+    box-shadow: 0 10px 24px rgba(0,90,156,.25); 
+    transition: .2s;
+  }
+
+  .mockup-sticky__btn:hover { 
+    background: #00467a; 
+    transform: translateY(-1px); 
+    box-shadow: 0 14px 30px rgba(0,90,156,.33); 
+  }
+
+  @media (max-width: 992px) {
+    .mockup-sticky__inner { 
+      grid-template-columns: 1fr; 
+    }
+
+    .mockup-sticky__media { 
+      position: static; 
+    }
+
+    .mockup-sticky__img { 
+      border-radius: 14px; 
+    }
+
+    .mockup-sticky__btn { 
+      width: 100%; 
+      min-width: 0; 
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Mockup Sticky",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Bild"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Mockup Bild"
+    },
+    {
+      "type": "header",
+      "content": "Überschrift"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titel",
+      "default": "Konfigurieren – live im Blick"
+    },
+    {
+      "type": "range",
+      "id": "title_font_size",
+      "min": 16,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Titel Schriftgröße",
+      "default": 32
+    },
+    {
+      "type": "select",
+      "id": "title_font_weight",
+      "label": "Titel Schriftstärke",
+      "options": [
+        {
+          "value": "300",
+          "label": "Leicht (300)"
+        },
+        {
+          "value": "400",
+          "label": "Normal (400)"
+        },
+        {
+          "value": "500",
+          "label": "Mittel (500)"
+        },
+        {
+          "value": "600",
+          "label": "Semi-Fett (600)"
+        },
+        {
+          "value": "700",
+          "label": "Fett (700)"
+        },
+        {
+          "value": "800",
+          "label": "Extra Fett (800)"
+        },
+        {
+          "value": "900",
+          "label": "Ultra Fett (900)"
+        }
+      ],
+      "default": "800"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_font_size",
+      "min": 12,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "label": "Untertitel Schriftgröße",
+      "default": 17
+    },
+    {
+      "type": "select",
+      "id": "subtitle_font_weight",
+      "options": [
+        {
+          "value": "300",
+          "label": "Leicht (300)"
+        },
+        {
+          "value": "400",
+          "label": "Normal (400)"
+        },
+        {
+          "value": "500",
+          "label": "Mittel (500)"
+        },
+        {
+          "value": "600",
+          "label": "Semi-Fett (600)"
+        }
+      ],
+      "default": "400",
+      "label": "Untertitel Schriftstärke"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Untertitel",
+      "default": "Laptop bleibt sichtbar, während du die Vorteile überfliegst. Klar, fokussiert, überzeugend."
+    },
+    {
+      "type": "header",
+      "content": "Call to Action"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Button-Text",
+      "default": "Jetzt konfigurieren"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "Button-Link"
+    },
+    {
+      "type": "header",
+      "content": "Layout-Einstellungen"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding oben (px)",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding unten (px)",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "default": 28
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titel",
+          "default": "Feature Titel"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Beschreibung",
+          "default": "Feature Beschreibung"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Mockup Sticky",
+      "blocks": [
+        {
+          "type": "feature",
+          "settings": {
+            "title": "Sofortige Live-Vorschau",
+            "description": "Der Aufbau deines Sicherungskastens bleibt beim Scrollen ständig im Blick – wie im echten Projekt."
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "title": "Normorientierte Logik",
+            "description": "FI-Bereiche, TE-Prüfung & sinnvolle Begrenzungen – der Konfigurator führt dich sicher zum Soll-Aufbau."
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "title": "Beschriftung & Dokumente",
+            "description": "Stromkreise benennen, Beschriftung mitbestellen – optional mit Plan und Prüfprotokoll."
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "title": "Vormontiert oder steckerfertig",
+            "description": "Wähle den Grad der Vorkonfektion – von bestückt bis komplett vorverdrahtet."
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "title": "Markenqualität",
+            "description": "Komponenten von ABB/Siemens u. a. – robust, verfügbar und miteinander kompatibel."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

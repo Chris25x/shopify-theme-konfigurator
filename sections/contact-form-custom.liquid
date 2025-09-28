@@ -1,0 +1,488 @@
+<section id="kontakt" class="contact-form-custom" aria-labelledby="contact-title" style="padding-top: {{ section.settings.padding_top | default: 60 }}px; padding-bottom: {{ section.settings.padding_bottom | default: 60 }}px;">
+  <div class="contact-form-custom__container">
+    <!-- Left Panel - Contact Form -->
+    <div class="contact-form-custom__form-panel">
+      <h2 id="contact-title" class="contact-form-custom__title">{{ section.settings.title | default: 'Kontaktiere das Elektro-Team' }}</h2>
+      
+      {%- form 'contact' -%}
+        {%- if form.posted_successfully? -%}
+          <div class="contact-form-custom__success">
+            <p>Vielen Dank für Ihre Nachricht! Wir melden uns schnellstmöglich bei Ihnen.</p>
+          </div>
+        {%- endif -%}
+
+        {%- if form.errors -%}
+          <div class="contact-form-custom__errors">
+            <h3>Bitte korrigieren Sie folgende Fehler:</h3>
+            <ul>
+              {%- for field in form.errors -%}
+                <li>{{ form.errors[field] }}</li>
+              {%- endfor -%}
+            </ul>
+          </div>
+        {%- endif -%}
+
+        <div class="contact-form-custom__field">
+          <label for="contact-name" class="contact-form-custom__label">Dein Name</label>
+          <input 
+            type="text" 
+            id="contact-name" 
+            name="contact[name]" 
+            class="contact-form-custom__input" 
+            placeholder="Max Mustermann"
+            required
+          >
+        </div>
+
+        <div class="contact-form-custom__field">
+          <label for="contact-email" class="contact-form-custom__label">E-Mail</label>
+          <input 
+            type="email" 
+            id="contact-email" 
+            name="contact[email]" 
+            class="contact-form-custom__input" 
+            placeholder="name@mail.de"
+            required
+          >
+        </div>
+
+        <div class="contact-form-custom__field">
+          <label for="contact-phone" class="contact-form-custom__label">Telefon (optional)</label>
+          <input 
+            type="tel" 
+            id="contact-phone" 
+            name="contact[phone]" 
+            class="contact-form-custom__input" 
+            placeholder="01234 567890"
+          >
+        </div>
+
+        <div class="contact-form-custom__field">
+          <label for="contact-message" class="contact-form-custom__label">Nachricht</label>
+          <textarea 
+            id="contact-message" 
+            name="contact[body]" 
+            class="contact-form-custom__textarea" 
+            placeholder="Kurz dein Anliegen oder Projekt beschreiben..."
+            rows="4"
+            required
+          ></textarea>
+        </div>
+
+        <div class="contact-form-custom__checkbox">
+          <input 
+            type="checkbox" 
+            id="contact-consent" 
+            name="contact[consent]" 
+            class="contact-form-custom__checkbox-input"
+            required
+          >
+          <label for="contact-consent" class="contact-form-custom__checkbox-label">
+            Ich stimme zu, dass meine Angaben zur Kontaktaufnahme gespeichert werden. Details in der 
+            <a href="{{ pages.privacy-policy.url }}" target="_blank" class="contact-form-custom__privacy-link">Datenschutzerklärung</a>.
+          </label>
+        </div>
+
+        <button type="submit" class="contact-form-custom__submit">
+          {{ section.settings.button_text | default: 'Nachricht senden' }}
+        </button>
+      {%- endform -%}
+
+      <p class="contact-form-custom__disclaimer">
+        {{ section.settings.disclaimer_text | default: 'Installation nur durch Fachkräfte. Wir liefern geprüft.' }}
+      </p>
+    </div>
+
+    <!-- Right Panel - Contact Info -->
+    <div class="contact-form-custom__info-panel">
+      <div class="contact-form-custom__info-card">
+        <div class="contact-form-custom__info-item">
+          <div class="contact-form-custom__info-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M22 16.92V19.92C22.0011 20.1985 21.9441 20.4742 21.8325 20.7293C21.7209 20.9845 21.5573 21.2136 21.3521 21.4019C21.1468 21.5901 20.9046 21.7335 20.6407 21.8227C20.3769 21.9119 20.0974 21.9451 19.82 21.92C16.7428 21.5856 13.787 20.5341 11.19 18.85C8.77382 17.3147 6.72533 15.2662 5.18999 12.85C3.49997 10.2412 2.44824 7.27099 2.11999 4.18C2.095 3.90347 2.12787 3.62476 2.21649 3.36162C2.30512 3.09849 2.44756 2.85669 2.63476 2.65162C2.82196 2.44655 3.0498 2.28271 3.30379 2.17052C3.55777 2.05833 3.83233 2.00026 4.10999 2H7.10999C7.59531 1.99522 8.06679 2.16708 8.43376 2.48353C8.80073 2.79999 9.04006 3.23945 9.10999 3.72C9.23662 4.68007 9.47144 5.62273 9.80999 6.53C9.94454 6.88792 9.97366 7.27691 9.89391 7.65088C9.81415 8.02485 9.62886 8.36811 9.35999 8.64L8.08999 9.91C9.51355 12.4135 11.5865 14.4864 14.09 15.91L15.36 14.64C15.6319 14.3711 15.9751 14.1858 16.3491 14.1061C16.7231 14.0263 17.1121 14.0555 17.47 14.19C18.3773 14.5286 19.3199 14.7634 20.28 14.89C20.7658 14.9595 21.2094 15.2032 21.5265 15.5775C21.8437 15.9518 22.0122 16.4296 22 16.92Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="contact-form-custom__info-text">
+            <strong>Telefon:</strong> {{ section.settings.phone | default: '01234 567890' }}<br>
+            <span class="contact-form-custom__info-hours">(Mo-Fr 9-17 Uhr)</span>
+          </div>
+        </div>
+
+        <div class="contact-form-custom__info-item">
+          <div class="contact-form-custom__info-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="contact-form-custom__info-text">
+            {{ section.settings.vde_text | default: 'VDE-konforme Komponenten, Endprüfung dokumentiert' }}
+          </div>
+        </div>
+
+        <div class="contact-form-custom__info-item">
+          <div class="contact-form-custom__info-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="contact-form-custom__info-text">
+            {{ section.settings.made_in_germany | default: 'Made in Germany' }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .contact-form-custom {
+    background: #f8f9fc;
+    padding: 60px 0;
+  }
+
+  .contact-form-custom__container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: start;
+  }
+
+  .contact-form-custom__form-panel {
+    background: #fff;
+    border-radius: 16px;
+    padding: 40px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  }
+
+  .contact-form-custom__title {
+    font-size: {{ section.settings.title_font_size | default: 32 }}px;
+    font-weight: {{ section.settings.title_font_weight | default: 800 }};
+    color: #111827;
+    margin: 0 0 30px 0;
+    letter-spacing: -0.02em;
+  }
+
+  .contact-form-custom__form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .contact-form-custom__field:last-of-type {
+    margin-bottom: 0;
+  }
+
+  .contact-form-custom__field {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .contact-form-custom__label {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 8px;
+  }
+
+  .contact-form-custom__input,
+  .contact-form-custom__textarea {
+    padding: 12px 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 1.4rem;
+    color: #111827;
+    background: #fff;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .contact-form-custom__input:focus,
+  .contact-form-custom__textarea:focus {
+    outline: none;
+    border-color: #005A9C;
+    box-shadow: 0 0 0 3px rgba(0, 90, 156, 0.1);
+  }
+
+  .contact-form-custom__textarea {
+    resize: none;
+    min-height: 100px;
+  }
+
+  .contact-form-custom__checkbox {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin: 6px 0 0 0;
+  }
+
+  .contact-form-custom__checkbox-input {
+    margin: 0;
+    width: 18px;
+    height: 18px;
+    accent-color: #005A9C;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .contact-form-custom__checkbox-label {
+    font-size: 1.3rem;
+    color: #6b7280;
+    line-height: 1.5;
+    cursor: pointer;
+  }
+
+  .contact-form-custom__privacy-link {
+    color: #005A9C;
+    text-decoration: underline;
+  }
+
+  .contact-form-custom__privacy-link:hover {
+    color: #00467a;
+  }
+
+  .contact-form-custom__submit {
+    background: #005A9C;
+    color: #fff;
+    border: none;
+    padding: 16px 32px;
+    border-radius: 8px;
+    font-size: 1.6rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0, 90, 156, 0.3);
+    margin-top: 6px;
+  }
+
+  .contact-form-custom__submit:hover {
+    background: #00467a;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 90, 156, 0.4);
+  }
+
+  .contact-form-custom__disclaimer {
+    font-size: 1.3rem;
+    color: #6b7280;
+    text-align: left;
+    margin: 8px 0 0 0;
+    line-height: 1.4;
+  }
+
+  .contact-form-custom__info-panel {
+    display: flex;
+    justify-content: center;
+  }
+
+  .contact-form-custom__info-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 30px;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  }
+
+  .contact-form-custom__info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .contact-form-custom__info-item:last-child {
+    margin-bottom: 0;
+  }
+
+  .contact-form-custom__info-icon {
+    width: 24px;
+    height: 24px;
+    color: #005A9C;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .contact-form-custom__info-text {
+    font-size: 1.4rem;
+    color: #374151;
+    line-height: 1.5;
+  }
+
+  .contact-form-custom__info-hours {
+    color: #6b7280;
+    font-size: 1.3rem;
+  }
+
+  .contact-form-custom__success {
+    background: #d1fae5;
+    color: #065f46;
+    padding: 16px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 1.4rem;
+  }
+
+  .contact-form-custom__errors {
+    background: #fee2e2;
+    color: #991b1b;
+    padding: 16px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 1.4rem;
+  }
+
+  .contact-form-custom__errors ul {
+    margin: 8px 0 0 0;
+    padding-left: 20px;
+  }
+
+  /* Mobile Responsive */
+  @media (max-width: 768px) {
+    .contact-form-custom__container {
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+
+    .contact-form-custom {
+      padding: 40px 0;
+    }
+
+    .contact-form-custom__form-panel {
+      padding: 30px;
+    }
+
+    .contact-form-custom__info-card {
+      padding: 24px;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Contact Form Custom",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Formular"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titel",
+      "default": "Kontaktiere das Elektro-Team"
+    },
+    {
+      "type": "range",
+      "id": "title_font_size",
+      "min": 16,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Titel Schriftgröße",
+      "default": 32
+    },
+    {
+      "type": "select",
+      "id": "title_font_weight",
+      "label": "Titel Schriftstärke",
+      "options": [
+        {
+          "value": "300",
+          "label": "Leicht (300)"
+        },
+        {
+          "value": "400",
+          "label": "Normal (400)"
+        },
+        {
+          "value": "500",
+          "label": "Mittel (500)"
+        },
+        {
+          "value": "600",
+          "label": "Semi-Fett (600)"
+        },
+        {
+          "value": "700",
+          "label": "Fett (700)"
+        },
+        {
+          "value": "800",
+          "label": "Extra Fett (800)"
+        },
+        {
+          "value": "900",
+          "label": "Ultra Fett (900)"
+        }
+      ],
+      "default": "800"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button-Text",
+      "default": "Nachricht senden"
+    },
+    {
+      "type": "text",
+      "id": "disclaimer_text",
+      "label": "Disclaimer-Text",
+      "default": "Installation nur durch Fachkräfte. Wir liefern geprüft."
+    },
+    {
+      "type": "header",
+      "content": "Kontaktinformationen"
+    },
+    {
+      "type": "text",
+      "id": "phone",
+      "label": "Telefonnummer",
+      "default": "01234 567890"
+    },
+    {
+      "type": "text",
+      "id": "vde_text",
+      "label": "VDE Text",
+      "default": "VDE-konforme Komponenten, Endprüfung dokumentiert"
+    },
+    {
+      "type": "text",
+      "id": "made_in_germany",
+      "label": "Made in Germany Text",
+      "default": "Made in Germany"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding oben",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding unten",
+      "default": 60
+    }
+  ],
+  "presets": [
+    {
+      "name": "Contact Form Custom"
+    }
+  ]
+}
+{% endschema %}

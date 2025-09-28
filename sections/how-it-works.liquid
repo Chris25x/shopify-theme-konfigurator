@@ -1,0 +1,251 @@
+{{ 'how-it-works.css' | asset_url | stylesheet_tag }}
+
+<style>
+/* Dynamische Typografie für How it Works */
+.howit__title {
+  font-size: {{ section.settings.title_font_size | default: 32 }}px !important;
+  font-weight: {{ section.settings.title_font_weight | default: 800 }} !important;
+}
+
+.howit__sub {
+  font-size: {{ section.settings.subtitle_font_size | default: 18 }}px !important;
+  font-weight: {{ section.settings.subtitle_font_weight | default: 400 }} !important;
+}
+</style>
+
+<section id="funktion" class="howit" aria-labelledby="howit-title" style="padding-top: {{ section.settings.padding_top | default: 60 }}px; padding-bottom: {{ section.settings.padding_bottom | default: 60 }}px;">
+  <div class="howit__inner">
+    <!-- Überschrift -->
+    <h2 id="howit-title" class="howit__title howit__title--{{ section.settings.title_weight }}">{{ section.settings.title | default: 'So funktioniert es' }}</h2>
+    <p class="howit__sub">{{ section.settings.subtitle | default: 'In nur drei Schritten zum individuell konfigurierten Sicherungskasten.' }}</p>
+
+    <!-- Schritte -->
+    <div class="howit__grid">
+      {%- for block in section.blocks -%}
+        <div class="howit__item" {{ block.shopify_attributes }}>
+          <div class="howit__badge">{{ forloop.index }}</div>
+          {%- if block.settings.image -%}
+            <img class="howit__img" 
+                 src="{{ block.settings.image | image_url: width: 300 }}" 
+                 alt="{{ block.settings.image_alt | default: block.settings.title }}" 
+                 loading="lazy"
+                 width="150"
+                 height="auto">
+          {%- endif -%}
+          <h3 class="howit__step-title">{{ block.settings.title }}</h3>
+          <p class="howit__text">{{ block.settings.description }}</p>
+        </div>
+      {%- endfor -%}
+    </div>
+
+    <!-- Call to Action -->
+    {%- if section.settings.cta_text != blank -%}
+      <div class="howit__cta">
+        <a class="howit__btn" href="{{ section.settings.cta_url | default: '#konfigurator' }}">{{ section.settings.cta_text }}</a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "So funktioniert es",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Überschrift"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titel",
+      "default": "So funktioniert es"
+    },
+    {
+      "type": "range",
+      "id": "title_font_size",
+      "min": 16,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Titel Schriftgröße",
+      "default": 32
+    },
+    {
+      "type": "select",
+      "id": "title_font_weight",
+      "label": "Titel Schriftstärke",
+      "options": [
+        {
+          "value": "300",
+          "label": "Leicht (300)"
+        },
+        {
+          "value": "400",
+          "label": "Normal (400)"
+        },
+        {
+          "value": "500",
+          "label": "Mittel (500)"
+        },
+        {
+          "value": "600",
+          "label": "Semi-Fett (600)"
+        },
+        {
+          "value": "700",
+          "label": "Fett (700)"
+        },
+        {
+          "value": "800",
+          "label": "Extra Fett (800)"
+        },
+        {
+          "value": "900",
+          "label": "Ultra Fett (900)"
+        }
+      ],
+      "default": "800"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_font_size",
+      "min": 12,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "label": "Untertitel Schriftgröße",
+      "default": 18
+    },
+    {
+      "type": "select",
+      "id": "subtitle_font_weight",
+      "options": [
+        {
+          "value": "300",
+          "label": "Leicht (300)"
+        },
+        {
+          "value": "400",
+          "label": "Normal (400)"
+        },
+        {
+          "value": "500",
+          "label": "Mittel (500)"
+        },
+        {
+          "value": "600",
+          "label": "Semi-Fett (600)"
+        }
+      ],
+      "default": "400",
+      "label": "Untertitel Schriftstärke"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Untertitel",
+      "default": "In nur drei Schritten zum individuell konfigurierten Sicherungskasten."
+    },
+    {
+      "type": "header",
+      "content": "Call to Action"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Button-Text",
+      "default": "Jetzt konfigurieren"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "Button-Link"
+    },
+    {
+      "type": "header",
+      "content": "Layout-Einstellungen"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding oben (px)",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding unten (px)",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 60
+    }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Schritt",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Bild"
+        },
+        {
+          "type": "text",
+          "id": "image_alt",
+          "label": "Alt-Text für Bild"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titel",
+          "default": "Schritt-Titel"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Beschreibung",
+          "default": "Beschreibung des Schritts"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "So funktioniert es",
+      "blocks": [
+        {
+          "type": "step",
+          "settings": {
+            "title": "Größe wählen",
+            "description": "Wählen Sie die passende Größe und Ausführung Ihres Sicherungskastens."
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "title": "Komponenten auswählen",
+            "description": "Bestimmen Sie Sicherungen, FI-Schalter und weitere Elemente individuell."
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "title": "Bestellen & erhalten",
+            "description": "Ihr vorkonfigurierter Sicherungskasten wird schnell und sicher geliefert."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

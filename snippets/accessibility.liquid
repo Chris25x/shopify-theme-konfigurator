@@ -1,0 +1,82 @@
+{%- comment -%}
+  Accessibility-Verbesserungen für bessere SEO
+  Verwendung: {% render 'accessibility' %}
+{%- endcomment -%}
+
+<!-- Skip Links für bessere Navigation -->
+
+<!-- ARIA Landmarks -->
+<div id="main-content" role="main" aria-label="Hauptinhalt">
+  <!-- Hauptinhalt wird hier eingefügt -->
+</div>
+
+<!-- Focus Management -->
+<script>
+  // Skip Links Funktionalität
+  document.addEventListener('DOMContentLoaded', function() {
+    const skipLinks = document.querySelectorAll('.skip-link');
+    
+    skipLinks.forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.focus();
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    });
+    
+    // Focus Management für Modals
+    const modals = document.querySelectorAll('[role="dialog"]');
+    modals.forEach(modal => {
+      modal.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          this.close();
+        }
+      });
+    });
+  });
+</script>
+
+<!-- CSS für Skip Links -->
+<style>
+  .skip-link {
+    position: absolute;
+    top: -40px;
+    left: 6px;
+    background: #000;
+    color: #fff;
+    padding: 8px;
+    text-decoration: none;
+    z-index: 1000;
+    border-radius: 4px;
+    transition: top 0.3s;
+  }
+  
+  .skip-link:focus {
+    top: 6px;
+  }
+  
+  /* Focus Styles für bessere Sichtbarkeit */
+  *:focus {
+    outline: 2px solid #005A9C;
+    outline-offset: 2px;
+  }
+  
+  /* High Contrast Mode Support */
+  @media (prefers-contrast: high) {
+    .button {
+      border: 2px solid currentColor;
+    }
+  }
+  
+  /* Reduced Motion Support */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>

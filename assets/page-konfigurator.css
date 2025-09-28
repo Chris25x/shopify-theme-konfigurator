@@ -1,0 +1,3321 @@
+/* Konfigurator CSS - Extracted from page-konfigurator.liquid */
+
+/* Dialog-Animationen */
+@keyframes dialogSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes dialogSlideOut {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+}
+
+/* Dialog-Overlay */
+.konfigurator-dialog-overlay {
+  backdrop-filter: blur(2px);
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+:root {
+  /* Theme Font Variables */
+  --font-body-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-heading-family: var(--font-body-family);
+}
+
+body {
+  font-family: var(--font-body-family);
+  background-color: #f4f4f4;
+  background-image: url('https://cdn.shopify.com/s/files/1/0944/8711/8089/files/AdobeStock_336754886_72647594-961e-4183-89fa-c5b2ffcc21a6.png?v=1757584325');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-attachment: fixed;
+  margin: 0;
+  padding: 0;
+}
+
+/* Theme Header Font Settings */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading-family);
+}
+
+/* Theme Button Styles */
+.button {
+  background: #005A9C;
+  color: #fff;
+  padding: 16px 34px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.5rem;
+  transition: all 0.3s ease;
+  display: inline-block;
+  box-shadow: 0 4px 14px rgba(0, 90, 156, 0.3);
+  border: none !important;
+  cursor: pointer;
+  outline: none !important;
+  font-family: var(--font-body-family);
+}
+
+.button:hover {
+  background: #004a8a;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 90, 156, 0.4);
+}
+
+.button:active {
+  transform: translateY(0);
+}
+
+.button:focus-visible {
+  outline: 0;
+  box-shadow:
+    0 0 0 2px #fff,
+    0 0 0 4px rgba(0,90,156,.55);
+}
+
+/* Navigation Buttons (Weiter/Zurück) */
+#nextButton {
+  background: #005A9C !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 14px 24px !important;
+  font-weight: 600 !important;
+  font-size: 1.5rem !important;
+  text-decoration: none !important;
+  display: inline-block !important;
+  box-shadow: 0 4px 14px rgba(0, 90, 156, 0.3) !important;
+  transition: all 0.3s ease !important;
+  cursor: pointer !important;
+  text-align: center !important;
+  min-width: 200px !important;
+  font-family: var(--font-body-family) !important;
+}
+
+/* Zurück-Button - gleiche Styling wie Weiter-Button */
+#prevButton {
+  background: #005A9C !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 14px 24px !important;
+  font-weight: 600 !important;
+  font-size: 1.5rem !important;
+  text-decoration: none !important;
+  display: inline-block !important;
+  box-shadow: 0 4px 14px rgba(0, 90, 156, 0.3) !important;
+  transition: all 0.3s ease !important;
+  cursor: pointer !important;
+  text-align: center !important;
+  min-width: 200px !important;
+  font-family: var(--font-body-family) !important;
+}
+
+/* Verstecke den Zurück-Button auf Page 1 */
+#prevButton.hidden-on-page1 {
+  display: none !important;
+}
+
+#nextButton:hover, #nextButton:focus,
+#prevButton:hover, #prevButton:focus {
+  background: #00467a !important;
+  box-shadow: 0 6px 20px rgba(0, 90, 156, 0.4) !important;
+  transform: translateY(-2px) !important;
+  color: #fff !important;
+}
+
+/* Override outline styling for navigation buttons */
+#nextButton.button--outline,
+#prevButton.button--outline {
+  background: #005A9C !important;
+  color: #fff !important;
+  border: none !important;
+  box-shadow: 0 4px 14px rgba(0, 90, 156, 0.3) !important;
+  transition: all 0.3s ease !important;
+}
+
+#nextButton.button--outline:hover,
+#nextButton.button--outline:focus,
+#prevButton.button--outline:hover,
+#prevButton.button--outline:focus {
+  background: #00467a !important;
+  color: #fff !important;
+  border: none !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 20px rgba(0, 90, 156, 0.4) !important;
+}
+
+/* Active state for better feedback */
+#nextButton:active,
+#prevButton:active {
+  background: #003d6b !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 15px rgba(0, 90, 156, 0.4) !important;
+}
+
+@media (max-width: 768px) {
+  body {
+    background-attachment: scroll;
+  }
+}
+
+/* Konfigurator Background */
+.konfigurator {
+  position: relative;
+  z-index: auto;
+  overflow: visible;
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-top: 0;
+}
+
+.konfigurator::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('https://cdn.shopify.com/s/files/1/0944/8711/8089/files/AdobeStock_336754886_72647594-961e-4183-89fa-c5b2ffcc21a6.png?v=1757584325');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.konfigurator::after {
+  content: "";
+  position: absolute;
+  top: -30px;
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 1240px;
+  background: #f7f9fc;
+  border-radius: 16px;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.konfigurator > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Container */
+.container {
+  width: 1240px;
+  margin: 0 auto;
+  position: relative;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+/* Desktop Layout */
+html, body { min-width: 1200px; }
+body { overflow-x: auto; }
+
+/* Responsive Design */
+@media screen and (max-width: 1260px) {
+  body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    min-height: 100vh;
+    position: relative;
+  }
+
+  .container {
+    width: 100%;
+    padding: 0;
+    padding-bottom: 80px;
+    margin: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    min-height: 100vh;
+    position: relative;
+  }
+}
+
+/* Page Navigation */
+.page {
+  display: none;
+  margin-top: 20px;
+}
+
+.page.active {
+  display: block;
+}
+
+/* Button Styles */
+.button, .button--small, .dropdown-btn {
+  background: #fff;
+  color: #111827;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 8px 18px;
+  font-family: var(--font-body-family, 'Assistant', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', Arial, sans-serif);
+  font-size: 14px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.button--small, .dropdown-btn {
+  padding: 4px 10px;
+  font-size: 13px;
+}
+
+.button--green {
+  background: #22c55e;
+  color: #fff;
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+
+.button--green:hover, .button--green:focus {
+  background: #16a34a;
+  border: none;
+  color: #fff;
+  outline: none;
+  box-shadow: none;
+}
+
+.button--red {
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+
+.button--red:hover, .button--red:focus {
+  border: none;
+  color: #fff;
+  outline: none;
+  box-shadow: none;
+}
+
+.button--yellow {
+  background: #fde047;
+  color: #7a5c00;
+  border: none;
+}
+
+.button--yellow:hover, .button--yellow:focus {
+  border: none;
+  color: #7a5c00;
+}
+
+.button--outline {
+  background: #fff;
+  color: #111827;
+  border: 2px solid #e5e7eb;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.button--outline:hover {
+  background: #f8fafc;
+  border-color: #005A9C;
+  color: #005A9C;
+  box-shadow: 0 4px 12px rgba(0, 90, 156, 0.15);
+  transform: translateY(-1px);
+}
+
+.button--outline:focus {
+  border-color: #005A9C;
+  box-shadow: 0 0 0 3px rgba(0, 90, 156, 0.2);
+  background: #f8fafc;
+  color: #005A9C;
+}
+
+.button:hover, .button--small:hover, .dropdown-btn:hover {
+  background: #f8fafc;
+  border-color: #005A9C;
+  color: #005A9C;
+  box-shadow: 0 4px 12px rgba(0, 90, 156, 0.15);
+  transform: translateY(-1px);
+}
+
+.button:focus, .button--small:focus, .dropdown-btn:focus {
+  border-color: #005A9C;
+  box-shadow: 0 0 0 3px rgba(0, 90, 156, 0.2);
+  background: #f8fafc;
+  color: #005A9C;
+}
+
+.button i, .button--small i, .dropdown-btn i {
+  font-size: 15px;
+  margin-right: 5px;
+}
+
+/* Row Strip */
+.row-strip {
+  width: 1200px;
+  height: 40px;
+  background-color: #f0f7ff;
+  margin-bottom: 0;
+  position: relative; 
+  z-index: 600;
+  border-radius: 8px 8px 0 0;
+  box-shadow: 0 2px 4px rgba(0, 90, 156, 0.1);
+}
+
+.row-container {
+  margin: 0;
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 1px solid #dddddd;
+  border-radius: 5px;
+  position: relative;
+  background-image: url('https://cdn.shopify.com/s/files/1/0944/8711/8089/files/Reihe_neu.png?v=1756456386');
+  background-size: 1200px 160px;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 430px;
+  width: 1200px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: 50px;
+  padding-right: 50px;
+  box-sizing: border-box;
+  z-index: 100;
+}
+
+.row-content {
+  display: flex;
+  flex-wrap: nowrap;
+  position: relative;
+  width: 100%;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Product Box */
+.product-box {
+  height: 340px;
+  text-align: center;
+  line-height: 40px;
+  border-radius: 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+  cursor: default;
+  flex: 0 0 auto;
+  width: calc(92px * var(--size, 1));
+  padding: 0;
+  margin: 0;
+  border: none;
+  background-color: transparent;
+  user-select: none;
+  -webkit-user-drag: none;
+  box-sizing: border-box;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.product-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+
+.product-box .product-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  background-color: transparent;
+  position: relative;
+  margin: 0;
+  padding: 0;
+  pointer-events: none;
+  box-sizing: border-box;
+}
+
+.product-box.loaded {
+  opacity: 1;
+}
+
+.product-box[data-size="1"] { width: 92px; }
+.product-box[data-size="2"] { width: 184px; }
+.product-box[data-size="2.5"] { width: 230px; }
+.product-box[data-size="3"] { width: 276px; }
+.product-box[data-size="4"] { width: 368px; }
+.product-box[data-size="4.5"] { width: 414px; }
+.product-box[data-size="5"] { width: 460px; }
+
+.product-box.dragging {
+  opacity: 0.8;
+  cursor: grabbing;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  z-index: 20;
+  transform: scale(1.02);
+  background-color: rgba(255, 255, 255, 0.95);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.product-box.fixed-product {
+  cursor: not-allowed !important;
+  opacity: 1;
+  position: relative;
+  pointer-events: none;
+}
+
+.product-box.fixed-product .action-icon.move-icon,
+.product-box.fixed-product .action-icon.delete-icon {
+  display: none !important;
+}
+
+.product-box.fixed-product:hover {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.product-box.fixed-product * {
+  pointer-events: none;
+}
+
+/* Info Box */
+.info-box {
+  background-color: #fff;
+  padding: 15px;
+  border: 1px solid #dddddd;
+  border-radius: 5px;
+  width: 1200px;
+  margin: 20px auto;
+  text-align: left;
+  font-size: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+}
+
+/* Status Bar */
+.status-bar {
+  background-color: #fff;
+  padding: 10px 20px;
+  border: 1px solid #dddddd;
+  border-radius: 5px;
+  width: 1200px;
+  margin: 0 auto 20px auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+}
+
+.status-step {
+  display: flex;
+  align-items: center;
+  color: #666;
+  font-size: 14px;
+}
+
+.status-step.active {
+  color: #005A9C;
+  font-weight: bold;
+}
+
+.status-step.completed {
+  color: #4CAF50;
+}
+
+.status-step i {
+  margin-right: 5px;
+}
+
+/* Button Container */
+.button-container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+/* Dropdown Styles */
+.dropdown-container {
+  position: relative;
+  display: inline-block;
+  z-index: 800;
+}
+
+.dropdown {
+  display: none;
+  position: absolute;
+  top: 40px;
+  left: 0;
+  background-color: #fff;
+  border: 1px solid #dddddd;
+  border-radius: 5px;
+  width: 350px;
+  z-index: 1200;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.dropdown-option {
+  padding: 12px 16px;
+  cursor: pointer;
+  border-bottom: 1px solid #dddddd;
+  white-space: nowrap;
+  line-height: 1.4;
+  min-height: 36px;
+  user-select: none;
+}
+
+.dropdown-option:last-child { border-bottom: none; }
+.dropdown-option:active { background-color: #f1f5f9; }
+.dropdown-option:hover { background-color: #f1f1f1; }
+
+/* Konfigurator Buttons */
+.konfigurator-btn-green,
+.konfigurator-btn-yellow,
+.konfigurator-btn-red {
+  background: #22c55e;
+  color: #fff;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 0 24px;
+  height: 40px;
+  margin: 0;
+  line-height: 40px;
+  font-family: var(--font-body-family, 'Assistant', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', Arial, sans-serif);
+  font-size: 16px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+
+.konfigurator-btn-yellow {
+  background: #fde047;
+  color: #fff;
+}
+
+.konfigurator-btn-red {
+  background: #ef4444;
+  color: #fff;
+}
+
+.konfigurator-btn-green:hover, .konfigurator-btn-green:focus {
+  background: #22c55e;
+}
+
+.konfigurator-btn-yellow:hover, .konfigurator-btn-yellow:focus {
+  background: #facc15;
+}
+
+.konfigurator-btn-red:hover, .konfigurator-btn-red:focus {
+  background: #b91c1c;
+}
+
+/* Product Cards Grid */
+.produktkarten-grid {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 56px;
+  justify-content: center;
+  width: 100%;
+  max-width: 1200px;
+  box-sizing: border-box;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.produktkarte {
+  background: #fff;
+  border: 1px solid #eef1f5;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.2s ease;
+  width: 280px;
+  min-width: 280px;
+  max-width: 280px;
+  padding: 0 14px 18px 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+  min-height: 300px;
+  justify-content: flex-start;
+  box-sizing: border-box;
+  overflow: hidden;
+  margin-bottom: 50px;
+  margin-top: 20px;
+}
+
+.produktkarte:hover {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.produktbild {
+  width: 90px;
+  height: 90px;
+  object-fit: contain;
+  margin: 18px auto 10px auto;
+  display: block;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: none;
+  padding: 0;
+}
+
+.produktname {
+  font-size: 20px;
+  font-weight: 400;
+  color: #111827;
+  margin: 0 0 8px 0;
+  text-align: center;
+  min-height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+.produktpreis {
+  font-size: 17px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 24px;
+  height: 24px;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.produktpreis .preis {
+  font-size: 17px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.produktpreis .steuer {
+  font-size: 10px;
+  font-weight: 400;
+  color: #111827;
+  margin-left: 8px;
+}
+
+.produktpreis .versand {
+  color: #a00;
+  text-decoration: underline;
+}
+
+.produktbuttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 18px;
+  align-items: center;
+  width: 100%;
+  justify-content: center;
+}
+
+.mit-btn {
+  background: #eee;
+  color: #111827;
+  border: none;
+  border-radius: 8px;
+  font-size: 20px;
+  font-weight: 600;
+  padding: 12px 28px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  min-width: 70px;
+}
+
+.mit-btn.active, .mit-btn:active {
+  background: #22c55e;
+  color: #fff;
+}
+
+.ohne-btn {
+  background: #eee;
+  color: #111827;
+  border: none;
+  border-radius: 8px;
+  font-size: 20px;
+  font-weight: 600;
+  padding: 12px 28px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  min-width: 70px;
+}
+
+.ohne-btn.active, .ohne-btn:active {
+  background: #ef4444;
+  color: #fff;
+}
+
+.info-icon {
+  color: #111827;
+  font-size: 28px;
+  margin-left: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+/* Action Icons */
+.action-icon {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  color: #666;
+  font-size: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  z-index: 200;
+}
+
+.action-icon:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  color: #111827;
+}
+
+.action-icon.move-icon {
+  color: #005A9C;
+  cursor: grab;
+}
+
+.action-icon.delete-icon {
+  color: #005A9C;
+}
+
+.action-icon.move-icon:hover {
+  background-color: rgba(0, 90, 156, 0.1);
+}
+
+.action-icon.delete-icon:hover {
+  background-color: rgba(0, 90, 156, 0.1);
+}
+
+/* Summary Styles */
+.summary-elements {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.summary-row {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 8px 16px;
+  align-items: start;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  padding: 10px 12px;
+}
+
+.summary-row.fi { border-left: 3px solid #0ea5e9; }
+.summary-row.free { border-left: 3px solid #94a3b8; }
+
+.summary-label {
+  font-weight: 600;
+  color: #111827;
+  padding-top: 6px;
+}
+
+.summary-items {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.summary-item {
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 6px 10px;
+}
+
+/* Responsive Design */
+@media (max-width: 1500px) {
+  .produktkarten-grid {
+    gap: 30px;
+  }
+  .produktkarte {
+    width: 280px;
+    min-width: 280px;
+    max-width: 280px;
+    padding: 0 10px 24px 10px;
+  }
+  .produktbild {
+    margin: 24px auto 16px auto;
+  }
+  .produktname {
+    font-size: 22px;
+    min-height: 28px;
+  }
+  .produktpreis {
+    font-size: 20px;
+    min-height: 28px;
+    height: 28px;
+  }
+  .produktpreis .preis {
+    font-size: 24px;
+  }
+  .produktpreis .steuer {
+    font-size: 14px;
+  }
+  .mit-btn, .ohne-btn {
+    font-size: 16px;
+    padding: 8px 18px;
+    min-width: 60px;
+  }
+  .info-icon {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 1100px) {
+  .produktkarten-grid {
+    gap: 16px;
+  }
+  .produktkarte {
+    width: 45vw;
+    min-width: 180px;
+    max-width: 300px;
+  }
+}
+
+@media (max-width: 900px) {
+  .produktkarten-grid {
+    flex-wrap: nowrap;
+    gap: 16px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .produktkarte {
+    width: 80vw;
+    min-width: 240px;
+    max-width: 320px;
+    flex: 0 0 auto;
+  }
+}
+
+/* Mobile Responsive */
+@media screen and (max-width: 1260px) {
+  .row-strip, .row-container, .info-box, .status-bar {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    box-sizing: border-box;
+  }
+
+  .row-container {
+    margin: 0;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid #dddddd;
+    border-radius: 5px;
+    position: relative;
+    background-image: url('https://cdn.shopify.com/s/files/1/0944/8711/8089/files/Reihe_neu.png?v=1756456386');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 430px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 50px;
+    padding-right: 50px;
+    box-sizing: border-box;
+  }
+
+  .row-content {
+    display: flex;
+    flex-wrap: nowrap;
+    position: relative;
+    width: 100%;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    touch-action: auto;
+  }
+
+  .row-content::-webkit-scrollbar {
+    display: none;
+  }
+
+  .produktkarten-grid {
+    width: 100%;
+  }
+
+  .product-box {
+    height: 340px;
+    text-align: center;
+    line-height: 40px;
+    border-radius: 0;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+    cursor: default;
+    flex: 0 0 auto;
+    width: calc(92px * var(--size, 1));
+    padding: 0;
+    margin: 0;
+    border: none;
+    background-color: transparent;
+    user-select: none;
+    -webkit-user-drag: none;
+    box-sizing: border-box;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .product-box[data-size="1"] { width: 92px; }
+  .product-box[data-size="2"] { width: 184px; }
+  .product-box[data-size="2.5"] { width: 230px; }
+  .product-box[data-size="3"] { width: 276px; }
+  .product-box[data-size="4"] { width: 368px; }
+  .product-box[data-size="4.5"] { width: 414px; }
+  .product-box[data-size="5"] { width: 460px; }
+
+  .info-box {
+    margin: 10px;
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 8px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .status-bar {
+    margin: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .button-container {
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #fff;
+    padding: 10px;
+    margin: 0;
+    z-index: 1000;
+    border-top: 1px solid #ddd;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+  }
+
+  .button, .dropdown-btn {
+    font-size: 14px;
+    padding: 8px 16px;
+    height: 44px;
+    line-height: 28px;
+    margin: 0;
+    white-space: nowrap;
+    border-radius: 8px;
+    font-weight: 600;
+    min-width: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .button i {
+    font-size: 16px;
+    margin-right: 8px;
+  }
+}
+
+/* Additional Mobile Optimizations */
+@media screen and (max-width: 480px) {
+  .product-box {
+    width: calc(40px * var(--size, 1));
+    height: 150px;
+    line-height: 150px;
+  }
+
+  .product-box img {
+    max-width: 70%;
+    max-height: 70%;
+  }
+
+  .row-container {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .info-box {
+    font-size: 12px;
+  }
+
+  .status-step {
+    font-size: 11px;
+  }
+
+  .button, .dropdown-btn {
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+}
+
+/* Konfigurator Gaps */
+.konfigurator-top-gap {
+  height: 360px !important;
+}
+
+@media (max-width: 768px) {
+  .konfigurator-top-gap { height: 220px !important; }
+}
+
+.konfigurator-bottom-gap {
+  height: 260px !important;
+}
+
+@media (max-width: 768px) {
+  .konfigurator-bottom-gap { height: 160px !important; }
+}
+/* Inline styles moved from page-konfigurator.liquid */
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      padding: 0.75rem 1.25rem !important;
+      border-radius: 16px !important;
+      font-weight: 600 !important;
+      line-height: 1 !important;
+      text-decoration: none !important;
+      background: #005A9C !important;
+      color: #fff !important;
+      border: 1px solid #005A9C !important;
+      box-shadow: 0 1px 2px rgba(0,0,0,.04) !important;
+      transition: box-shadow .2s ease, transform .05s ease, background-color .2s ease !important;
+      font-family: var(--font-body-family) !important;
+    }
+
+    .header .header__icon--konfigurator:hover,
+    .header a[href*="konfigurator"][class*="button"]:hover,
+    .header a[href*="konfigurator"][class*="cta"]:hover {
+      background: #004a8a !important;
+      box-shadow: 0 6px 14px rgba(0,90,156,.22) !important;
+      transform: translateY(-1px) !important;
+    }
+
+    .header .header__icon--konfigurator:active,
+    .header a[href*="konfigurator"][class*="button"]:active,
+    .header a[href*="konfigurator"][class*="cta"]:active {
+      transform: translateY(1px) !important;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        background-attachment: scroll;
+      }
+    }
+
+    /* Sichtbarer Seitenhintergrund innerhalb der Konfigurator-Section,
+       auch wenn das Theme außen eine weiße Fläche hat */
+    .konfigurator {
+      position: relative;
+      z-index: auto;
+      overflow: visible;
+      padding-top: 0; /* Abstände über die Gap-Elemente steuern */
+      padding-bottom: 0; /* Abstände über die Gap-Elemente steuern */
+      margin-top: 0; /* Abstände über die Gap-Elemente steuern */
+    }
+    .konfigurator::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: url('https://cdn.shopify.com/s/files/1/0944/8711/8089/files/AdobeStock_336754886_72647594-961e-4183-89fa-c5b2ffcc21a6.png?v=1757584325');
+      background-size: cover;
+      background-position: center center;
+      background-repeat: no-repeat;
+      z-index: -1;
+      pointer-events: none;
+    }
+    .konfigurator::after {
+      content: "";
+      position: absolute;
+      top: -30px;
+      bottom: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 1240px;
+      background: #f7f9fc;
+      border-radius: 16px;
+      z-index: -1;
+      pointer-events: none;
+    }
+    .konfigurator > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Sicherstellen, dass Dashboard und Statusleiste über der Leinwand liegen */
+    .konfigurator .status-bar,
+    .konfigurator #infoBox {
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Fester Abstand oberhalb des Konfigurators (unterhalb des Headers) */
+    .konfigurator-top-gap {
+      height: 360px !important;
+    }
+    @media (max-width: 768px) {
+      .konfigurator-top-gap { height: 220px !important; }
+    }
+
+    /* Fester Abstand unterhalb des Konfigurators (vor dem Footer) */
+    .konfigurator-bottom-gap {
+      height: 260px !important;
+    }
+    @media (max-width: 768px) {
+      .konfigurator-bottom-gap { height: 160px !important; }
+    }
+
+    .container {
+      width: 1240px; /* Erhöht um 40px für Padding */
+      margin: 0 auto;
+      position: relative;
+      padding: 0 20px; /* 20px Padding auf beiden Seiten */
+      box-sizing: border-box;
+    }
+
+    /* Desktop-Layout auch mobil beibehalten */
+    html, body { min-width: 1200px; }
+    body { overflow-x: auto; }
+
+    /* Responsive Anpassungen */
+    @media screen and (max-width: 1260px) {
+      body {
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+        overflow-y: auto;
+        min-height: 100vh;
+        position: relative;
+      }
+
+      .container {
+        width: 100%;
+        padding: 0;
+        padding-bottom: 80px;
+        margin: 0;
+        overflow-x: hidden;
+        overflow-y: auto;
+        min-height: 100vh;
+        position: relative;
+      }
+
+      .row-strip, .row-container, .info-box, .status-bar {
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+        box-sizing: border-box;
+      }
+
+      .row-container {
+        margin: 0;
+        padding: 10px;
+        background-color: rgba(255, 255, 255, 0.8);
+        border: 1px solid #dddddd;
+        border-radius: 5px;
+        position: relative;
+        background-image: url('https://cdn.shopify.com/s/files/1/0944/8711/8089/files/Reihe_neu.png?v=1756456386');
+        background-size: contain;
+        background-position: center;
+        background-repeat: no-repeat;
+        height: 430px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        padding-left: 50px;
+        padding-right: 50px;
+        box-sizing: border-box;
+      }
+
+      .row-content {
+        display: flex;
+        flex-wrap: nowrap;
+        position: relative;
+        width: 100%;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 0;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        touch-action: auto;
+      }
+
+      .row-content::-webkit-scrollbar {
+        display: none;
+      }
+
+      .produktkarten-grid {
+        width: 100%;
+      }
+
+      .product-box {
+        height: 340px;
+        text-align: center;
+        line-height: 40px;
+        border-radius: 0;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: visible;
+        cursor: default;
+        flex: 0 0 auto;
+        width: calc(92px * var(--size, 1));
+        padding: 0;
+        margin: 0;
+        border: none;
+        background-color: transparent;
+        user-select: none;
+        -webkit-user-drag: none;
+        box-sizing: border-box;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .product-box[data-size="1"] {
+        width: 92px;
+      }
+
+      .product-box[data-size="2"] {
+        width: 184px;
+      }
+
+      .product-box[data-size="2.5"] {
+        width: 230px;
+      }
+
+      .product-box[data-size="3"] {
+        width: 276px;
+      }
+
+      .product-box[data-size="4"] {
+        width: 368px;
+      }
+
+      .product-box[data-size="4.5"] {
+        width: 414px;
+      }
+
+      .product-box[data-size="5"] {
+        width: 460px;
+      }
+
+      .info-box {
+        margin: 10px;
+        padding: 10px;
+        font-size: 14px;
+        border-radius: 8px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .status-bar {
+        margin: 10px;
+        padding: 10px;
+        border-radius: 8px;
+        position: relative;
+        z-index: 1;
+      }
+
+      /* Anpassungen für den Button-Container */
+      .button-container {
+        position: sticky;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: #fff;
+        padding: 10px;
+        margin: 0;
+        z-index: 1000;
+        border-top: 1px solid #ddd;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        width: 100%;
+        box-sizing: border-box;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+      }
+
+      /* Container für die Buttons unter dem Konfigurator */
+      #configurator > div:last-child {
+        position: sticky;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: #fff;
+        padding: 15px;
+        margin: 0;
+        z-index: 1000;
+        border-top: 1px solid #ddd;
+        display: flex;
+        justify-content: flex-start;
+        gap: 20px;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+      }
+
+      #configurator {
+        padding-bottom: 24px; /* geringere Reserve, da Buttons sticky statt fixed */
+      }
+
+      /* Anpassungen für die Buttons */
+      .button, .dropdown-btn {
+        font-size: 14px;
+        padding: 8px 16px;
+        height: 44px;
+        line-height: 28px;
+        margin: 0;
+        white-space: nowrap;
+        border-radius: 8px;
+        font-weight: 600;
+        min-width: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .button i {
+        font-size: 16px;
+        margin-right: 8px;
+      }
+
+      /* Querformat-Optimierung */
+      @media screen and (orientation: landscape) and (max-height: 600px) {
+        #configurator > div:last-child {
+          padding-bottom: 50px;
+        }
+
+        .button, .dropdown-btn {
+          font-size: 13px;
+          padding: 6px 12px;
+          height: 36px;
+          line-height: 24px;
+        }
+      }
+
+      /* Optimierung für sehr kleine Bildschirme */
+      @media screen and (max-width: 360px) {
+        #configurator > div:last-child {
+          padding-bottom: 40px;
+        }
+
+        .button, .dropdown-btn {
+        font-size: 12px;
+          padding: 4px 8px;
+          height: 32px;
+          line-height: 24px;
+        }
+      }
+
+      /* Spezielle Anpassungen für die Zusammenfassungsseite */
+      #page5 .page {
+        padding: 10px;
+        padding-bottom: 80px; /* Erhöht für mehr Platz am unteren Rand */
+      }
+
+      #page5 h2 {
+        font-size: 18px;
+        margin: 10px 0;
+      }
+
+      #page5 h3 {
+        font-size: 14px;
+        margin: 8px 0;
+      }
+
+      #page5 .button-container {
+        padding: 10px;
+      }
+
+      #page5 .button {
+        width: auto;
+        min-width: 140px;
+      }
+
+      /* Anpassungen für die Dropdown-Buttons */
+      .dropdown-btn {
+        width: 100%;
+        max-width: none;
+        background-color: #28a745 !important; /* kräftiges Grün */
+        color: #fff !important;
+        border: none;
+      }
+
+      /* Anpassungen für die Buttons in der oberen Leiste */
+      .buttons-container-top {
+        padding: 5px;
+        height: auto;
+        background: #808080;
+        display: flex;
+        flex-direction: row;
+        gap: 5px;
+        align-items: center;
+        width: 100%;
+        flex-wrap: wrap;
+      }
+
+      .buttons-container-top .button,
+      .buttons-container-top .konfigurator-btn-yellow,
+      .buttons-container-top .konfigurator-btn-red,
+      .buttons-container-top .dropdown-container {
+        width: auto;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: 1;
+        min-width: 0;
+      }
+
+      .buttons-container-top .dropdown-btn {
+        width: 100%;
+        justify-content: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .buttons-container-top .button,
+      .buttons-container-top .konfigurator-btn-yellow,
+      .buttons-container-top .konfigurator-btn-red {
+        height: 36px;
+        line-height: 24px;
+        font-size: 13px;
+        padding: 6px 12px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 0;
+        flex: 1;
+      }
+
+      /* Anpassungen für die Dropdown-Container */
+      .dropdown-container {
+        width: 100%;
+        max-width: none;
+        margin: 5px 0;
+      }
+
+      /* Anpassungen für die Dropdown-Menüs */
+      .dropdown {
+        width: 100%;
+        max-width: none;
+        position: fixed;
+        top: auto;
+        bottom: 60px;
+        left: 0;
+        right: 0;
+        border-radius: 0;
+        max-height: 50vh;
+        overflow-y: auto;
+      }
+
+      .dropdown-option {
+        padding: 12px 16px;
+        font-size: 14px;
+        cursor: pointer;
+      }
+    }
+
+    /* OVERRIDE: Reihen-Dropdown ("Element hinzufügen") wie Desktop unter dem Button anzeigen */
+    .row-strip { overflow: visible; }
+    .buttons-container-top { position: relative; overflow: visible; }
+    .buttons-container-top .dropdown-container { position: relative; overflow: visible; }
+    .buttons-container-top .dropdown {
+      position: absolute !important;
+      top: calc(100% + 6px) !important;
+      bottom: auto !important;
+      left: 0 !important;
+      right: auto !important;
+      min-width: 260px;
+      max-width: 80vw;
+      z-index: 7002;
+      border-radius: 8px;
+      transform: none !important;
+    }
+
+    /* OVERRIDE: Button-Breiten in der Reihen-Leiste wie am Desktop (nicht gestreckt) */
+    .buttons-container-top .button,
+    .buttons-container-top .konfigurator-btn-yellow,
+    .buttons-container-top .konfigurator-btn-red,
+    .buttons-container-top .dropdown-container,
+    .buttons-container-top .dropdown-btn {
+      flex: 0 0 auto !important;
+      width: auto !important;
+    }
+
+    /* Zusätzliche Anpassungen für sehr kleine Bildschirme */
+    @media screen and (max-width: 480px) {
+      .product-box {
+        width: calc(40px * var(--size, 1));
+        height: 150px;
+        line-height: 150px;
+      }
+
+      .product-box img {
+        max-width: 70%;
+        max-height: 70%;
+      }
+
+      .row-container {
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+
+      .info-box {
+        font-size: 12px;
+      }
+
+      .status-step {
+        font-size: 11px;
+      }
+
+      .button, .dropdown-btn {
+        font-size: 12px;
+        padding: 4px 8px;
+      }
+
+      /* Querformat-Optimierung für sehr kleine Bildschirme */
+      @media screen and (orientation: landscape) and (max-height: 400px) {
+        .row-container {
+          height: 140px;
+          min-height: 140px;
+        }
+
+        .product-box {
+          height: 120px;
+          line-height: 120px;
+        }
+
+        .info-box {
+          padding: 5px;
+          font-size: 11px;
+        }
+
+        .status-bar {
+          padding: 5px;
+        }
+
+        .status-step {
+          font-size: 10px;
+        }
+      }
+    }
+
+    .page {
+      display: none;
+      margin-top: 20px;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .button, .button--small, .dropdown-btn {
+      background: transparent;
+      color: #111827;
+      border: 1px solid #dddddd;
+      border-radius: 6px;
+      padding: 6px 16px;
+      font-family: var(--font-body-family, 'Assistant', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', Arial, sans-serif);
+      font-size: 14px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: none;
+      transition: background 0.18s, border 0.18s, color 0.18s, box-shadow 0.18s;
+      outline: none;
+    }
+
+    .button--small, .dropdown-btn {
+      padding: 4px 10px;
+      font-size: 13px;
+    }
+
+    .button--green {
+      background: #22c55e;
+      color: #fff;
+      border: none;
+      outline: none;
+      box-shadow: none;
+    }
+    .button--green:hover, .button--green:focus {
+      background: #16a34a;
+      border: none;
+      color: #fff;
+      outline: none;
+      box-shadow: none;
+    }
+
+    .button--red {
+      background: #ef4444;
+      color: #fff;
+      border: none;
+      outline: none;
+      box-shadow: none;
+    }
+    .button--red:hover, .button--red:focus {
+      border: none;
+      color: #fff;
+      outline: none;
+      box-shadow: none;
+    }
+
+    .button--yellow {
+      background: #fde047;
+      color: #7a5c00;
+      border: none;
+    }
+    .button--yellow:hover, .button--yellow:focus {
+      border: none;
+      color: #7a5c00;
+    }
+
+    .button--outline {
+      background: transparent;
+      color: #111827;
+      border: 1px solid #dddddd;
+    }
+ 
+
+    .button:hover, .button--small:hover, .dropdown-btn:hover {
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    .button:focus, .button--small:focus, .dropdown-btn:focus {
+      border-color: #005A9C;
+      box-shadow: 0 0 0 2px #005A9C55;
+    }
+
+    .button i, .button--small i, .dropdown-btn i {
+      font-size: 15px;
+      margin-right: 5px;
+    }
+
+    .btn, .btn-next, .btn-prev, .btn-add-row, .btn-remove-row, .btn-reset {
+      background-color: #121212;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      padding: 6px 14px;
+      font-family: var(--font-body-family, 'Assistant', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', Arial, sans-serif);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+      box-shadow: none;
+      cursor: pointer;
+      outline: none;
+      max-height: 28px;
+      min-height: 24px;
+      margin-right: 6px;
+      display: flex;
+      align-items: center;
+    }
+
+    .btn:last-child, .btn-next:last-child, .btn-prev:last-child, .btn-add-row:last-child, .btn-remove-row:last-child, .btn-reset:last-child {
+      margin-right: 0;
+    }
+
+    .btn i, .btn-next i, .btn-prev i, .btn-add-row i, .btn-remove-row i, .btn-reset i {
+      font-size: 14px;
+      margin-right: 4px;
+    }
+
+    .btn:hover, .btn-next:hover, .btn-prev:hover, .btn-add-row:hover, .btn-remove-row:hover, .btn-reset:hover {
+      background-color: #e5e5e5;
+      color: #121212;
+    }
+
+    .btn-next {
+      margin-left: 20px; /* Abstand von links */
+    }
+
+    .btn-prev {
+      margin-right: 20px; /* Abstand von rechts */
+    }
+
+    .row-strip {
+      width: 1200px;
+      height: 40px;
+      background-color: #808080;
+      margin-bottom: 0; /* Abstand entfernt */
+      position: relative; 
+      z-index: 600;
+    }
+
+    .row-container {
+      margin: 0;
+      padding: 10px;
+      background-color: rgba(255, 255, 255, 0.8);
+      border: 1px solid #dddddd;
+      border-radius: 5px;
+      position: relative;
+      background-image: url('https://cdn.shopify.com/s/files/1/0944/8711/8089/files/Reihe_neu.png?v=1756456386');
+      background-size: 1200px 160px;
+      background-position: center;
+      background-repeat: no-repeat;
+      height: 430px;
+      width: 1200px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding-left: 50px;
+      padding-right: 50px;
+      box-sizing: border-box;
+      z-index: 100;
+    }
+
+          .row-content {
+        display: flex;
+        flex-wrap: nowrap;
+        position: relative;
+        width: 100%;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 0;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+    .product-box {
+      height: 340px;
+      text-align: center;
+      line-height: 40px;
+      border-radius: 0;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: visible;
+      cursor: default;
+      flex: 0 0 auto;
+      width: calc(92px * var(--size, 1));
+      padding: 0;
+      margin: 0;
+      border: none;
+      background-color: transparent;
+      user-select: none;
+      -webkit-user-drag: none;
+      box-sizing: border-box;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .product-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+      margin: 0;
+      padding: 0;
+    }
+
+    .product-box .product-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      width: 100%;
+      background-color: transparent;
+      position: relative;
+      margin: 0;
+      padding: 0;
+      pointer-events: none;
+      box-sizing: border-box;
+    }
+
+    .product-box.loaded {
+      opacity: 1;
+    }
+
+    .product-box[data-size="1"] {
+      width: 92px;
+    }
+
+    .product-box[data-size="2"] {
+      width: 184px;
+    }
+
+    .product-box[data-size="2.5"] {
+      width: 230px;
+    }
+
+    .product-box[data-size="3"] {
+      width: 276px;
+    }
+
+    .product-box[data-size="4"] {
+      width: 368px;
+    }
+
+    .product-box[data-size="4.5"] {
+      width: 414px;
+    }
+
+    .product-box[data-size="5"] {
+      width: 460px;
+    }
+
+    .product-box.dragging {
+      opacity: 0.8;
+      cursor: grabbing;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+      z-index: 20;
+      transform: scale(1.02);
+      background-color: rgba(255, 255, 255, 0.95);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .product-box.fixed-product {
+      cursor: not-allowed !important;
+      opacity: 1;
+      position: relative;
+      pointer-events: none;
+    }
+
+    .product-box.fixed-product .action-icon.move-icon,
+    .product-box.fixed-product .action-icon.delete-icon {
+      display: none !important;
+    }
+
+    .product-box.fixed-product:hover {
+      transform: none !important;
+      box-shadow: none !important;
+    }
+
+    .product-box.fixed-product * {
+      pointer-events: none;
+    }
+
+    .product-box[data-size="4"] {
+      --size: 4;
+    }
+
+    .product-box[data-size="1"] {
+      --size: 1;
+    }
+
+    .product-box[data-size="2"] {
+      --size: 2;
+    }
+
+    .product-box[data-size="2.5"] {
+      --size: 2.5;
+    }
+
+    .product-box[data-size="3"] {
+      --size: 3;
+    }
+
+    .product-box[data-size="5"] {
+      --size: 5;
+    }
+
+    .product-box[data-size="4.5"] {
+      --size: 4.5;
+    }
+
+    .product-box .product-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      width: 100%;
+      background-color: transparent;
+      position: relative;
+      margin: 0;
+      padding: 0;
+      pointer-events: none;
+      box-sizing: border-box;
+    }
+
+    .product-box .drag-handle {
+      position: absolute;
+      top: 0;
+      left: 0;
+      color: #666;
+      cursor: grab;
+      font-size: 18px;
+      z-index: 1;
+      opacity: 0.7;
+      transition: all 0.2s ease;
+      padding: 6px;
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 0 0 4px 0;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .product-box .drag-handle:hover {
+      opacity: 1;
+      background-color: #fff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      transform: scale(1.05);
+    }
+
+    .product-box .drag-handle:active {
+      cursor: grabbing;
+      transform: scale(0.95);
+    }
+
+    .product-box .drag-handle i {
+      font-size: 16px;
+    }
+
+    .btn-reset {
+      background-color: #FFC107; /* Modernes Gelb */
+      color: #000;
+    }
+
+    .btn-reset:hover {
+      background-color: #FFA000;
+    }
+
+    .btn-remove-row {
+      background-color: #F44336; /* Modernes Rot */
+    }
+
+    .btn-remove-row:hover {
+      background-color: #D32F2F;
+    }
+
+    .btn-add-row {
+      background-color: #4CAF50; /* Modernes Grün */
+    }
+
+    .btn-add-row:hover {
+      background-color: #388E3C;
+    }
+
+    .btn i {
+      margin-right: 8px; /* Abstand zwischen Icon und Text */
+    }
+
+    .dropdown-container {
+      position: relative;
+      display: inline-block;
+      z-index: 800;
+    }
+
+    .dropdown {
+      display: none;
+      position: absolute;
+      top: 40px;
+      left: 0;
+      background-color: #fff;
+      border: 1px solid #dddddd;
+      border-radius: 5px;
+      width: 350px;
+      z-index: 1200;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      max-height: 60vh;
+      overflow-y: auto;
+    }
+
+    .dropdown-option {
+      padding: 12px 16px;
+      cursor: pointer;
+      border-bottom: 1px solid #dddddd;
+      white-space: nowrap; /* Verhindert Zeilenumbrüche */
+      line-height: 1.4;
+      min-height: 36px;
+      user-select: none;
+    }
+    .dropdown-option:last-child { border-bottom: none; }
+    .dropdown-option:active { background-color: #f1f5f9; }
+
+    /* Stabil: Dropdown exakt unter dem Button andocken (nur Verteilerschrank/Verdrahtung) */
+    #page3 .dropdown-container,
+    #page4 .dropdown-container {
+      position: relative;
+      overflow: visible;
+    }
+    #page3 .dropdown,
+    #page4 .dropdown {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      right: auto;
+      transform: none;
+      min-width: 100%;
+      z-index: 6000;
+      max-height: 60vh;
+      overflow-y: auto;
+      pointer-events: auto;
+    }
+
+    /* Verteilerschrank/Verdrahtung: Dropdowns zuverlässig über Content/Fußleisten zeigen */
+    /* Entfernt seiten-spezifische Dropdown-Overrides, Nutzung der Standard-Dropdown-Styles */
+
+    .dropdown-option:hover {
+      background-color: #f1f1f1;
+    }
+    
+    /* Sichtbarkeit der Reihen-Dropdowns ("Element hinzufügen") auch mobil sicherstellen */
+    .buttons-container-top { position: relative; overflow: visible; }
+    .buttons-container-top .dropdown-container { position: relative; overflow: visible; }
+    .buttons-container-top .dropdown {
+      position: absolute; /* überschreibt mobile fixed-Variante */
+      top: calc(100% + 6px);
+      left: 0;
+      right: auto;
+      min-width: 260px;
+      max-width: 80vw;
+      z-index: 7002; /* über Sticky-Leisten/Droplets */
+      max-height: 60vh;
+      overflow-y: auto;
+      border-radius: 8px;
+    }
+
+    /* Robustheit: Dropdowns sicher ganz oben stapeln und Klickflächen priorisieren */
+    #page3 .dropdown,
+    #page4 .dropdown,
+    #montageart-dropdown,
+    #verdrahtung-dropdown {
+      position: absolute;
+      z-index: 999999; /* über allen Overlays */
+    }
+    #montageart-dropdown .dropdown-option,
+    #verdrahtung-dropdown .dropdown-option {
+      display: block;
+      position: relative;
+      z-index: 1;
+      background: #fff;
+    }
+    /* Portal-Dropdown: Bezeichnungen mittig ausrichten */
+    #portal-dropdown { text-align: center; }
+    #portal-dropdown .dropdown-option {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    #montageart-dropdown *::before,
+    #montageart-dropdown *::after,
+    #verdrahtung-dropdown *::before,
+    #verdrahtung-dropdown *::after {
+      pointer-events: none !important;
+    }
+
+    /* Zusammenfassung: zweispaltige Tabelle für verwendete Elemente */
+    #summaryElements { white-space: normal !important; }
+    .summary-elements {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .summary-row {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 8px 16px;
+      align-items: start;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      background: #ffffff;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+      padding: 10px 12px;
+    }
+    .summary-row.fi { border-left: 3px solid #0ea5e9; }
+    .summary-row.free { border-left: 3px solid #94a3b8; }
+    .summary-label {
+      font-weight: 600;
+      color: #111827;
+      padding-top: 6px;
+    }
+    .summary-items {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .summary-item {
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+      border-radius: 6px;
+      padding: 6px 10px;
+    }
+    /* Kompakte Zusammenfassung: zweispaltige Info-Tabelle */
+    .summary-info { /* deprecated in markup, Stil bleibt falls noch verwendet */
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 6px 16px;
+      align-items: start;
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 20px;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      background: #ffffff;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+      padding: 10px 12px;
+    }
+    .summary-info-label { font-weight: 600; color: #111827; }
+    .summary-info-value { color: #111827; }
+
+    /* Entferne das Styling für die Scrollbar */
+    .dropdown::-webkit-scrollbar {
+      display: none; /* Versteckt die Scrollbar */
+    }
+
+    #addRowButton {
+      margin: 20px;
+    }
+
+    .buttons-container-top {
+      position: static;
+      display: flex;
+      gap: 0;
+      align-items: center;
+      height: 100%;
+      justify-content: flex-end;
+      width: 100%;
+      padding-right: 0;
+      z-index: auto;
+    }
+
+    /* Der Kasten für die Infos */
+    .info-box {
+      background-color: #fff;
+      padding: 15px;
+      border: 1px solid #dddddd;
+      border-radius: 5px;
+      width: 1200px;
+      margin: 20px auto;
+      text-align: left;
+      font-size: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      position: relative;
+      z-index: 1;
+      box-sizing: border-box;
+    }
+
+    /* Container für beide Buttons */
+    .button-container {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .btn-active, .btn-active.btn-with, .btn-active.btn-without {
+      /* Kein Scale, kein Shadow, keine Füllfarbe */
+      background: transparent !important;
+      border: 2px solid #005A9C !important;
+      color: #005A9C !important;
+      box-shadow: none !important;
+      transform: none !important;
+    }
+
+    .btn-active.btn-with {
+      background-color: #388E3C;
+    }
+
+    .btn-active.btn-without {
+      background-color: #D32F2F;
+    }
+
+    /* Statusleiste */
+    .status-bar {
+      background-color: #fff;
+      padding: 10px 20px;
+      border: 1px solid #dddddd;
+      border-radius: 5px;
+      width: 1200px;
+      margin: 0 auto 20px auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+      box-sizing: border-box;
+    }
+
+    .status-step {
+      display: flex;
+      align-items: center;
+      color: #666;
+      font-size: 14px;
+    }
+
+    .status-step.active {
+      color: #005A9C;
+      font-weight: bold;
+    }
+
+    .status-step.completed {
+      color: #4CAF50;
+    }
+
+    .status-step i {
+      margin-right: 5px;
+    }
+
+    #platzreserve-dropdown {
+      max-height: 200px; /* Maximale Höhe für die Platzreserve */
+      overflow-y: auto; /* Scrollbar aktivieren */
+    }
+
+    #platzreserve-dropdown::-webkit-scrollbar {
+      width: 8px; /* Breite der Scrollbar */
+    }
+
+    #platzreserve-dropdown::-webkit-scrollbar-track {
+      background: #f1f1f1; /* Hintergrund der Scrollbar */
+      border-radius: 4px;
+    }
+
+    #platzreserve-dropdown::-webkit-scrollbar-thumb {
+      background: #888; /* Farbe des Scrollbalkens */
+      border-radius: 4px;
+    }
+
+    #platzreserve-dropdown::-webkit-scrollbar-thumb:hover {
+      background: #555; /* Farbe des Scrollbalkens beim Hover */
+    }
+
+    .product-box.fixed-product .drag-handle,
+    .product-box[data-fixed="true"] .drag-handle {
+      display: none;
+    }
+
+    .konfigurator .button--green,
+    .konfigurator .button--red,
+    .konfigurator .button--yellow {
+      outline: none !important;
+      box-shadow: none !important;
+      border: none !important;
+    }
+    .konfigurator .button--green:focus,
+    .konfigurator .button--green:focus-visible,
+    .konfigurator .button--green:active,
+    .konfigurator .button--red:focus,
+    .konfigurator .button--red:focus-visible,
+    .konfigurator .button--red:active,
+    .konfigurator .button--yellow:focus,
+    .konfigurator .button--yellow:focus-visible,
+    .konfigurator .button--yellow:active {
+      outline: none !important;
+      box-shadow: none !important;
+      border: none !important;
+    }
+    .konfigurator .button--green::-moz-focus-inner,
+    .konfigurator .button--red::-moz-focus-inner,
+    .konfigurator .button--yellow::-moz-focus-inner {
+      border: 0 !important;
+    }
+
+    .konfigurator-btn-green,
+    .konfigurator-btn-yellow,
+    .konfigurator-btn-red {
+      background: #22c55e;
+      color: #fff;
+      border: none;
+      outline: none;
+      box-shadow: none;
+      border-radius: 0;
+      padding: 0 24px;
+      height: 40px;
+      margin: 0;
+      line-height: 40px;
+      font-family: var(--font-body-family, 'Assistant', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', Arial, sans-serif);
+      font-size: 16px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      cursor: pointer;
+      transition: background 0.18s;
+    }
+    .konfigurator-btn-green:hover, .konfigurator-btn-green:focus {
+      background: #22c55e;
+    }
+
+    .konfigurator-btn-yellow {
+      background: #fde047;
+      color: #fff;
+      border: none;
+      outline: none;
+      box-shadow: none;
+      border-radius: 0;
+      padding: 0 24px;
+      height: 40px;
+      margin: 0;
+      line-height: 40px;
+      font-family: var(--font-body-family, 'Assistant', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', Arial, sans-serif);
+      font-size: 16px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      cursor: pointer;
+      transition: background 0.18s;
+    }
+    .konfigurator-btn-yellow:hover, .konfigurator-btn-yellow:focus {
+      background: #facc15;
+    }
+
+    .konfigurator-btn-red {
+      background: #ef4444;
+      color: #fff;
+      border: none;
+      outline: none;
+      box-shadow: none;
+      border-radius: 0;
+      padding: 0 24px;
+      height: 40px;
+      margin: 0;
+      line-height: 40px;
+      font-family: var(--font-body-family, 'Assistant', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', Arial, sans-serif);
+      font-size: 16px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      cursor: pointer;
+      transition: background 0.18s;
+    }
+    .konfigurator-btn-red:hover, .konfigurator-btn-red:focus {
+      background: #b91c1c;
+    }
+
+    /* Neue Option-Button-Klasse für Position im Verteiler */
+    .konfigurator-position-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-right: 12px;
+    }
+    .konfigurator-position-label {
+      font-size: 14px;
+      color: #ffffff;
+      font-weight: 600;
+      margin-right: 4px;
+    }
+    .konfigurator-option-btn {
+      background: transparent;
+      color: #fff;
+      border: 1.5px solid #dddddd;
+      border-radius: 0;
+      padding: 0 16px;
+      height: 32px;
+      line-height: 32px;
+      font-family: var(--font-body-family, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', Arial, sans-serif);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      margin: 0;
+      transition: background 0.15s, color 0.15s, border 0.15s;
+      outline: none;
+      box-shadow: none;
+    }
+    .konfigurator-option-btn.selected {
+      background: #22c55e;
+      color: #fff;
+      border-color: #22c55e;
+    }
+    .konfigurator-option-btn:focus {
+      outline: none;
+      box-shadow: none;
+    }
+
+    /* Querformat-Meldung für mobile Geräte */
+    /* Entfernt: Rotate-Overlay auf Mobilgeräten */
+
+    /* CSS für das Produktkarten-Grid */
+    .produktkarten-grid {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 56px;
+      justify-content: center;
+      width: 100%;
+      max-width: 1200px;
+      box-sizing: border-box;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .produktkarte {
+      background: #fff;
+      border: 1px solid #eef1f5;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+      transition: box-shadow 0.2s ease;
+      width: 280px;
+      min-width: 280px;
+      max-width: 280px;
+      padding: 0 14px 18px 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0;
+      min-height: 300px;
+      justify-content: flex-start;
+      box-sizing: border-box;
+      overflow: hidden;
+      margin-bottom: 50px;
+      margin-top: 20px;
+    }
+    .produktkarte:hover {
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+    }
+    .produktbild {
+      width: 90px;
+      height: 90px;
+      object-fit: contain;
+      margin: 18px auto 10px auto;
+      display: block;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: none;
+      padding: 0;
+    }
+    .produktname {
+      font-size: 20px;
+      font-weight: 400;
+      color: #111827;
+      margin: 0 0 8px 0;
+      text-align: center;
+      min-height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100%;
+    }
+    .produktpreis {
+      font-size: 17px;
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 24px;
+      height: 24px;
+      white-space: nowrap;
+      width: 100%;
+    }
+    .produktpreis .preis {
+      font-size: 17px;
+      font-weight: 700;
+      color: #111827;
+    }
+    .produktpreis .steuer {
+      font-size: 10px;
+      font-weight: 400;
+      color: #111827;
+      margin-left: 8px;
+    }
+    .produktpreis .versand {
+      color: #a00;
+      text-decoration: underline;
+    }
+    .produktbuttons {
+      display: flex;
+      gap: 12px;
+      margin-top: 18px;
+      align-items: center;
+      width: 100%;
+      justify-content: center;
+    }
+    .mit-btn {
+      background: #eee;
+      color: #111827;
+      border: none;
+      border-radius: 8px;
+      font-size: 20px;
+      font-weight: 600;
+      padding: 12px 28px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      min-width: 70px;
+    }
+    .mit-btn.active, .mit-btn:active {
+      background: #22c55e;
+      color: #fff;
+    }
+    .ohne-btn {
+      background: #eee;
+      color: #111827;
+      border: none;
+      border-radius: 8px;
+      font-size: 20px;
+      font-weight: 600;
+      padding: 12px 28px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      min-width: 70px;
+    }
+    .ohne-btn.active, .ohne-btn:active {
+      background: #ef4444;
+      color: #fff;
+    }
+    .info-icon {
+      color: #111827;
+      font-size: 28px;
+      margin-left: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+    }
+    @media (max-width: 1500px) {
+      .produktkarten-grid {
+        gap: 30px;
+      }
+      .produktkarte {
+        width: 280px;
+        min-width: 280px;
+        max-width: 280px;
+        padding: 0 10px 24px 10px;
+      }
+      .produktbild {
+        margin: 24px auto 16px auto;
+      }
+      .produktname {
+        font-size: 22px;
+        min-height: 28px;
+      }
+      .produktpreis {
+        font-size: 20px;
+        min-height: 28px;
+        height: 28px;
+      }
+      .produktpreis .preis {
+        font-size: 24px;
+      }
+      .produktpreis .steuer {
+        font-size: 14px;
+      }
+      .mit-btn, .ohne-btn {
+        font-size: 16px;
+        padding: 8px 18px;
+        min-width: 60px;
+      }
+      .info-icon {
+        font-size: 20px;
+      }
+    }
+    @media (max-width: 1100px) {
+      .produktkarten-grid {
+        gap: 16px;
+      }
+      .produktkarte {
+        width: 45vw;
+        min-width: 180px;
+        max-width: 300px;
+      }
+    }
+    @media (max-width: 900px) {
+      .produktkarten-grid {
+        flex-wrap: nowrap;
+        gap: 16px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      .produktkarte {
+        width: 80vw;
+        min-width: 240px;
+        max-width: 320px;
+        flex: 0 0 auto;
+      }
+    }
+
+    /* Navigation button styles moved to page-konfigurator.css */
+
+    
+   
+
+    .nennstrom-dropdown-container {
+      position: absolute;
+      top: 112px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3;
+      width: auto;
+      min-width: 60px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      pointer-events: auto;
+    }
+    .nennstrom-btn {
+      background: #fff;
+      border: 2px  solid #222;
+      border-radius: 6px;
+      padding: 1px 0;
+      font-weight: bold;
+      font-size: 12px;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.07);
+      transition: background 0.15s, border 0.15s;
+      outline: none;
+      margin-bottom: 0;
+      min-width: 40px;
+      letter-spacing: 1px;
+      white-space: nowrap;
+      width: 100%;
+      max-width: 80px;
+      box-sizing: border-box;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .nennstrom-btn:focus, .nennstrom-btn.active {
+      border-color: #2196f3;
+      background: #e3f2fd;
+    }
+    .nennstrom-dropdown {
+      display: none;
+      position: absolute;
+      top: 38px;
+      left: 0;
+      min-width: 100%;
+      width: auto;
+      background: #fff;
+      border: 1px solid #888;
+      border-radius: 6px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.13);
+      z-index: 10;
+      flex-direction: column;
+      align-items: stretch;
+      padding: 0;
+    }
+    .nennstrom-dropdown div {
+      padding: 0.5px 4px 0.5px 2px;
+      cursor: pointer;
+      text-align: center;
+      font-size: 12px;
+      line-height: 14px;
+      transition: background 0.13s;
+      min-width: 40px;
+      width: 100%;
+      white-space: nowrap;
+    }
+
+    .product-box[data-product-name="Hauptleitungsklemme"] {
+      height: 215px;
+      line-height: 0;
+      width: 460px;
+      align-self: center;
+    }
+
+    .product-box[data-product-name="Hauptleitungsklemme"] img {
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .row-content .product-box[data-product-name="Hauptleitungsklemme"] {
+      height: 215px !important;
+      line-height: 0 !important;
+      width: 460px !important;
+      max-height: 215px !important;
+      align-self: center !important;
+    }
+
+    .row-content .product-box[data-product-name="Hauptleitungsklemme"] img {
+      height: 100% !important;
+      max-height: 215px !important;
+      object-fit: contain !important;
+    }
+
+    .product-box.fixed-product[data-product-name="Hauptleitungsklemme"] {
+      height: 215px !important;
+      line-height: 0 !important;
+      width: 460px !important;
+      align-self: center !important;
+    }
+
+    .product-box.fixed-product[data-product-name="Hauptleitungsklemme"] img {
+      height: 100% !important;
+      object-fit: contain !important;
+    }
+
+    /* Styles für FI-/Leitungsschutzschalter Dropdowns */
+    .fi-dropdowns {
+      position: absolute;
+      left: 100px;
+      top: 150px;
+      display: flex;
+      flex-direction: column;
+      gap: 0px;
+      padding: 6px 8px;
+      z-index: 650;
+      min-width: 200px;
+      height: auto;
+      font-size: 13px;
+      pointer-events: auto !important;
+    }
+
+    .fi-dropdown {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 2px;
+      margin-bottom: 4px;
+      pointer-events: auto !important;
+    }
+
+    .fi-dropdown label {
+      width: 100px;
+      text-align: left;
+      margin-right: 0px;
+      font-weight: 500;
+      color: #111827;
+      font-size: 13px;
+    }
+
+    .fi-dropdown select {
+      padding: 4px 8px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      background-color: #fff !important;
+      color: #111827;
+      font-size: 13px;
+      height: 28px;
+      min-width: 80px;
+      flex: 1;
+      pointer-events: auto !important;
+      cursor: pointer;
+    }
+
+    .fi-dropdown select:hover {
+      border-color: #999;
+    }
+
+    .fi-dropdown select:focus {
+      outline: none;
+      border-color: #2196F3;
+      box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.1);
+    }
+
+    /* Styles für Leitungsschutzschalter Dropdowns */
+    .lss-dropdowns {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      background: white;
+      padding: 8px 12px;
+      border-radius: 8px;
+      z-index: 650;
+      border: 1px solid #ccc;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      min-width: 200px;
+      height: auto;
+      font-size: 13px;
+      pointer-events: auto;
+    }
+
+    .lss-dropdown {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .lss-dropdown:last-child {
+      margin-bottom: 0;
+    }
+
+    .lss-dropdown label {
+      width: 100px;
+      text-align: left;
+      margin-right: 0px;
+      font-weight: 500;
+      color: #111827;
+      font-size: 13px;
+    }
+
+    .lss-dropdown select {
+      padding: 4px 8px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      background-color: white;
+      font-size: 13px;
+      height: 28px;
+      min-width: 80px;
+      flex: 1;
+    }
+
+    .lss-dropdown select:hover {
+      border-color: #999;
+    }
+
+    .lss-dropdown select:focus {
+      outline: none;
+      border-color: #2196F3;
+      box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.1);
+    }
+
+    /* Styles für Leitungsschutzschalter 1-polig Dropdowns */
+    .lss-1p-dropdowns {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      display: flex !important;
+      flex-direction: column;
+      gap: 1px;
+      padding: 4px;
+      z-index: 650;
+      width: 80px;
+      background: transparent;
+      pointer-events: auto;
+    }
+    
+    .lss-3p-dropdowns {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      display: flex !important;
+      flex-direction: column;
+      gap: 0px;
+      padding: 4px;
+      z-index: 650;
+      width: 240px;
+      background: transparent;
+      pointer-events: auto;
+    }
+
+    .lss-1p-dropdown,
+    .lss-3p-dropdown {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1px;
+      margin-bottom: 0px;
+      background: transparent;
+      position: relative;
+      z-index: 40;
+      pointer-events: all !important;
+    }
+
+    .lss-1p-dropdown label,
+    .lss-3p-dropdown label {
+      width: 100%;
+      text-align: center;
+      margin: 0;
+      font-weight: 500;
+      color: #111827;
+      font-size: 11px;
+      background: transparent;
+      pointer-events: all !important;
+    }
+
+    .lss-1p-dropdown select,
+    .lss-3p-dropdown select {
+      padding: 2px 4px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      background-color: #fff !important;
+      color: #111827;
+      font-size: 11px;
+      height: 24px;
+      width: 100%;
+      pointer-events: all !important;
+      margin: 0;
+      margin-bottom: 0;
+    }
+
+    .lss-1p-dropdown select:hover,
+    .lss-3p-dropdown select:hover {
+      border-color: #999;
+    }
+
+    .lss-1p-dropdown select:focus,
+    .lss-3p-dropdown select:focus {
+      outline: none;
+      border-color: #2196F3;
+      box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.1);
+    }
+
+    /* Spezifische Größen für Leitungsschutzschalter */
+    .product-box[data-product-name="Leitungsschutzschalter 1 polig"] {
+      height: 340px !important;
+      width: 92px !important;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .product-box[data-product-name="Leitungsschutzschalter 3 polig"] {
+      height: 340px !important;
+      width: 276px !important;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .product-box[data-product-name="Leitungsschutzschalter 1 polig"] img {
+      height: 100%;
+      width: 100%;
+      object-fit: cover;
+    }
+    .product-box[data-product-name="Leitungsschutzschalter 3 polig"] img {
+      height: 100%;
+      width: 100%;
+      object-fit: cover;
+    }
+
+    /* Zusätzliche Styles für die Produkt-Boxen */
+    .product-box {
+      position: relative !important;
+      overflow: visible !important;
+    }
+
+    .product-box .product-content {
+      position: relative !important;
+      z-index: 1 !important;
+    }
+
+    /* CSS-Anpassung: Abstand zwischen den Dropdowns auf 2px setzen */
+    .lss-1p-dropdowns {
+      gap: 1px !important;
+    }
+
+    .action-icon {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 4px;
+      transition: all 0.2s ease;
+      color: #666;
+      font-size: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      z-index: 200;
+    }
+
+    .action-icon:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+      color: #111827;
+    }
+
+    .action-icon.move-icon {
+      color: #005A9C;
+      cursor: grab;
+    }
+
+    .action-icon.delete-icon {
+      color: #005A9C;
+    }
+
+    .action-icon.move-icon:hover {
+      background-color: rgba(0, 90, 156, 0.1);
+    }
+
+    .action-icon.delete-icon:hover {
+      background-color: rgba(0, 90, 156, 0.1);
+    }
+
+    .product-box.drag-over {
+      transition: all 0.2s ease;
+    }
+
+    .product-box .action-icon {
+      opacity: 0.7;
+      transition: all 0.2s ease;
+    }
+
+    .product-box:hover .action-icon {
+      opacity: 1;
+    }
+
+    .product-box .action-icon.move-icon {
+      color: #005A9C;
+      cursor: grab;
+    }
+
+    .product-box .action-icon.move-icon:active {
+      cursor: grabbing;
+      transform: scale(0.95);
+    }
+
+    /* Bestehende Styles */
+    
+    /* Styles für Leitungsschutzschalter Dropdowns */
+    .lss-1p-dropdowns,
+    .lss-3p-dropdowns {
+      display: flex;
+      visibility: visible;
+      opacity: 1;
+      gap: 1px;
+      margin-top: 60px;
+      background: transparent;
+      border: none;
+      box-shadow: none;
+    }
+    
+     /* Style verändert Abstand zwischen Dropdowns bei LSS-1 und LSS-3 Polig*/
+    .lss-1p-dropdown,
+    .lss-3p-dropdown {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin-top: 10px;
+    }
+
+    .lss-1p-dropdown select,
+    .lss-3p-dropdown select {
+      padding: 4px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+
+    .product-box.dragging {
+      opacity: 0.8;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    
+    .product-box {
+      transition: transform 0.1s ease-out;
+    }
+
+    /* ... bestehende Styles ... */
+    .buttons-container-top .konfigurator-btn-red {
+      margin-right: 8px;
+    }
+
+    .buttons-container-top .konfigurator-btn-yellow {
+      margin-right: 8px;
+      margin-left: 8px;
+
+    }
+
+    /* Spezifisches Styling für den 'Element hinzufügen'-Button */
+    .dropdown-btn {
+      background: transparent !important;
+      border: 2px solid #005A9C !important;
+      color: #005A9C !important;
+      box-shadow: none !important;
+      transform: none !important;
+    }
+    .dropdown-btn:hover, .dropdown-btn:focus {
+      background: transparent !important;
+      color: #005A9C !important;
+      border: none !important;
+    }
+
+    /* Spezifisches Styling NUR für den 'Element hinzufügen'-Button */
+    .dropdown-btn.konfigurator-option-btn {
+      background: #22c55e !important;
+      color: #fff !important;
+      border: none !important;
+      box-shadow: none !important;
+    }
+    .dropdown-btn.konfigurator-option-btn:hover, .dropdown-btn.konfigurator-option-btn:focus {
+      background: #22c55e !important;
+      color: #fff !important;
+      border: none !important;
+    }
+
+    /* Spezielles Hover-Styling für 'Reihe zurücksetzen' */
+    .konfigurator-option-btn.konfigurator-btn-yellow:hover, .konfigurator-option-btn.konfigurator-btn-yellow:focus {
+      background: transparent !important;
+      border: 1.5px solid #dddddd !important;
+    }
+    .konfigurator-option-btn.konfigurator-btn-red:hover, .konfigurator-option-btn.konfigurator-btn-red:focus {
+      background: transparent !important;
+      border: 1.5px solid #dddddd !important;
+    }
+
+    .mit-btn, .ohne-btn {
+      font-size: 15px !important;
+      padding: 6px 10px !important;
+      min-width: 40px !important;
+    }
+    /* Overrides: Elementhöhen */
+    .product-box { height: 368px; }
+    .product-box[data-product-name="Leitungsschutzschalter 1 polig"] { height: 368px !important; }
+    .product-box[data-product-name="Leitungsschutzschalter 3 polig"] { height: 368px !important; }
+    /* Trennlinien zwischen Elementen */
+    .row-content .product-box { border-right: 1px solid rgba(255,255,255,0.9); }
+    .row-content .product-box:last-child { border-right: none; }
+/* End of inline styles */
+/* Modal styles moved from page-konfigurator.liquid */
+:root{ --brand:#005A9C; --ink:#111827; --muted:#6b7280; --line:rgba(0,0,0,.06); }
+  .cb-backdrop{ position:fixed; inset:0; background:rgba(17,24,39,.38); backdrop-filter:blur(2px);
+    opacity:0; transition:opacity .18s ease; z-index:7000; }
+  .cb-modal{ position:fixed; inset:0; display:grid; place-items:center; z-index:7001;
+    opacity:0; pointer-events:none; }
+  .cb-modal[open], .cb-backdrop[open]{ opacity:1; pointer-events:auto; }
+  .cb-backdrop[hidden], .cb-modal[hidden]{ display:none; }
+
+  /* Card: Glas, ohne roten Rahmen */
+  .cb-modal__card{ width:min(640px,92vw);
+    background: rgba(255,255,255,.56);
+    -webkit-backdrop-filter: blur(14px) saturate(160%);
+    backdrop-filter: blur(14px) saturate(160%);
+    border: 1px solid rgba(255,255,255,.45);
+    border-radius: 18px;
+    box-shadow: 0 24px 60px rgba(0,0,0,.20), inset 0 1px 0 rgba(255,255,255,.35);
+    padding: 28px 24px;
+    transform:translateY(6px) scale(.98);
+    animation:cb-pop .18s ease forwards;
+    outline:none;
+  }
+  @keyframes cb-pop{ to{ transform:translateY(0) scale(1);} }
+  .cb-modal__icon{ width:44px; height:44px; border-radius:999px; display:grid; place-items:center;
+    margin:0 auto 10px; background:rgba(255,255,255,0.25); border:2px solid rgba(253,230,138,0.6);
+    -webkit-backdrop-filter: blur(6px) saturate(120%);
+    backdrop-filter: blur(6px) saturate(120%);
+  }
+  .cb-modal__icon svg{ width:24px; height:24px; fill:#D97706; }
+  /* Warn-Theme (Icon + feine Outline) */
+  .cb-modal--warn .cb-modal__icon{ border-color:#FDE68A; }
+  .cb-modal--warn .cb-modal__icon svg{ fill:#D97706; }
+  .cb-modal--warn .cb-modal__card{ box-shadow: 0 24px 60px rgba(0,0,0,.20), 0 0 0 1px rgba(217,119,6,.08) inset; }
+  /* Headline/Text für bessere Lesbarkeit auf Glas */
+  .cb-modal__title{ color:#0b1220; font-weight:800; letter-spacing:.2px; }
+  .cb-modal__text{ color:#1f2937; }
+  .cb-modal__title{ text-align:center; color:var(--ink); font-weight:800; letter-spacing:.2px;
+    font-size:clamp(20px,2.6vw,28px); margin:6px 0 6px; }
+  .cb-modal__text{ text-align:center; color:#374151; font-size:1.6rem; line-height:1.55; margin:0 0 16px; }
+  .cb-modal__actions{ display:flex; justify-content:center; gap:12px; margin-top:6px; }
+  .cb-btn{ border-radius:10px; padding:12px 22px; font-weight:700; letter-spacing:.2px;
+    border:1px solid transparent; cursor:pointer; transition:.18s ease; }
+  .cb-btn--primary{ background:var(--brand); color:#fff; box-shadow:0 6px 18px rgba(0,90,156,.25); }
+  .cb-btn--primary:hover{ background:#00467a; transform:translateY(-1px); box-shadow:0 10px 24px rgba(0,90,156,.32); }
+  .cb-btn:focus-visible{ outline:2px solid #00467a; outline-offset:2px; }
+/* End of modal styles */
+
+/* Optimized inline styles moved to CSS */
+.price-disclaimer {
+  font-size: 12px;
+  color: #666;
+  margin-top: 5px;
+}
+
+.status-step.hidden {
+  display: none;
+}
+
+.verteiler-input {
+  padding: 10px;
+  border: 1px solid #dddddd;
+  border-radius: 5px;
+  width: 1200px;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.button-row {
+  display: flex;
+  justify-content: flex-start;
+  gap: 20px;
+  margin-top: 20px;
+}

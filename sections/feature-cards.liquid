@@ -1,0 +1,235 @@
+{{ 'feature-cards.css' | asset_url | stylesheet_tag }}
+
+<style>
+/* Dynamische Typografie */
+.feature-card h4 {
+  font-size: {{ section.settings.title_font_size | default: 18 }}px !important;
+  font-weight: {{ section.settings.title_font_weight | default: 700 }} !important;
+}
+
+.feature-card p {
+  font-size: {{ section.settings.text_font_size | default: 16 }}px !important;
+  font-weight: {{ section.settings.text_font_weight | default: 400 }} !important;
+}
+</style>
+
+<div class="feature-grid" style="padding-top: {{ section.settings.padding_top | default: 32 }}px; padding-bottom: {{ section.settings.padding_bottom | default: 32 }}px;">
+  <!-- Karte 1 -->
+  <div class="feature-card">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+      <path d="M13.485 1.929a1 1 0 0 1 1.415 1.415l-8.5 8.5a1 1 0 0 1-1.415 0l-4-4a1 1 0 1 1 1.415-1.415L5.5 9.5l7.985-7.571z"/>
+    </svg>
+    <h4>{{ section.settings.card1_title | default: 'Schnell konfiguriert' }}</h4>
+    <p>{{ section.settings.card1_text | default: 'In Minuten zum Ergebnis, auch ohne Vorkenntnisse.' }}</p>
+  </div>
+
+  <!-- Karte 2 -->
+  <div class="feature-card">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+      <path d="M2 2h12v2H2V2zm0 4h12v2H2V6zm0 4h12v2H2v-2zm0 4h12v2H2v-2z"/>
+    </svg>
+    <h4>{{ section.settings.card2_title | default: 'Individuell' }}</h4>
+    <p>{{ section.settings.card2_text | default: 'Du wählst, wir liefern den passenden Sicherungskasten.' }}</p>
+  </div>
+
+  <!-- Karte 3 -->
+  <div class="feature-card">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+      <path d="M0 3a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v3h1.293a1 1 0 0 1 .707.293l1.707 1.707A1 1 0 0 1 16 8.707V12a2 2 0 0 1-2 2h-1a2 2 0 1 1-4 0H7a2 2 0 1 1-4 0H2a2 2 0 0 1-2-2V3zm11 0a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h.5a2 2 0 1 1 4 0h3a2 2 0 1 1 4 0h.5a1 1 0 0 0 1-1V9h-2a1 1 0 0 1-1-1V3z"/>
+    </svg>
+    <h4>{{ section.settings.card3_title | default: 'Schneller Versand' }}</h4>
+    <p>{{ section.settings.card3_text | default: 'Vorverdrahtet in 2–4 Werktagen lieferbar.' }}</p>
+  </div>
+
+  <!-- Karte 4 -->
+  <div class="feature-card">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+      <path d="M8 0l2.469 5.5H16l-4.5 4 1.594 6.5L8 12l-5.094 4 1.594-6.5L0 5.5h5.531z"/>
+    </svg>
+    <h4>{{ section.settings.card4_title | default: 'Made in Germany' }}</h4>
+    <p>{{ section.settings.card4_text | default: 'Markenqualität direkt vom Fachmann.' }}</p>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Feature Cards",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Karte 1"
+    },
+    {
+      "type": "text",
+      "id": "card1_title",
+      "label": "Titel Karte 1",
+      "default": "Schnell konfiguriert"
+    },
+    {
+      "type": "textarea",
+      "id": "card1_text",
+      "label": "Text Karte 1",
+      "default": "In Minuten zum Ergebnis, auch ohne Vorkenntnisse."
+    },
+    {
+      "type": "header",
+      "content": "Karte 2"
+    },
+    {
+      "type": "text",
+      "id": "card2_title",
+      "label": "Titel Karte 2",
+      "default": "Individuell"
+    },
+    {
+      "type": "textarea",
+      "id": "card2_text",
+      "label": "Text Karte 2",
+      "default": "Du wählst, wir liefern den passenden Sicherungskasten."
+    },
+    {
+      "type": "header",
+      "content": "Karte 3"
+    },
+    {
+      "type": "text",
+      "id": "card3_title",
+      "label": "Titel Karte 3",
+      "default": "Schneller Versand"
+    },
+    {
+      "type": "textarea",
+      "id": "card3_text",
+      "label": "Text Karte 3",
+      "default": "Vorverdrahtet in 2–4 Werktagen lieferbar."
+    },
+    {
+      "type": "header",
+      "content": "Karte 4"
+    },
+    {
+      "type": "text",
+      "id": "card4_title",
+      "label": "Titel Karte 4",
+      "default": "Made in Germany"
+    },
+    {
+      "type": "textarea",
+      "id": "card4_text",
+      "label": "Text Karte 4",
+      "default": "Markenqualität direkt vom Fachmann."
+    },
+    {
+      "type": "header",
+      "content": "Typografie"
+    },
+    {
+      "type": "range",
+      "id": "title_font_size",
+      "min": 16,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Titel Schriftgröße",
+      "default": 18
+    },
+    {
+      "type": "select",
+      "id": "title_font_weight",
+      "options": [
+        {
+          "value": "300",
+          "label": "Leicht (300)"
+        },
+        {
+          "value": "400",
+          "label": "Normal (400)"
+        },
+        {
+          "value": "500",
+          "label": "Mittel (500)"
+        },
+        {
+          "value": "600",
+          "label": "Semi-Fett (600)"
+        },
+        {
+          "value": "700",
+          "label": "Fett (700)"
+        },
+        {
+          "value": "800",
+          "label": "Extra Fett (800)"
+        }
+      ],
+      "default": "700",
+      "label": "Titel Schriftstärke"
+    },
+    {
+      "type": "range",
+      "id": "text_font_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Text Schriftgröße",
+      "default": 16
+    },
+    {
+      "type": "select",
+      "id": "text_font_weight",
+      "options": [
+        {
+          "value": "300",
+          "label": "Leicht (300)"
+        },
+        {
+          "value": "400",
+          "label": "Normal (400)"
+        },
+        {
+          "value": "500",
+          "label": "Mittel (500)"
+        },
+        {
+          "value": "600",
+          "label": "Semi-Fett (600)"
+        }
+      ],
+      "default": "400",
+      "label": "Text Schriftstärke"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding oben",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding unten",
+      "default": 32
+    }
+  ],
+  "presets": [
+    {
+      "name": "Feature Cards"
+    }
+  ]
+}
+{% endschema %}

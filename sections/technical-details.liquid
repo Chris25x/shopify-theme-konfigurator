@@ -1,0 +1,561 @@
+<section class="technical-details" id="technische-details" aria-labelledby="technical-details-title" style="padding-top: {{ section.settings.padding_top | default: 60 }}px; padding-bottom: {{ section.settings.padding_bottom | default: 60 }}px;">
+  <div class="technical-details__container">
+    <!-- Header -->
+    <div class="technical-details__header">
+      <h2 id="technical-details-title" class="technical-details__title">{{ section.settings.title | default: 'Optionen & Lieferumfang' }}</h2>
+      <p class="technical-details__subtitle">{{ section.settings.subtitle | default: 'Wähle, wie weit wir für dich gehen - vom vormontierten Kasten bis steckerfertig inkl. Prüfprotokoll.' }}</p>
+    </div>
+
+    <!-- Vergleichstabelle -->
+    <div class="technical-details__table-wrapper">
+      <table class="technical-details__table">
+        <thead>
+          <tr>
+            <th class="technical-details__th">{{ section.settings.column1_title | default: 'Merkmal' }}</th>
+            <th class="technical-details__th">{{ section.settings.column2_title | default: 'Vormontiert' }}</th>
+            <th class="technical-details__th">{{ section.settings.column3_title | default: 'Steckerfertig' }}</th>
+            <th class="technical-details__th">{{ section.settings.column4_title | default: 'Rohbausatz' }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'table_row' -%}
+              <tr {{ block.shopify_attributes }}>
+                <td class="technical-details__td">{{ block.settings.feature_name }}</td>
+                <td class="technical-details__td">
+                  {%- if block.settings.column2_value != blank -%}
+                    {%- if block.settings.column2_has_check -%}
+                      <span class="technical-details__check">✓</span> {{ block.settings.column2_value }}
+                    {%- else -%}
+                      {{ block.settings.column2_value }}
+                    {%- endif -%}
+                  {%- else -%}
+                    -
+                  {%- endif -%}
+                </td>
+                <td class="technical-details__td">
+                  {%- if block.settings.column3_value != blank -%}
+                    {%- if block.settings.column3_has_check -%}
+                      <span class="technical-details__check">✓</span> {{ block.settings.column3_value }}
+                    {%- else -%}
+                      {{ block.settings.column3_value }}
+                    {%- endif -%}
+                  {%- else -%}
+                    -
+                  {%- endif -%}
+                </td>
+                <td class="technical-details__td">
+                  {%- if block.settings.column4_value != blank -%}
+                    {%- if block.settings.column4_has_check -%}
+                      <span class="technical-details__check">✓</span> {{ block.settings.column4_value }}
+                    {%- else -%}
+                      {{ block.settings.column4_value }}
+                    {%- endif -%}
+                  {%- else -%}
+                    -
+                  {%- endif -%}
+                </td>
+              </tr>
+            {%- endif -%}
+          {%- endfor -%}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Vorteile / Hinweise -->
+    <div class="technical-details__cards">
+      <div class="technical-details__card">
+        <div class="technical-details__card-content">
+          Ideal für <strong>Heimwerker</strong>: schnell montiert, saubere Beschriftung, klare Doku.
+        </div>
+      </div>
+      <div class="technical-details__card">
+        <div class="technical-details__card-content">
+          Für <strong>Profis</strong>: Prüfprotokoll & Stückliste belegbar - spart Zeit auf der Baustelle.
+        </div>
+      </div>
+      <div class="technical-details__card">
+        <div class="technical-details__card-content">
+          Projektabhängig: Wir beraten, welche Option wirtschaftlich am meisten Sinn macht.
+        </div>
+      </div>
+    </div>
+
+    <!-- Call to Actions -->
+    <div class="technical-details__cta">
+      <a href="{{ section.settings.cta1_url | default: '/pages/konfigurator' }}" class="technical-details__btn technical-details__btn--primary">
+        {{ section.settings.cta1_text | default: 'Jetzt konfigurieren' }}
+      </a>
+      <a href="{{ section.settings.cta2_url | default: '/pages/kontakt' }}" class="technical-details__btn technical-details__btn--outline">
+        {{ section.settings.cta2_text | default: 'Projekt besprechen' }}
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .technical-details {
+    background: #f8f9fc;
+    padding: 60px 0;
+  }
+
+  .technical-details__container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .technical-details__header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .technical-details__title {
+    font-size: {{ section.settings.title_font_size | default: 32 }}px;
+    font-weight: {{ section.settings.title_font_weight | default: 800 }};
+    color: #111827;
+    margin: 0 0 12px 0;
+    letter-spacing: -0.02em;
+  }
+
+  .technical-details__subtitle {
+    font-size: {{ section.settings.subtitle_font_size | default: 18 }}px;
+    font-weight: {{ section.settings.subtitle_font_weight | default: 400 }};
+    color: #6b7280;
+    margin: 0;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .technical-details__table-wrapper {
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    margin-bottom: 24px;
+    overflow-x: auto;
+  }
+
+  .technical-details__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1.4rem;
+  }
+
+  .technical-details__th {
+    background: #f1f5f9;
+    color: #475569;
+    text-align: left;
+    padding: 16px;
+    font-weight: 600;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  .technical-details__td {
+    padding: 16px;
+    border-bottom: 1px solid #f1f5f9;
+    color: #374151;
+  }
+
+  .technical-details__table tbody tr:last-child .technical-details__td {
+    border-bottom: none;
+  }
+
+  .technical-details__check {
+    color: #16a34a;
+    font-weight: 600;
+    margin-right: 8px;
+  }
+
+  .technical-details__cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .technical-details__card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+  }
+
+  .technical-details__card-content {
+    padding: 24px;
+    font-size: 1.4rem;
+    color: #475569;
+    line-height: 1.5;
+  }
+
+  .technical-details__card-content strong {
+    color: #111827;
+    font-weight: 600;
+  }
+
+  .technical-details__cta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .technical-details__btn {
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+  }
+
+  /* Mobile Responsive */
+  @media (max-width: 768px) {
+    .technical-details {
+      padding: 40px 0;
+    }
+
+    .technical-details__container {
+      padding: 0 16px;
+    }
+
+    .technical-details__cards {
+      grid-template-columns: 1fr;
+    }
+
+    .technical-details__cta {
+      grid-template-columns: 1fr;
+    }
+
+    .technical-details__table {
+      font-size: 1.3rem;
+    }
+
+    .technical-details__th,
+    .technical-details__td {
+      padding: 12px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .technical-details__table {
+      font-size: 1.2rem;
+    }
+
+    .technical-details__th,
+    .technical-details__td {
+      padding: 8px;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Technical Details",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Überschrift"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titel",
+      "default": "Optionen & Lieferumfang"
+    },
+    {
+      "type": "range",
+      "id": "title_font_size",
+      "min": 16,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Titel Schriftgröße",
+      "default": 32
+    },
+    {
+      "type": "select",
+      "id": "title_font_weight",
+      "label": "Titel Schriftstärke",
+      "options": [
+        {
+          "value": "300",
+          "label": "Leicht (300)"
+        },
+        {
+          "value": "400",
+          "label": "Normal (400)"
+        },
+        {
+          "value": "500",
+          "label": "Mittel (500)"
+        },
+        {
+          "value": "600",
+          "label": "Semi-Fett (600)"
+        },
+        {
+          "value": "700",
+          "label": "Fett (700)"
+        },
+        {
+          "value": "800",
+          "label": "Extra Fett (800)"
+        },
+        {
+          "value": "900",
+          "label": "Ultra Fett (900)"
+        }
+      ],
+      "default": "800"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_font_size",
+      "min": 12,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "label": "Untertitel Schriftgröße",
+      "default": 18
+    },
+    {
+      "type": "select",
+      "id": "subtitle_font_weight",
+      "options": [
+        {
+          "value": "300",
+          "label": "Leicht (300)"
+        },
+        {
+          "value": "400",
+          "label": "Normal (400)"
+        },
+        {
+          "value": "500",
+          "label": "Mittel (500)"
+        },
+        {
+          "value": "600",
+          "label": "Semi-Fett (600)"
+        }
+      ],
+      "default": "400",
+      "label": "Untertitel Schriftstärke"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Untertitel",
+      "default": "Wähle, wie weit wir für dich gehen - vom vormontierten Kasten bis steckerfertig inkl. Prüfprotokoll."
+    },
+    {
+      "type": "header",
+      "content": "Tabellen-Header"
+    },
+    {
+      "type": "text",
+      "id": "column1_title",
+      "label": "Spalte 1 Titel",
+      "default": "Merkmal"
+    },
+    {
+      "type": "text",
+      "id": "column2_title",
+      "label": "Spalte 2 Titel",
+      "default": "Vormontiert"
+    },
+    {
+      "type": "text",
+      "id": "column3_title",
+      "label": "Spalte 3 Titel",
+      "default": "Steckerfertig"
+    },
+    {
+      "type": "text",
+      "id": "column4_title",
+      "label": "Spalte 4 Titel",
+      "default": "Rohbausatz"
+    },
+    {
+      "type": "header",
+      "content": "Call to Action Buttons"
+    },
+    {
+      "type": "text",
+      "id": "cta1_text",
+      "label": "Button 1 Text",
+      "default": "Jetzt konfigurieren"
+    },
+    {
+      "type": "url",
+      "id": "cta1_url",
+      "label": "Button 1 Link"
+    },
+    {
+      "type": "text",
+      "id": "cta2_text",
+      "label": "Button 2 Text",
+      "default": "Projekt besprechen"
+    },
+    {
+      "type": "url",
+      "id": "cta2_url",
+      "label": "Button 2 Link"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding oben",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding unten",
+      "default": 60
+    }
+  ],
+  "blocks": [
+    {
+      "type": "table_row",
+      "name": "Tabellenzeile",
+      "settings": [
+        {
+          "type": "text",
+          "id": "feature_name",
+          "label": "Merkmal",
+          "default": "Neues Merkmal"
+        },
+        {
+          "type": "header",
+          "content": "Spalte 2 (Vormontiert)"
+        },
+        {
+          "type": "text",
+          "id": "column2_value",
+          "label": "Wert"
+        },
+        {
+          "type": "checkbox",
+          "id": "column2_has_check",
+          "label": "Häkchen anzeigen",
+          "default": false
+        },
+        {
+          "type": "header",
+          "content": "Spalte 3 (Steckerfertig)"
+        },
+        {
+          "type": "text",
+          "id": "column3_value",
+          "label": "Wert"
+        },
+        {
+          "type": "checkbox",
+          "id": "column3_has_check",
+          "label": "Häkchen anzeigen",
+          "default": false
+        },
+        {
+          "type": "header",
+          "content": "Spalte 4 (Rohbausatz)"
+        },
+        {
+          "type": "text",
+          "id": "column4_value",
+          "label": "Wert"
+        },
+        {
+          "type": "checkbox",
+          "id": "column4_has_check",
+          "label": "Häkchen anzeigen",
+          "default": false
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Technical Details",
+      "blocks": [
+        {
+          "type": "table_row",
+          "settings": {
+            "feature_name": "Verdrahtung intern",
+            "column2_value": "vollständig",
+            "column2_has_check": true,
+            "column3_value": "vollständig",
+            "column3_has_check": true,
+            "column4_value": ""
+          }
+        },
+        {
+          "type": "table_row",
+          "settings": {
+            "feature_name": "Externer Anschluss",
+            "column2_value": "",
+            "column3_value": "steckerfertig",
+            "column3_has_check": true,
+            "column4_value": ""
+          }
+        },
+        {
+          "type": "table_row",
+          "settings": {
+            "feature_name": "Prüfprotokoll",
+            "column2_value": "inklusive",
+            "column2_has_check": true,
+            "column3_value": "inklusive",
+            "column3_has_check": true,
+            "column4_value": "optional"
+          }
+        },
+        {
+          "type": "table_row",
+          "settings": {
+            "feature_name": "Dokumentation (Stückliste/Plan)",
+            "column2_value": "",
+            "column2_has_check": true,
+            "column3_value": "",
+            "column3_has_check": true,
+            "column4_value": "",
+            "column4_has_check": true
+          }
+        },
+        {
+          "type": "table_row",
+          "settings": {
+            "feature_name": "Montagezeit vor Ort",
+            "column2_value": "kurz",
+            "column3_value": "sehr kurz",
+            "column4_value": "lang"
+          }
+        },
+        {
+          "type": "table_row",
+          "settings": {
+            "feature_name": "Preisindikator",
+            "column2_value": "€€",
+            "column3_value": "€€€",
+            "column4_value": "€"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,43 @@
+{%- comment -%}
+  Bild-Optimierung für bessere SEO und Performance
+  Verwendung: {% render 'image-optimization', image: product.featured_image, alt: product.title, width: 800, height: 600 %}
+{%- endcomment -%}
+
+{%- liquid
+  assign image_alt = alt | default: image.alt | default: ''
+  assign image_width = width | default: 800
+  assign image_height = height | default: 600
+  assign image_class = class | default: ''
+  assign image_loading = loading | default: 'lazy'
+  assign image_sizes = sizes | default: '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
+%}
+
+{%- if image -%}
+  <picture>
+    <!-- WebP für moderne Browser -->
+    <source 
+      srcset="
+        {{ image | image_url: width: image_width, height: image_height, format: 'webp' }} 1x,
+        {{ image | image_url: width: image_width | times: 2, height: image_height | times: 2, format: 'webp' }} 2x
+      "
+      type="image/webp"
+      sizes="{{ image_sizes }}"
+    >
+    
+    <!-- Fallback für ältere Browser -->
+    <img 
+      src="{{ image | image_url: width: image_width, height: image_height }}"
+      srcset="
+        {{ image | image_url: width: image_width, height: image_height }} 1x,
+        {{ image | image_url: width: image_width | times: 2, height: image_height | times: 2 }} 2x
+      "
+      alt="{{ image_alt | escape }}"
+      width="{{ image_width }}"
+      height="{{ image_height }}"
+      loading="{{ image_loading }}"
+      decoding="async"
+      class="{{ image_class }}"
+      sizes="{{ image_sizes }}"
+    >
+  </picture>
+{%- endif -%}

@@ -1,0 +1,87 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "name": "t:sections.header.name",
+  "type": "header",
+  "sections": {
+    "announcement-bar": {
+      "type": "announcement-bar",
+      "blocks": {
+        "announcement_d9UgeE": {
+          "type": "announcement",
+          "settings": {
+            "text": "VDE-geprüft · Made in Germany · Lieferung in 2–4 Tagen",
+            "link": ""
+          }
+        },
+        "announcement-bar-0": {
+          "type": "announcement",
+          "settings": {
+            "text": "Individuell konfigurieren · Markenqualität · Schnell geliefert",
+            "link": ""
+          }
+        },
+        "announcement_MVJHhq": {
+          "type": "announcement",
+          "settings": {
+            "text": "Dein Projekt. Dein Sicherungskasten. Perfekt geplant.",
+            "link": ""
+          }
+        },
+        "announcement_x3NaWG": {
+          "type": "announcement",
+          "settings": {
+            "text": "Jetzt online konfigurieren · Expressversand · 100% geprüft",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "announcement_d9UgeE",
+        "announcement-bar-0",
+        "announcement_MVJHhq",
+        "announcement_x3NaWG"
+      ],
+      "settings": {
+        "auto_rotate": true,
+        "change_slides_speed": 7,
+        "color_scheme": "scheme-d2d88134-061d-455f-aaab-1b38835a2476",
+        "show_line_separator": true,
+        "show_social": false,
+        "enable_country_selector": false,
+        "enable_language_selector": false
+      }
+    },
+    "header": {
+      "type": "header",
+      "custom_css": [],
+      "settings": {
+        "logo_position": "middle-left",
+        "mobile_logo_position": "center",
+        "menu": "main-menu",
+        "menu_type_desktop": "dropdown",
+        "sticky_header_type": "on-scroll-up",
+        "show_line_separator": true,
+        "color_scheme": "scheme-ea6da479-2e1f-4103-a64c-d61a80f9a3ea",
+        "menu_color_scheme": "scheme-ea6da479-2e1f-4103-a64c-d61a80f9a3ea",
+        "enable_country_selector": true,
+        "enable_language_selector": true,
+        "enable_customer_avatar": true,
+        "margin_bottom": 0,
+        "padding_top": 20,
+        "padding_bottom": 20
+      }
+    }
+  },
+  "order": [
+    "announcement-bar",
+    "header"
+  ]
+}

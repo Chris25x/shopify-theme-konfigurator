@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1200, initial-scale=0.5, maximum-scale=3, user-scalable=yes">
+  <meta name="description" content="Interaktiver Sicherungskasten-Konfigurator: Reihen, Komponenten und Verdrahtung wählen, Preis in Echtzeit berechnen und als PDF exportieren.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+  <link rel="preconnect" href="https://static.wixstatic.com" crossorigin>
+  <title>Sicherungskasten Konfigurator</title>
+  <!-- Font Awesome für Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <!-- jsPDF für PDF-Generierung -->
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <!-- Inter Schriftart (Theme Standard) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Konfigurator CSS -->
+  <link href="{{ 'page-konfigurator.css' | asset_url }}" rel="stylesheet">
+</head>
+<body>
+  
+
+  {%- style -%}
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top | default: 40 }}px;
+      padding-bottom: {{ section.settings.padding_bottom | default: 40 }}px;
+    }
+    @media (min-width: 750px) {
+      .section-{{ section.id }}-padding {
+        padding-top: {{ section.settings.padding_top_desktop | default: section.settings.padding_top | default: 40 }}px;
+        padding-bottom: {{ section.settings.padding_bottom_desktop | default: section.settings.padding_bottom | default: 40 }}px;
+      }
+    }
+  {%- endstyle -%}
+  <div class="section-{{ section.id }}-padding">
+  <main class="container konfigurator" role="main" aria-label="Sicherungskasten Konfigurator">
+    <div class="konfigurator-top-gap"></div>
+    <!-- Dashboard für alle Seiten -->
+        <div class="info-box" id="infoBox">
+          <div>Anzahl der Reihen: <span id="rowCount">1</span></div>
+          <div>Verbrauchte Einheiten: <span id="usedUnits">0</span></div>
+          <div>Gesamtpreis: <span id="totalPrice" aria-live="polite">0 €</span></div>
+          <div class="price-disclaimer">Gesamtpreis der Verteilung inkl. 19% MwSt., zzgl. Versand</div>
+        </div>
+
+    <!-- Statusleiste -->
+    <div class="status-bar">
+      <div class="status-step active" id="step1">
+        <i class="fas fa-cog"></i> Konfiguration
+      </div>
+      <div class="status-step hidden" id="step2"></div>
+      <div class="status-step" id="step3">
+        <i class="fas fa-box"></i> Verteilerschrank
+      </div>
+      <div class="status-step" id="step4">
+        <i class="fas fa-wrench"></i> Verdrahtung
+      </div>
+      <div class="status-step" id="step5">
+        <i class="fas fa-check-circle"></i> Zusammenfassung
+      </div>
+    </div>
+
+    <!-- Neuer Container für Seiten und Button -->
+    <div id="page1" class="page active">
+      <div id="configurator">
+
+        <input type="text" id="verteilerName" placeholder="Verteiler-Name/Referenz eingeben" class="verteiler-input">
+          
+          <!-- Produktkarten-Grid (sichtbar direkt nach Markenauswahl) -->
+          <div class="produktkarten-grid">
+            <!-- Unterzähler -->
+            <div class="produktkarte">  
+              <img src="https://cdn.shopify.com/s/files/1/0944/8711/8089/files/Unterzaehler_99c6ffde-7041-40e7-b11f-c31a5cb1e77d.png?v=1756321308" alt="Unterzähler" class="produktbild" loading="lazy" decoding="async">
+              <div class="produktname">Unterzähler</div>
+              <div class="produktpreis"><span class="preis">72,80&nbsp;€</span></div>
+              <div class="produktbuttons">
+                <button id="uez-mit-btn" class="mit-btn" type="button" onclick="toggleUnterzaehler(true)">mit</button>
+                <button id="uez-ohne-btn"class="ohne-btn active" type="button" onclick="toggleUnterzaehler(false)">ohne</button> 
+              </div>
+            </div>
+            <!-- Überspannungsschutz -->
+            <div class="produktkarte" data-einheiten="4">
+              <img src="https://cdn.shopify.com/s/files/1/0944/8711/8089/files/Ueberspannungsschutz_b02f7f9b-e3f6-4e26-ac1a-96ce9e681993.png?v=1756321309" alt="Überspannungsschutz" class="produktbild" loading="lazy" decoding="async">
+              <div class="produktname">Überspannungsschutz</div>
+              <div class="produktpreis"><span class="preis">89,90&nbsp;€</span></div>
+              <div class="produktbuttons">
+                <button id="ues-mit-btn" class="mit-btn" type="button" onclick="toggleUeberspannungsschutz(true)">mit</button>
+                <button id="ues-ohne-btn" class="ohne-btn active" type="button" onclick="toggleUeberspannungsschutz(false)">ohne</button>
+              </div>
+            </div>
+            <!-- Hauptschalter -->
+            <div class="produktkarte">
+              <img src="https://cdn.shopify.com/s/files/1/0944/8711/8089/files/Hauptschalter_9db5d20e-8e22-4fb8-9f83-4b1909e10c77.png?v=1756321561" alt="Hauptschalter" class="produktbild" loading="lazy" decoding="async">
+              <div class="produktname">Hauptschalter</div>
+              <div class="produktpreis"><span class="preis">14,11&nbsp;€</span></div>
+              <div class="produktbuttons">
+                <button id="hs-mit-btn" class="mit-btn" type="button" onclick="toggleHauptschalter(true)">mit</button>
+                <button id="hs-ohne-btn" class="ohne-btn active" type="button" onclick="toggleHauptschalter(false)">ohne</button>
+              </div>
+            </div>
+          </div>
+          
+        <div id="row1-strip" class="row-strip">
+          <div id="buttonsRow1" class="buttons-container-top"></div>
+        </div>
+        <div id="row1" class="row-container">
+          <div id="row1Content" class="row-content"></div>
+        </div>
+        <div class="button-row">
+          <button id="addFiRowButton" class="button button--outline" type="button">
+            <i class="fas fa-plus"></i> FI-Bereich hinzufügen
+          </button>
+          <button id="addFreeRowButton" class="button button--outline" type="button">
+            <i class="fas fa-plus"></i> Freien Bereich ohne Sammel-FI hinzufügen
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Weitere Seiten -->
+    
+
+    <div id="page3" class="page">
+      <div style="text-align: center; margin: 20px 0;">
+        <div style="max-width: 800px; margin: 20px auto; padding: 20px; background-color: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+          <h2 style="margin-top: 0;">Verteilerschrank</h2>
+          <div style="margin-bottom: 30px;">
+            <div class="dropdown-container" style="margin-bottom: 20px;">
+              <button id="montageart-btn" class="button dropdown-btn" type="button" aria-haspopup="menu" aria-expanded="false" style="width: 300px; justify-content: center;" onclick="openDropdownMenu('montageart', this)">
+                <i class="fas fa-cog"></i> Bitte wählen Sie die Montageart
+              </button>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="page4" class="page">
+      <div style="text-align: center; margin: 20px 0;">
+        <div style="max-width: 800px; margin: 20px auto; padding: 20px; background-color: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+          <h2 style="margin-top: 0;">Verdrahtung</h2>
+          <div style="margin-bottom: 30px;">
+            <div class="dropdown-container" style="margin-bottom: 20px;">
+              <button id="verdrahtung-btn" class="button dropdown-btn" type="button" aria-haspopup="menu" aria-expanded="false" style="width: 450px; justify-content: center;" onclick="openDropdownMenu('verdrahtung', this)">
+                <i class="fas fa-plug"></i> Verdrahtungsoption
+              </button>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="page5" class="page">
+      <div style="text-align: center; margin: 20px 0;">
+        <div style="max-width: 800px; margin: 20px auto; padding: 20px; background-color: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+          <h2 style="margin-top: 0;">Zusammenfassung</h2>
+          <div style="margin-bottom: 30px;">
+            <div class="summary-row free">
+              <div class="summary-info-label">Name/Referenz</div>
+              <div class="summary-info-value"><span id="summaryVerteilerName">Nicht angegeben</span></div>
+              <div class="summary-info-label">Position im Verteiler</div>
+              <div class="summary-info-value"><span id="summaryPosition">Oben</span></div>
+              <div class="summary-info-label">Anzahl der Reihen</div>
+              <div class="summary-info-value"><span id="summaryRowCount">1</span></div>
+              <div class="summary-info-label">Belegte Einheiten</div>
+              <div class="summary-info-value"><span id="summaryUsedUnits">0</span></div>
+              <div class="summary-info-label">Montageart</div>
+              <div class="summary-info-value"><span id="summaryMontageart">Nicht ausgewählt</span></div>
+              <div class="summary-info-label">Verdrahtungsoption</div>
+              <div class="summary-info-value"><span id="summaryVerdrahtung">Nicht ausgewählt</span></div>
+            </div>
+
+            <div style="text-align: left; margin-bottom: 20px;">
+              <h3 style="color: #005A9C; margin-bottom: 15px;">Verwendete Elemente</h3>
+              <div id="summaryElements" style="margin-bottom: 10px;"></div>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px;">
+            <div style="display: flex; align-items: center; gap: 20px;">
+              <div style="display: flex; align-items: center;">
+                <strong style="margin-right: 10px;">Gesamtpreis:</strong>
+                <span id="summaryTotalPrice" aria-live="polite">0 €</span>
+              </div>
+              <div style="display: flex; align-items: center;">
+                <strong id="labelAnzahl" style="margin-right: 10px;">Anzahl:</strong>
+                <input type="number" id="verteilerAnzahl" aria-labelledby="labelAnzahl" min="0" max="10" value="1" style="
+                  width: 60px;
+                  padding: 5px;
+                  border: 1px solid #dddddd;
+                  border-radius: 4px;
+                  margin-left: 4px;
+                " onchange="updateGesamtpreis()">
+              </div>
+            </div>
+            <button id="downloadPdf" class="button button--outline" type="button">
+              <i class="fas fa-file-pdf"></i> PDF herunterladen
+            </button>
+          </div> 
+        </div>
+      </div>
+    </div>
+
+    <!-- Button-Container für Weiter und Zurück -->
+    <div class="button-container" style="display: flex; justify-content: space-between; width: 1200px; margin: 20px auto;">
+      <button id="prevButton" class="button" type="button">Zurück</button>
+      <button id="nextButton" class="button button--outline" type="button">Weiter</button>
+    </div>
+    </main>
+    <div class="konfigurator-bottom-gap"></div>
+  </div>
+ 
+  <!-- Konfigurator JavaScript -->
+  <script src="{{ 'page-konfigurator.js' | asset_url }}" defer></script>
+  <!-- Konfigurator Produktdaten -->
+  <script id="konfigurator-products" type="application/json">
+[
+  {% for product in collections.konfigurator.products %}
+    {
+      "id": {{ product.id }},
+      "title": {{ product.title | json }},
+      "variants": [
+        {% for variant in product.variants %}
+          {
+            "id": {{ variant.id }},
+            "title": {{ variant.title | json }},
+            "price": {{ variant.price | divided_by: 100.0 }},
+            "sku": {{ variant.sku | json }},
+            "image": {{ variant.featured_image | img_url: '400x' | json }}
+          }{% unless forloop.last %},{% endunless %}
+        {% endfor %}
+      ]
+    }{% unless forloop.last %},{% endunless %}
+  {% endfor %}
+]
+</script>
+  <script>
+      }
+    }
+</script>
+<script>
+  // Funktion zum Laden der Bilder
+  function handleImageLoad(img) {
+    img.classList.add('loaded');
+    img.parentElement.classList.add('loaded');
+  }
+
+  // Event-Listener für alle Bilder
+  document.addEventListener('DOMContentLoaded', function() {
+    const images = document.querySelectorAll('.product-box img');
+    images.forEach(img => {
+      if (img.complete) {
+        handleImageLoad(img);
+      } else {
+        img.addEventListener('load', function() {
+          handleImageLoad(this);
+        });
+      }
+    });
+  });
+
+ 
+</script>
+</div>
+
+<!-- Modal-Overlay und -Dialog für schöne Alerts -->
+<div id="cb-backdrop" class="cb-backdrop" hidden></div>
+<div id="cb-modal" class="cb-modal" role="alertdialog" aria-modal="true"
+     aria-labelledby="cb-modal-title" aria-describedby="cb-modal-desc" hidden>
+  <div class="cb-modal__card" tabindex="-1">
+    <div class="cb-modal__icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v2h2v-2zm0-8h-2v6h2V10z"/></svg>
+    </div>
+    <h2 id="cb-modal-title" class="cb-modal__title">Hinweis</h2>
+    <p id="cb-modal-desc" class="cb-modal__text"></p>
+    <div class="cb-modal__actions">
+      <button type="button" class="cb-btn cb-btn--primary" id="cb-modal-ok">OK</button>
+    </div>
+  </div>
+</div>
+
+
+<script>
+(function(){
+  const $modal = document.getElementById('cb-modal');
+  const $backdrop = document.getElementById('cb-backdrop');
+  const $ok = document.getElementById('cb-modal-ok');
+  const $title = document.getElementById('cb-modal-title');
+  const $desc = document.getElementById('cb-modal-desc');
+  let lastActive = null;
+  let prevOverflow = '';
+
+  function closeAllDropdowns(){
+    // Portal-Dropdown
+    const portal = document.getElementById('portal-dropdown');
+    if (portal) portal.style.display = 'none';
+    // Reihen-Dropdowns (Element hinzufügen)
+    const dds = document.querySelectorAll('.dropdown');
+    dds.forEach(dd => {
+      dd.style.display = 'none';
+      dd.setAttribute('aria-hidden', 'true');
+      const btn = dd.previousElementSibling;
+      if (btn && btn.classList && btn.classList.contains('dropdown-btn')) {
+        btn.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+
+  function trapFocus(e){
+    if(!$modal.hasAttribute('open')) return;
+    const f = $modal.querySelectorAll('button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])');
+    if(!f.length) return;
+    const first=f[0], last=f[f.length-1];
+    if(e.key==='Tab'){
+      if(e.shiftKey && document.activeElement===first){ e.preventDefault(); last.focus(); }
+      else if(!e.shiftKey && document.activeElement===last){ e.preventDefault(); first.focus(); }
+    }
+    if(e.key==='Escape'){ close(); }
+  }
+  function open({title, message}){
+    lastActive = document.activeElement;
+    $title.textContent = title || 'Hinweis';
+    $desc.textContent  = message || '';
+    // Scroll sperren & Dropdowns schließen
+    prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    closeAllDropdowns();
+    $modal.hidden=false; $backdrop.hidden=false;
+    requestAnimationFrame(()=>{ $modal.setAttribute('open',''); $backdrop.setAttribute('open',''); $ok.focus(); });
+    document.addEventListener('keydown', trapFocus);
+    return new Promise(res=>{ $ok.onclick = ()=>{ close(); res(true); }; $backdrop.onclick = ()=>{ close(); res(true); }; });
+  }
+  function close(){
+    $modal.removeAttribute('open'); $backdrop.removeAttribute('open');
+    setTimeout(()=>{ $modal.hidden=true; $backdrop.hidden=true; lastActive && lastActive.focus(); },180);
+    document.removeEventListener('keydown', trapFocus);
+    // Scroll wieder erlauben
+    document.body.style.overflow = prevOverflow || '';
+  }
+  window.cbAlert = open;
+
+  // Optional: native alert auf cbAlert umbiegen
+  const nativeAlert = window.alert.bind(window);
+  window.alert = function(msg){
+    const str = String(msg||'');
+    const t = str.split(/[.!?\n]/)[0].slice(0,80) || 'Hinweis';
+    try { return open({ title: t, message: str }); }
+    catch(e){ return nativeAlert(str); }
+  };
+})();
+</script>
+
+</body>
+</html>
+
+
+{% schema %}
+{
+  "name": "Konfigurator Section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titel",
+      "default": "Konfigurator"
+    },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 200, "step": 4, "unit": "px", "label": "Padding oben (mobil)", "default": 24 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 200, "step": 4, "unit": "px", "label": "Padding unten (mobil)", "default": 24 },
+    { "type": "range", "id": "padding_top_desktop", "min": 0, "max": 240, "step": 4, "unit": "px", "label": "Padding oben (Desktop)", "default": 48 },
+    { "type": "range", "id": "padding_bottom_desktop", "min": 0, "max": 240, "step": 4, "unit": "px", "label": "Padding unten (Desktop)", "default": 48 }
+  ],
+  "presets": [
+    {
+      "name": "Konfigurator-Block"
+    }
+  ]
+}
+{% endschema %}

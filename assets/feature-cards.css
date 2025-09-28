@@ -1,0 +1,64 @@
+/* Grid-Layout für die 4 Vorteile */
+.feature-grid {
+  max-width: 1300px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+  background-color: #f7f9fc; /* dezenter Hintergrund */
+  border-radius: 16px;
+}
+
+/* Karten */
+.feature-card {
+  background-color: #fff;
+  border: 1px solid #eef1f5;
+  border-radius: 16px;
+  padding: 24px;
+  text-align: center;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.2s ease;
+}
+
+/* Hover-Effekt */
+.feature-card:hover {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+/* SVG-Icons – Markenfarbe */
+.feature-card svg {
+  width: 32px !important;
+  height: 32px !important;
+  margin-bottom: 12px;
+  fill: #005A9C !important; /* <-- Markenfarbe */
+}
+
+/* Titel */
+.feature-card h4 {
+  margin: 8px 0 6px;
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+/* Beschreibung */
+.feature-card p {
+  font-size: 1.6rem;
+  color: #555;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Mobile-Optimierung */
+@media (max-width: 749px) {
+  .feature-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    padding: 16px;
+  }
+}
+
+@media (max-width: 479px) {
+  .feature-grid {
+    grid-template-columns: 1fr;
+  }
+}

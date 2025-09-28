@@ -1,0 +1,406 @@
+<section class="use-cases" id="einsatzfaelle" aria-labelledby="use-cases-title" style="padding-top: {{ section.settings.padding_top | default: 60 }}px; padding-bottom: {{ section.settings.padding_bottom | default: 60 }}px;">
+  <div class="use-cases__container">
+    <!-- Header -->
+    <div class="use-cases__header">
+      <h2 id="use-cases-title" class="use-cases__title">{{ section.settings.title | default: 'Einsatzfälle & Anwendungsbereiche' }}</h2>
+      <p class="use-cases__subtitle">{{ section.settings.subtitle | default: 'Wähle dein Szenario - wir führen dich zur passenden Konfiguration.' }}</p>
+    </div>
+
+    <!-- Use Cases Grid -->
+    <div class="use-cases__grid">
+      <!-- Wallbox / E-Mobilität -->
+      <div class="use-cases__card">
+        <div class="use-cases__card-header">
+          <div class="use-cases__card-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h3 class="use-cases__card-title">Wallbox / E-Mobilität</h3>
+        </div>
+        <div class="use-cases__card-content">
+          <p>Absicherung für Ladepunkte (1-/3-ph.) inkl. FI/LS nach Vorgabe.</p>
+        </div>
+      </div>
+
+      <!-- PV-Anlage / Speicher -->
+      <div class="use-cases__card">
+        <div class="use-cases__card-header">
+          <div class="use-cases__card-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="2"/>
+              <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="currentColor" stroke-width="2"/>
+            </svg>
+          </div>
+          <h3 class="use-cases__card-title">PV-Anlage / Speicher</h3>
+        </div>
+        <div class="use-cases__card-content">
+          <p>Eigensichere Strings, Umschalter, Zählerplatz - sauber dokumentiert.</p>
+        </div>
+      </div>
+
+      <!-- Werkstatt / Gewerbe -->
+      <div class="use-cases__card">
+        <div class="use-cases__card-header">
+          <div class="use-cases__card-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M22 12h-4l-3 9L9 3l-3 9H2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h3 class="use-cases__card-title">Werkstatt / Gewerbe</h3>
+        </div>
+        <div class="use-cases__card-content">
+          <p>Drehstrom-Abgänge, Maschinenkreise, Reservefelder - normgerecht.</p>
+        </div>
+      </div>
+
+      <!-- Gartenhaus / Anbau -->
+      <div class="use-cases__card">
+        <div class="use-cases__card-header">
+          <div class="use-cases__card-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <polyline points="9,22 9,12 15,12 15,22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h3 class="use-cases__card-title">Gartenhaus / Anbau</h3>
+        </div>
+        <div class="use-cases__card-content">
+          <p>Kompakte Lösungen für Licht, Steckdosen & Außenanlagen.</p>
+        </div>
+      </div>
+
+      <!-- Baustrom / Provisorium -->
+      <div class="use-cases__card">
+        <div class="use-cases__card-header">
+          <div class="use-cases__card-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="1" y="3" width="15" height="13" rx="2" ry="2" stroke="currentColor" stroke-width="2"/>
+              <path d="M16 8h2a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-2v-10z" stroke="currentColor" stroke-width="2"/>
+              <path d="M6 15h2M6 11h2M10 11h2M10 15h2" stroke="currentColor" stroke-width="2"/>
+            </svg>
+          </div>
+          <h3 class="use-cases__card-title">Baustrom / Provisorium</h3>
+        </div>
+        <div class="use-cases__card-content">
+          <p>Robuste Absicherung temporärer Anlagen inkl. Dokumentation.</p>
+        </div>
+      </div>
+
+      <!-- Wohnung / EFH -->
+      <div class="use-cases__card">
+        <div class="use-cases__card-header">
+          <div class="use-cases__card-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z" stroke="currentColor" stroke-width="2"/>
+            </svg>
+          </div>
+          <h3 class="use-cases__card-title">Wohnung / EFH</h3>
+        </div>
+        <div class="use-cases__card-content">
+          <p>Sauber beschriftete Stromkreise, FI/LS-Gruppen, Reservefelder.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Call to Actions -->
+    <div class="use-cases__cta">
+      <a href="{{ section.settings.cta1_url | default: '/pages/konfigurator' }}" class="use-cases__btn use-cases__btn--primary">
+        {{ section.settings.cta1_text | default: 'Jetzt konfigurieren' }}
+      </a>
+      <a href="{{ section.settings.cta2_url | default: '/pages/kontakt' }}" class="use-cases__btn use-cases__btn--outline">
+        {{ section.settings.cta2_text | default: 'Unsicher? Kurz beraten lassen' }}
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .use-cases {
+    background: #f8f9fc;
+    padding: 60px 0;
+  }
+
+  .use-cases__container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .use-cases__header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .use-cases__title {
+    font-size: {{ section.settings.title_font_size | default: 32 }}px;
+    font-weight: {{ section.settings.title_font_weight | default: 800 }};
+    color: #111827;
+    margin: 0 0 12px 0;
+    letter-spacing: -0.02em;
+  }
+
+  .use-cases__subtitle {
+    font-size: {{ section.settings.subtitle_font_size | default: 18 }}px;
+    font-weight: {{ section.settings.subtitle_font_weight | default: 400 }};
+    color: #6b7280;
+    margin: 0;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .use-cases__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .use-cases__card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .use-cases__card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  }
+
+  .use-cases__card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 20px 20px 8px 20px;
+  }
+
+  .use-cases__card-icon {
+    width: 20px;
+    height: 20px;
+    color: #005A9C;
+    flex-shrink: 0;
+  }
+
+  .use-cases__card-title {
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+  }
+
+  .use-cases__card-content {
+    padding: 0 20px 20px 20px;
+  }
+
+  .use-cases__card-content p {
+    font-size: 1.4rem;
+    color: #475569;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  .use-cases__cta {
+    text-align: center;
+  }
+
+  .use-cases__btn {
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+    margin: 0 6px 12px 6px;
+  }
+
+  /* Mobile Responsive */
+  @media (max-width: 768px) {
+    .use-cases {
+      padding: 40px 0;
+    }
+
+    .use-cases__container {
+      padding: 0 16px;
+    }
+
+    .use-cases__grid {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .use-cases__card-header {
+      padding: 16px 16px 8px 16px;
+    }
+
+    .use-cases__card-content {
+      padding: 0 16px 16px 16px;
+    }
+
+    .use-cases__btn {
+      display: block;
+      margin: 0 0 12px 0;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Use Cases",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Überschrift"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titel",
+      "default": "Einsatzfälle & Anwendungsbereiche"
+    },
+    {
+      "type": "range",
+      "id": "title_font_size",
+      "min": 16,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Titel Schriftgröße",
+      "default": 32
+    },
+    {
+      "type": "select",
+      "id": "title_font_weight",
+      "label": "Titel Schriftstärke",
+      "options": [
+        {
+          "value": "300",
+          "label": "Leicht (300)"
+        },
+        {
+          "value": "400",
+          "label": "Normal (400)"
+        },
+        {
+          "value": "500",
+          "label": "Mittel (500)"
+        },
+        {
+          "value": "600",
+          "label": "Semi-Fett (600)"
+        },
+        {
+          "value": "700",
+          "label": "Fett (700)"
+        },
+        {
+          "value": "800",
+          "label": "Extra Fett (800)"
+        },
+        {
+          "value": "900",
+          "label": "Ultra Fett (900)"
+        }
+      ],
+      "default": "800"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_font_size",
+      "min": 12,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "label": "Untertitel Schriftgröße",
+      "default": 18
+    },
+    {
+      "type": "select",
+      "id": "subtitle_font_weight",
+      "options": [
+        {
+          "value": "300",
+          "label": "Leicht (300)"
+        },
+        {
+          "value": "400",
+          "label": "Normal (400)"
+        },
+        {
+          "value": "500",
+          "label": "Mittel (500)"
+        },
+        {
+          "value": "600",
+          "label": "Semi-Fett (600)"
+        }
+      ],
+      "default": "400",
+      "label": "Untertitel Schriftstärke"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Untertitel",
+      "default": "Wähle dein Szenario - wir führen dich zur passenden Konfiguration."
+    },
+    {
+      "type": "header",
+      "content": "Call to Action Buttons"
+    },
+    {
+      "type": "text",
+      "id": "cta1_text",
+      "label": "Button 1 Text",
+      "default": "Jetzt konfigurieren"
+    },
+    {
+      "type": "url",
+      "id": "cta1_url",
+      "label": "Button 1 Link"
+    },
+    {
+      "type": "text",
+      "id": "cta2_text",
+      "label": "Button 2 Text",
+      "default": "Unsicher? Kurz beraten lassen"
+    },
+    {
+      "type": "url",
+      "id": "cta2_url",
+      "label": "Button 2 Link"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding oben",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding unten",
+      "default": 60
+    }
+  ],
+  "presets": [
+    {
+      "name": "Use Cases"
+    }
+  ]
+}
+{% endschema %}

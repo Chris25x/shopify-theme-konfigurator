@@ -1,0 +1,158 @@
+{{ 'trust-bar.css' | asset_url | stylesheet_tag }}
+
+<section class="cb-trustbar" aria-label="Vertrauens- und Zertifizierungslogos" style="margin-top: {{ section.settings.margin_top }}px; margin-bottom: {{ section.settings.margin_bottom }}px; padding: {{ section.settings.padding_vertical }}px {{ section.settings.padding_horizontal }}px;">
+  <div class="cb-trustbar__inner">
+    <ul class="cb-trustbar__logos" role="list">
+      <!-- Made in Germany -->
+      {%- if section.settings.show_made_in_germany -%}
+        <li>
+          <img src="{{ section.settings.made_in_germany_image | image_url: width: 200 }}" 
+               alt="{{ section.settings.made_in_germany_alt | default: 'Made in Germany' }}" 
+               loading="lazy"
+               width="200"
+               height="80">
+        </li>
+      {%- endif -%}
+      
+      <!-- SSL -->
+      {%- if section.settings.show_ssl -%}
+        <li>
+          <img src="{{ section.settings.ssl_image | image_url: width: 200 }}" 
+               alt="{{ section.settings.ssl_alt | default: 'SSL Gesicherte Verbindung' }}" 
+               loading="lazy"
+               width="200"
+               height="80">
+        </li>
+      {%- endif -%}
+      
+      <!-- VDE -->
+      {%- if section.settings.show_vde -%}
+        <li>
+          <img src="{{ section.settings.vde_image | image_url: width: 200 }}" 
+               alt="{{ section.settings.vde_alt | default: 'VDE' }}" 
+               loading="lazy"
+               width="200"
+               height="80">
+        </li>
+      {%- endif -%}
+    </ul>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Trust Bar",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout-Einstellungen"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "label": "Abstand oben (px)",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "label": "Abstand unten (px)",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "padding_vertical",
+      "label": "Padding oben/unten (px)",
+      "min": 5,
+      "max": 50,
+      "step": 1,
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal",
+      "label": "Padding links/rechts (px)",
+      "min": 10,
+      "max": 80,
+      "step": 2,
+      "default": 28
+    },
+    {
+      "type": "header",
+      "content": "Made in Germany Logo"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_made_in_germany",
+      "label": "Made in Germany anzeigen",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "made_in_germany_image",
+      "label": "Made in Germany Bild"
+    },
+    {
+      "type": "text",
+      "id": "made_in_germany_alt",
+      "label": "Alt-Text für Made in Germany",
+      "default": "Made in Germany"
+    },
+    {
+      "type": "header",
+      "content": "SSL Logo"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_ssl",
+      "label": "SSL anzeigen",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "ssl_image",
+      "label": "SSL Bild"
+    },
+    {
+      "type": "text",
+      "id": "ssl_alt",
+      "label": "Alt-Text für SSL",
+      "default": "SSL Gesicherte Verbindung"
+    },
+    {
+      "type": "header",
+      "content": "VDE Logo"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vde",
+      "label": "VDE anzeigen",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "vde_image",
+      "label": "VDE Bild"
+    },
+    {
+      "type": "text",
+      "id": "vde_alt",
+      "label": "Alt-Text für VDE",
+      "default": "VDE"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Trust Bar"
+    }
+  ]
+}
+{% endschema %}
