@@ -129,28 +129,28 @@
   letter-spacing: -0.02em !important;
 }
 
-/* Mobile Bild Styling - Nur auf echten Mobile-Geräten */
+/* Mobile Bild Styling - Nur mobile Bilder verstecken/zeigen */
 .slideshow__media-mobile {
-  display: none;
+  display: none !important;
 }
 
-@media screen and (max-width: 390px) {
+@media screen and (max-width: 749px) {
   .slideshow__media-mobile {
-    display: block;
+    display: block !important;
   }
   
   .slideshow__media-desktop {
-    display: none;
+    display: none !important;
   }
 }
 
-@media screen and (min-width: 391px) {
+@media screen and (min-width: 750px) {
   .slideshow__media-mobile {
-    display: none;
+    display: none !important;
   }
   
   .slideshow__media-desktop {
-    display: block;
+    display: block !important;
   }
 }
 {%- endstyle -%}
