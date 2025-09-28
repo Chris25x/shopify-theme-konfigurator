@@ -933,6 +933,14 @@ let rowCounter = 1;
 
       // Aktuelle Seite anzeigen
       document.getElementById('page' + pageNumber).classList.add('active');
+      
+      // Scroll nach oben beim Seitenwechsel (außer bei der ersten Seite)
+      if (pageNumber > 1) {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      }
 
       // Reihenklemmen entfernt
 
