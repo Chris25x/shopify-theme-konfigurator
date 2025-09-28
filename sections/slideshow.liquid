@@ -163,6 +163,58 @@
     text-align: center !important;
   }
 }
+
+/* Mobile Text Alignment - Slideshow Text Ausrichtung */
+@media screen and (max-width: 749px) {
+  .slideshow__text-mobile--left {
+    text-align: left !important;
+  }
+  
+  .slideshow__text-mobile--center {
+    text-align: center !important;
+  }
+  
+  .slideshow__text-mobile--right {
+    text-align: right !important;
+  }
+  
+  /* Mobile Text Elemente zentrieren - Überschriften und Paragraphen */
+  .slideshow__text-mobile--center .banner__heading,
+  .slideshow__text-mobile--center .banner__text,
+  .slideshow__text-mobile--center p,
+  .slideshow__text-mobile--center h1,
+  .slideshow__text-mobile--center h2,
+  .slideshow__text-mobile--center h3,
+  .slideshow__text-mobile--center h4,
+  .slideshow__text-mobile--center h5,
+  .slideshow__text-mobile--center h6 {
+    text-align: center !important;
+  }
+  
+  .slideshow__text-mobile--left .banner__heading,
+  .slideshow__text-mobile--left .banner__text,
+  .slideshow__text-mobile--left p,
+  .slideshow__text-mobile--left h1,
+  .slideshow__text-mobile--left h2,
+  .slideshow__text-mobile--left h3,
+  .slideshow__text-mobile--left h4,
+  .slideshow__text-mobile--left h5,
+  .slideshow__text-mobile--left h6 {
+    text-align: left !important;
+  }
+  
+  .slideshow__text-mobile--right .banner__heading,
+  .slideshow__text-mobile--right .banner__text,
+  .slideshow__text-mobile--right p,
+  .slideshow__text-mobile--right h1,
+  .slideshow__text-mobile--right h2,
+  .slideshow__text-mobile--right h3,
+  .slideshow__text-mobile--right h4,
+  .slideshow__text-mobile--right h5,
+  .slideshow__text-mobile--right h6 {
+    text-align: right !important;
+  }
+}
 {%- endstyle -%}
 
 {%- if section.settings.slide_height == 'adapt_image' and section.blocks.first.settings.image != blank -%}
