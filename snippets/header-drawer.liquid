@@ -319,3 +319,159 @@
     </div>
   </details>
 </header-drawer>
+
+<script>
+// Auto-Close Mobile Menu nach Navigation
+document.addEventListener('DOMContentLoaded', function() {
+  const menuDrawer = document.getElementById('Details-menu-drawer-container');
+  const menuItems = document.querySelectorAll('.menu-drawer__menu-item');
+  
+  if (menuDrawer && menuItems.length > 0) {
+    menuItems.forEach(function(item) {
+      item.addEventListener('click', function() {
+        // Schließe das Menu nach kurzer Verzögerung
+        setTimeout(function() {
+          const details = menuDrawer.closest('details');
+          if (details) {
+            details.removeAttribute('open');
+            details.classList.remove('menu-opening');
+          }
+          
+          // Setze auch das summary Element zurück - genau wie beim manuellen Schließen
+          const summary = document.querySelector('.header__icon--summary');
+          if (summary) {
+            summary.setAttribute('aria-expanded', 'false');
+            summary.classList.remove('menu-opening', 'menu-closing');
+          }
+          
+          // Setze auch das details Element vollständig zurück
+          if (details) {
+            details.classList.remove('menu-opening', 'menu-closing');
+            details.setAttribute('aria-expanded', 'false');
+          }
+          
+          // Entferne alle möglichen Overlay-Container
+          const overlays = document.querySelectorAll('.menu-drawer__overlay, .overlay, .menu-overlay, [class*="overlay"]');
+          overlays.forEach(overlay => {
+            overlay.remove();
+          });
+          
+          // Entferne alle möglichen Backdrop-Elemente
+          const backdrops = document.querySelectorAll('.backdrop, .menu-backdrop, [class*="backdrop"]');
+          backdrops.forEach(backdrop => {
+            backdrop.remove();
+          });
+          
+          // Mobile-spezifische Lösung für das Scrollen
+          // Entferne alle Menü-spezifischen Klassen und Styles
+          document.body.classList.remove('overflow-hidden', 'menu-opening', 'menu-closing', 'menu-open');
+          document.documentElement.classList.remove('overflow-hidden', 'menu-opening', 'menu-closing', 'menu-open');
+          
+          // Setze alle Body-Styles zurück - besonders wichtig für Mobile
+          document.body.style.overflow = '';
+          document.body.style.position = '';
+          document.body.style.top = '';
+          document.body.style.left = '';
+          document.body.style.right = '';
+          document.body.style.bottom = '';
+          document.body.style.width = '';
+          document.body.style.height = '';
+          document.body.style.touchAction = '';
+          document.body.style.overscrollBehavior = '';
+          
+          // Setze alle HTML-Styles zurück
+          document.documentElement.style.overflow = '';
+          document.documentElement.style.position = '';
+          document.documentElement.style.top = '';
+          document.documentElement.style.left = '';
+          document.documentElement.style.right = '';
+          document.documentElement.style.bottom = '';
+          document.documentElement.style.width = '';
+          document.documentElement.style.height = '';
+          document.documentElement.style.touchAction = '';
+          document.documentElement.style.overscrollBehavior = '';
+          
+          // Entferne nur Menü-spezifische Klassen, aber behalte Header-Funktionalität
+          const menuElements = document.querySelectorAll('.header-drawer, .menu-drawer, .menu-drawer-container');
+          menuElements.forEach(element => {
+            element.classList.remove('menu-opening', 'menu-closing', 'overflow-hidden', 'menu-open');
+            element.style.overflow = '';
+            element.style.position = '';
+            element.style.touchAction = '';
+          });
+          
+          // Entferne nur Menü-Klassen vom Header, aber behalte andere wichtige Klassen
+          const header = document.querySelector('.header');
+          if (header) {
+            // Entferne nur Menü-spezifische Klassen, aber behalte alle anderen
+            header.classList.remove('menu-opening', 'menu-closing', 'menu-open');
+            // NICHT: overflow-hidden entfernen, da das die Header-Funktionalität beeinträchtigen könnte
+            // Behalte alle anderen Header-Klassen für "Fixierten Header beim Hochscrollen"
+          }
+          
+          // Entferne Menü-Klassen von anderen wichtigen Elementen
+          const otherElements = document.querySelectorAll('.page, .main, .shopify-section');
+          otherElements.forEach(element => {
+            element.classList.remove('menu-opening', 'menu-closing', 'overflow-hidden', 'menu-open');
+            element.style.overflow = '';
+            element.style.position = '';
+            element.style.touchAction = '';
+          });
+          
+          // Mobile-spezifische Scroll-Wiederherstellung
+          if (window.innerWidth <= 749) {
+            // Erzwinge die Wiederherstellung des Scrollens auf Mobile
+            document.body.style.overflow = 'auto';
+            document.documentElement.style.overflow = 'auto';
+            
+            // Entferne alle möglichen Touch-Blockierungen
+            document.body.style.touchAction = 'auto';
+            document.documentElement.style.touchAction = 'auto';
+            
+            // Stelle sicher, dass der Viewport korrekt ist
+            document.documentElement.style.height = 'auto';
+            document.body.style.height = 'auto';
+            
+            // Stelle sicher, dass der Header seine Position behält
+            const header = document.querySelector('.header');
+            if (header) {
+              // Entferne nur Menü-spezifische Styles, aber behalte Header-Funktionalität
+              // Lass die CSS-Klassen für "Fixierten Header beim Hochscrollen" unberührt
+              header.style.overflow = '';
+              header.style.touchAction = '';
+              // NICHT: position, top, left, right, zIndex zurücksetzen!
+            }
+          }
+          
+          // Entferne alle möglichen ::before und ::after Pseudo-Elemente
+          const style = document.createElement('style');
+          style.textContent = `
+            .menu-drawer::before,
+            .menu-drawer::after,
+            .menu-drawer-container::before,
+            .menu-drawer-container::after,
+            .header-drawer::before,
+            .header-drawer::after,
+            .header__icon--summary::before,
+            .header__icon--menu::before,
+            .header__icon--summary::after,
+            .header__icon--menu::after,
+            summary::before,
+            summary::after {
+              display: none !important;
+            }
+          `;
+          document.head.appendChild(style);
+          
+          // Entferne den Style nach kurzer Zeit wieder
+          setTimeout(() => {
+            if (style.parentNode) {
+              style.parentNode.removeChild(style);
+            }
+          }, 500);
+        }, 100);
+      });
+    });
+  }
+});
+</script>
