@@ -129,12 +129,12 @@
   letter-spacing: -0.02em !important;
 }
 
-/* Mobile Bild Styling - Nur mobile Bilder verstecken/zeigen */
+/* Mobile Bild Styling - Nur auf echten Mobile-Geräten (iPhone 14 Pro Größe) */
 .slideshow__media-mobile {
   display: none;
 }
 
-@media screen and (max-width: 749px) {
+@media screen and (max-width: 428px) {
   .slideshow__media-mobile {
     display: block;
   }
@@ -144,7 +144,7 @@
   }
 }
 
-@media screen and (min-width: 750px) {
+@media screen and (min-width: 429px) {
   .slideshow__media-mobile {
     display: none;
   }
