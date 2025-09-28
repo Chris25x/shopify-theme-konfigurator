@@ -934,12 +934,34 @@ let rowCounter = 1;
       // Aktuelle Seite anzeigen
       document.getElementById('page' + pageNumber).classList.add('active');
       
-      // Scroll nach oben beim Seitenwechsel (außer bei der ersten Seite)
+      // Scroll-Verhalten beim Seitenwechsel
       if (pageNumber > 1) {
-        window.scrollTo({
-          top: 0,
-          behavior: 'smooth'
-        });
+        if (pageNumber === 5) {
+          // Bei Page 5 (Zusammenfassung): KEIN Scrollen
+          // Der Benutzer bleibt an der aktuellen Position
+        } else if (pageNumber === 3 || pageNumber === 4) {
+          // Bei Page 3 und 4: Section-Container in den Fokus bringen
+          const sectionContainer = document.querySelector('.page-konfigurator-section');
+          if (sectionContainer) {
+            sectionContainer.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start',
+              inline: 'nearest'
+            });
+          } else {
+            // Fallback: Scroll nach oben
+            window.scrollTo({
+              top: 0,
+              behavior: 'smooth'
+            });
+          }
+        } else {
+          // Bei anderen Seiten: Normal nach oben scrollen
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+        }
       }
 
       // Reihenklemmen entfernt
