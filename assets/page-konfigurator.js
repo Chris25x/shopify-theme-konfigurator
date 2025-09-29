@@ -4362,8 +4362,16 @@ let rowCounter = 1;
           let errorBox = document.getElementById("verteiler-error");
           if (!montageartText || montageartText === 'Bitte wählen Sie die Montageart') {
             if (!errorBox) {
-              errorBox = showError("Bitte wählen Sie eine Montageart aus.");
+              errorBox = document.createElement("div");
               errorBox.id = "verteiler-error";
+              errorBox.style.background = "#ffeaea";
+              errorBox.style.color = "#D93025";
+              errorBox.style.padding = "12px 20px";
+              errorBox.style.borderRadius = "5px";
+              errorBox.style.margin = "20px auto";
+              errorBox.style.maxWidth = "600px";
+              errorBox.style.textAlign = "center";
+              errorBox.textContent = "Bitte wählen Sie eine Montageart aus.";
               // Füge die Fehlermeldung unterhalb der Dropdowns ein
               const dropdowns = document.querySelectorAll('#page3 .dropdown-container');
               if (dropdowns.length > 0 && dropdowns[0].parentNode) {
