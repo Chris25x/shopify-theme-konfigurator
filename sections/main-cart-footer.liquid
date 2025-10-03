@@ -15,6 +15,102 @@
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
   }
+
+  /* Zusammenfassung Card Design - Wie im Bild */
+  .cart-summary-card {
+    background: #ffffff !important;
+    border-radius: 12px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+    padding: 24px !important;
+    border: 1px solid #e5e7eb !important;
+    margin-top: 24px !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin-left: 0 !important;
+  }
+
+  .cart-summary-title {
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    color: #1f2937 !important;
+    margin: 0 0 20px 0 !important;
+  }
+
+  .cart-summary-line {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin-bottom: 12px !important;
+    font-size: 14px !important;
+  }
+
+  .cart-summary-line-label {
+    color: #374151 !important;
+  }
+
+  .cart-summary-line-value {
+    color: #1f2937 !important;
+    font-weight: 500 !important;
+  }
+
+  .cart-summary-line-vat {
+    color: #6b7280 !important;
+    font-size: 13px !important;
+  }
+
+  .cart-summary-divider {
+    height: 1px !important;
+    background: #e5e7eb !important;
+    margin: 16px 0 !important;
+  }
+
+  .cart-summary-total {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    color: #1f2937 !important;
+    margin-bottom: 20px !important;
+  }
+
+  .cart-summary-button {
+    width: 100% !important;
+    background: #005A9C !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 16px 24px !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: background-color 0.2s ease !important;
+    margin-bottom: 12px !important;
+  }
+
+  .cart-summary-button:hover {
+    background: #004080 !important;
+  }
+
+  .cart-summary-button:disabled {
+    background: #9ca3af !important;
+    cursor: not-allowed !important;
+  }
+
+  .cart-summary-info {
+    font-size: 13px !important;
+    color: #6b7280 !important;
+    text-align: center !important;
+    margin: 0 !important;
+  }
+
+  /* Responsive Design */
+  @media screen and (max-width: 749px) {
+    .cart-summary-card {
+      width: 100% !important;
+      margin-left: 0 !important;
+    }
+  }
 {%- endstyle -%}
 
 <div
@@ -44,78 +140,50 @@
               {% render block %}
             {%- when 'subtotal' -%}
               <div class="js-contents" {{ block.shopify_attributes }}>
-                <div>
-                  {%- if cart.cart_level_discount_applications.size > 0 -%}
-                    <ul class="discounts list-unstyled" role="list" aria-label="{{ 'customer.order.discount' | t }}">
-                      {%- for discount in cart.cart_level_discount_applications -%}
-                        <li class="discounts__discount discounts__discount--position">
-                          {{- 'icon-discount.svg' | inline_asset_content -}}
-                          {{ discount.title | escape }}
-                          (-{{ discount.total_allocated_amount | money }})
-                        </li>
-                      {%- endfor -%}
-                    </ul>
-                  {%- endif -%}
+                <div class="cart-summary-card">
+                  <h2 class="cart-summary-title">Zusammenfassung</h2>
+                  
+                  <div class="cart-summary-line">
+                    <span class="cart-summary-line-label">Zwischensumme</span>
+                    <span class="cart-summary-line-value">{{ cart.total_price | money }}</span>
+                  </div>
+                  
+                  <div class="cart-summary-line">
+                    <span class="cart-summary-line-label">Versand</span>
+                    <span class="cart-summary-line-value">Kostenlos</span>
+                  </div>
+                  
+                  <div class="cart-summary-line">
+                    <span class="cart-summary-line-label">inkl. MwSt. (19%)</span>
+                    <span class="cart-summary-line-vat">{{ cart.total_price | times: 0.19 | money }}</span>
+                  </div>
+                  
+                  <div class="cart-summary-divider"></div>
+                  
+                  <div class="cart-summary-total">
+                    <span>Gesamt</span>
+                    <span>{{ cart.total_price | money }}</span>
+                  </div>
+                  
+                  <button
+                    type="submit"
+                    id="checkout"
+                    class="cart-summary-button"
+                    name="checkout"
+                    {% if cart == empty %}
+                      disabled
+                    {% endif %}
+                    form="cart"
+                  >
+                    Zur Kasse
+                  </button>
+                  
+                  <p class="cart-summary-info">Kostenloser Versand</p>
                 </div>
-
-                <div class="totals">
-                  <h2 class="totals__total">{{ 'sections.cart.estimated_total' | t }} {{ cart.total_price | money_with_currency }}</h2>
-                </div>
-
-                <small class="tax-note caption-large rte">
-                  {%- if cart.duties_included and cart.taxes_included -%}
-                    {%- if shop.shipping_policy.body == blank -%}
-                      {{ 'sections.cart.duties_and_taxes_included_shipping_at_checkout_without_policy' | t }}
-                    {%- else -%}
-                      {{
-                        'sections.cart.duties_and_taxes_included_shipping_at_checkout_with_policy_html'
-                        | t: link: shop.shipping_policy.url
-                      }}
-                    {%- endif -%}
-                  {%- elsif cart.duties_included == false and cart.taxes_included -%}
-                    {%- if shop.shipping_policy.body == blank -%}
-                      {{ 'sections.cart.taxes_included_shipping_at_checkout_without_policy' | t }}
-                    {%- else -%}
-                      {{
-                        'sections.cart.taxes_included_shipping_at_checkout_with_policy_html'
-                        | t: link: shop.shipping_policy.url
-                      }}
-                    {%- endif -%}
-                  {%- elsif cart.duties_included and cart.taxes_included == false -%}
-                    {%- if shop.shipping_policy.body == blank -%}
-                      {{ 'sections.cart.duties_included_taxes_at_checkout_shipping_at_checkout_without_policy' | t }}
-                    {%- else -%}
-                      {{
-                        'sections.cart.duties_included_taxes_at_checkout_shipping_at_checkout_with_policy_html'
-                        | t: link: shop.shipping_policy.url
-                      }}
-                    {%- endif -%}
-                  {%- elsif cart.duties_included == false and cart.taxes_included == false -%}
-                    {%- if shop.shipping_policy.body == blank -%}
-                      {{ 'sections.cart.taxes_at_checkout_shipping_at_checkout_without_policy' | t }}
-                    {%- else -%}
-                      {{
-                        'sections.cart.taxes_at_checkout_shipping_at_checkout_with_policy_html'
-                        | t: link: shop.shipping_policy.url
-                      }}
-                    {%- endif -%}
-                  {%- endif -%}
-                </small>
               </div>
             {%- else -%}
               <div class="cart__ctas" {{ block.shopify_attributes }}>
-                <button
-                  type="submit"
-                  id="checkout"
-                  class="cart__checkout-button button"
-                  name="checkout"
-                  {% if cart == empty %}
-                    disabled
-                  {% endif %}
-                  form="cart"
-                >
-                  {{ 'sections.cart.checkout' | t }}
-                </button>
+                <!-- Buttons werden jetzt in der Zusammenfassung-Card angezeigt -->
               </div>
 
               {%- if additional_checkout_buttons -%}
