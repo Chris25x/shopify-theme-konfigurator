@@ -404,13 +404,35 @@ a.product__text {
   position: relative;
   width: 100%;
   aspect-ratio: 4 / 3;              /* moderne Browser */
-  background: #fff;
+  background: #ffffff !important;   /* Explizit weißer Hintergrund */
+  background-color: #ffffff !important; /* Zusätzliche Sicherheit */
   border: 1px solid #e2e8f0;        /* slate-200 */
   border-radius: 16px;              /* ~ rounded-2xl */
   overflow: hidden;
   box-shadow: 0 1px 2px rgba(0,0,0,.04);
   display: grid;
   place-items: center;
+}
+
+/* Zusätzliche Sicherheit für weißen Hintergrund */
+.product-gallery .product-main,
+.product__media-wrapper .product-main,
+.product-main *,
+.product-main::before,
+.product-main::after {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+}
+
+/* Explizit für alle Kind-Elemente */
+.product-main .product__media-item-main {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+}
+
+.product-main .global-media-settings {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
 }
 
 .product__media-item-main {
@@ -430,7 +452,7 @@ a.product__text {
 .product-main img {
   width: 100%;
   height: 100%;
-  object-fit: cover;                 /* wie Tailwind object-cover */
+  object-fit: contain;               /* Vollständiges Bild anzeigen ohne Zuschneiden */
   object-position: center;
   display: block;
 }
@@ -462,7 +484,8 @@ a.product__text {
   border: 1px solid #e2e8f0;
   border-radius: 12px;
   overflow: hidden;
-  background: #fff;
+  background: #ffffff !important;   /* Explizit weißer Hintergrund */
+  background-color: #ffffff !important;
   padding: 0;
   cursor: pointer;
   transition: box-shadow .2s ease, transform .06s ease;
@@ -485,14 +508,71 @@ a.product__text {
 .product-thumb img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   display: block;
 }
 
-/* Aktiver Zustand (entspricht ring-2 + border PRIMARY) */
+/* Aktiver Zustand - doppelter schwarzer Rahmen */
 .product-thumb.is-active {
-  border-color: #005A9C;            /* PRIMARY */
-  box-shadow: 0 0 0 2px #005A9C;    /* „Ring" */
+  border: 2px solid #000000;        /* Dickerer schwarzer Rahmen außen */
+  box-shadow: 0 0 0 1px #000000;    /* Dünnerer schwarzer Rahmen innen */
+  background: #ffffff !important;   /* Weißer Hintergrund für aktiven Thumbnail */
+  background-color: #ffffff !important;
+}
+
+/* Zusätzliche Sicherheit für alle Thumbnail-Zustände */
+.product-thumb:hover,
+.product-thumb:focus,
+.product-thumb:active {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+}
+
+/* EXTREME Sicherheit - nur für die spezifischen Elemente */
+.product-main,
+.product-main *,
+.product__media-item-main,
+.product__media-item-main *,
+.global-media-settings,
+.global-media-settings *,
+.product-thumb,
+.product-thumb * {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+}
+
+/* Spezifisch für Bilder */
+.product-main img,
+.product-thumb img,
+.global-media-settings img {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+}
+
+/* MAXIMALE SICHERHEIT - nur für Thumbnail-Buttons */
+button.product-thumb,
+button.product-thumb:hover,
+button.product-thumb:focus,
+button.product-thumb:active {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  background-image: none !important;
+}
+
+/* Spezifisch für aktiven Thumbnail - doppelter schwarzer Rahmen */
+button.product-thumb.is-active {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  background-image: none !important;
+  border: 2px solid #000000 !important;        /* Dickerer schwarzer Rahmen außen */
+  box-shadow: 0 0 0 1px #000000 !important;    /* Dünnerer schwarzer Rahmen innen */
+}
+
+/* Container sollen transparent bleiben */
+.product-thumbs-container,
+.product-thumbs {
+  background: transparent !important;
+  background-color: transparent !important;
 }
 
 /* --- Navigation Buttons --- */
@@ -1692,7 +1772,7 @@ a.product__text {
 }
 
 .thumbnail img {
-  object-fit: cover;
+  object-fit: contain;
   width: 100%;
   height: 100%;
   pointer-events: none;
@@ -1936,7 +2016,7 @@ a.product__text {
   }
 
   .product-media-container.media-fit-cover .deferred-media__poster img {
-    object-fit: cover;
+    object-fit: contain;
     width: 100%;
   }
 }

@@ -176,14 +176,16 @@
                     <td class="cart-item__media">
                       {% if item.image %}
                         <div class="cart-item__image-container gradient global-media-settings">
-                          <img
-                            src="{{ item.image | image_url: width: 300 }}"
-                            class="cart-item__image"
-                            alt="{{ item.image.alt | escape }}"
-                            loading="lazy"
-                            width="150"
-                            height="{{ 150 | divided_by: item.image.aspect_ratio | ceil }}"
-                          >
+                          <a href="{{ item.product.url }}" class="cart-item__image-link">
+                            <img
+                              src="{{ item.image | image_url: width: 300 }}"
+                              class="cart-item__image"
+                              alt="{{ item.image.alt | escape }}"
+                              loading="lazy"
+                              width="150"
+                              height="{{ 150 | divided_by: item.image.aspect_ratio | ceil }}"
+                            >
+                          </a>
                         </div>
                       {% endif %}
                     </td>

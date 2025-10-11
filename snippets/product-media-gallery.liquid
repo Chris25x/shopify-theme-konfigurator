@@ -13,7 +13,7 @@
 {%- if product.media.size > 0 -%}
   <div class="product-gallery">
     <!-- Hauptbild -->
-    <div class="product-main">
+    <div class="product-main" style="background-color: #ffffff !important;">
       {%- if product.selected_or_first_available_variant.featured_media != null -%}
         {%- assign featured_media = product.selected_or_first_available_variant.featured_media -%}
         {%- for media in product.media -%}
@@ -71,7 +71,7 @@
         
         <div class="product-thumbs">
           {%- for media in product.media -%}
-            <button class="product-thumb{% if forloop.first %} is-active{% endif %}{% if forloop.index > 3 %} thumb-hidden{% endif %}" data-media-id="{{ section.id }}-{{ media.id }}" aria-label="Bild {{ forloop.index }} anzeigen">
+            <button class="product-thumb{% if forloop.first %} is-active{% endif %}{% if forloop.index > 3 %} thumb-hidden{% endif %}" data-media-id="{{ section.id }}-{{ media.id }}" aria-label="Bild {{ forloop.index }} anzeigen" style="background-color: #ffffff !important;">
               {% render 'product-media', media: media, loop: section.settings.enable_video_looping, variant_image: section.settings.hide_variants and variant_images contains media.src, is_duplicate: is_duplicate %}
             </button>
           {%- endfor -%}
