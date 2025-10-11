@@ -371,6 +371,9 @@ h5,
 h1,
 .h1 {
   font-size: calc(var(--font-heading-scale) * 3rem);
+  font-weight: 800;
+  color: #111827;
+  letter-spacing: -0.02em;
 }
 
 @media only screen and (min-width: 750px) {
@@ -383,6 +386,9 @@ h1,
 h2,
 .h2 {
   font-size: calc(var(--font-heading-scale) * 2rem);
+  font-weight: 800;
+  color: #111827;
+  letter-spacing: -0.02em;
 }
 
 @media only screen and (min-width: 750px) {
@@ -870,6 +876,21 @@ summary::-webkit-details-marker {
 
 .title--primary {
   margin: 4rem 0;
+}
+
+/* Cart Title Styling - wie "Einsatzfälle & Anwendungsbereiche" */
+cart-items .title--primary {
+  font-size: 32px;
+  font-weight: 800;
+  color: #111827;
+  margin: 2rem 0 2rem 0;
+  letter-spacing: -0.02em;
+}
+
+@media screen and (min-width: 990px) {
+  cart-items .title--primary {
+    font-size: 36px;
+  }
 }
 
 .title-wrapper--self-padded-tablet-down,

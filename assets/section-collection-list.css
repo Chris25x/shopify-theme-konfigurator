@@ -59,3 +59,56 @@
 .collection-list-view-all {
   margin-top: 2rem;
 }
+
+/* --- Collection Items Rounded Corners --- */
+.collection-list__item {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.collection-list__item .grid__item {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Collection card containers */
+.collection-list__item .card-wrapper,
+.collection-list__item .underline-links-hover {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Collection images */
+.collection-list__item img {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Collection card inner containers */
+.collection-list__item .card__inner {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Collection card content */
+.collection-list__item .card__content {
+  border-radius: 0 0 12px 12px;
+}
+
+/* Hover effects with rounded corners */
+.collection-list__item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+/* Ensure all collection elements have rounded corners */
+.collection-list__item,
+.collection-list__item .grid__item,
+.collection-list__item .card-wrapper,
+.collection-list__item .underline-links-hover,
+.collection-list__item .card__inner,
+.collection-list__item img {
+  border-radius: 12px !important;
+  overflow: hidden !important;
+}

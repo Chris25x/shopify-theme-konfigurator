@@ -120,4 +120,11 @@
 .cart-notification-product__name {
   margin-bottom: 0.5rem;
   margin-top: 0;
+  text-decoration: none;
+  color: inherit;
+}
+
+.cart-notification-product__name:hover {
+  text-decoration: underline;
+  color: inherit;
 }

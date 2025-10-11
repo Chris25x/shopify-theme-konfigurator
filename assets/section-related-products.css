@@ -5,3 +5,59 @@
 .related-products__heading {
   margin: 0 0 3rem;
 }
+
+/* --- Product Card Styling --- */
+.card-wrapper {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.product-card-wrapper {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.underline-links-hover {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Ensure all product card elements have rounded corners */
+.card-wrapper,
+.product-card-wrapper,
+.underline-links-hover {
+  border-radius: 12px !important;
+  overflow: hidden !important;
+}
+
+/* Product card image containers */
+.card-wrapper .card__inner,
+.product-card-wrapper .card__inner,
+.underline-links-hover .card__inner {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Product card images */
+.card-wrapper img,
+.product-card-wrapper img,
+.underline-links-hover img {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Product card content */
+.card-wrapper .card__content,
+.product-card-wrapper .card__content,
+.underline-links-hover .card__content {
+  border-radius: 0 0 12px 12px;
+}
+
+/* Hover effects with rounded corners */
+.card-wrapper:hover,
+.product-card-wrapper:hover,
+.underline-links-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}

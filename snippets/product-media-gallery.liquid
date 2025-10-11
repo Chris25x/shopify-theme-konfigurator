@@ -1,0 +1,90 @@
+{% comment %}
+  Renders a product media gallery. Should be used with 'media' inside product media
+  component.
+
+  Accepts:
+  - variant_images: {Array} Product variant images
+  - is_duplicate: {Boolean} Prevents media from being duplicated
+
+  Usage:
+  {% render 'product-media-gallery', variant_images: variant_images, is_duplicate: is_duplicate %}
+{% endcomment %}
+
+{%- if product.media.size > 0 -%}
+  <div class="product-gallery">
+    <!-- Hauptbild -->
+    <div class="product-main">
+      {%- if product.selected_or_first_available_variant.featured_media != null -%}
+        {%- assign featured_media = product.selected_or_first_available_variant.featured_media -%}
+        {%- for media in product.media -%}
+          {%- assign is_variant_media = false -%}
+          {%- for variant in product.variants -%}
+            {%- if variant.featured_media and variant.featured_media.id == media.id -%}
+              {%- assign is_variant_media = true -%}
+              {%- break -%}
+            {%- endif -%}
+          {%- endfor -%}
+          
+          {%- if media.id == featured_media.id -%}
+            <div class="product__media-item-main active" data-media-id="{{ section.id }}-{{ media.id }}" {% if is_variant_media %}data-variant-media="true"{% endif %}>
+              {% render 'product-media', media: media, loop: section.settings.enable_video_looping, variant_image: section.settings.hide_variants and variant_images contains media.src, is_duplicate: is_duplicate %}
+            </div>
+          {%- else -%}
+            <div class="product__media-item-main" data-media-id="{{ section.id }}-{{ media.id }}" {% if is_variant_media %}data-variant-media="true"{% endif %}>
+              {% render 'product-media', media: media, loop: section.settings.enable_video_looping, variant_image: section.settings.hide_variants and variant_images contains media.src, is_duplicate: is_duplicate %}
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      {%- else -%}
+        {%- for media in product.media -%}
+          {%- assign is_variant_media = false -%}
+          {%- for variant in product.variants -%}
+            {%- if variant.featured_media and variant.featured_media.id == media.id -%}
+              {%- assign is_variant_media = true -%}
+              {%- break -%}
+            {%- endif -%}
+          {%- endfor -%}
+          
+          {%- if forloop.first -%}
+            <div class="product__media-item-main active" data-media-id="{{ section.id }}-{{ media.id }}" {% if is_variant_media %}data-variant-media="true"{% endif %}>
+              {% render 'product-media', media: media, loop: section.settings.enable_video_looping, variant_image: section.settings.hide_variants and variant_images contains media.src, is_duplicate: is_duplicate %}
+            </div>
+          {%- else -%}
+            <div class="product__media-item-main" data-media-id="{{ section.id }}-{{ media.id }}" {% if is_variant_media %}data-variant-media="true"{% endif %}>
+              {% render 'product-media', media: media, loop: section.settings.enable_video_looping, variant_image: section.settings.hide_variants and variant_images contains media.src, is_duplicate: is_duplicate %}
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+    
+    <!-- Thumbnail-Grid -->
+    {%- if product.media.size > 1 -%}
+      <div class="product-thumbs-container">
+        {%- if product.media.size > 3 -%}
+          <button class="thumb-nav thumb-nav--prev" aria-label="Vorherige Bilder">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        {%- endif -%}
+        
+        <div class="product-thumbs">
+          {%- for media in product.media -%}
+            <button class="product-thumb{% if forloop.first %} is-active{% endif %}{% if forloop.index > 3 %} thumb-hidden{% endif %}" data-media-id="{{ section.id }}-{{ media.id }}" aria-label="Bild {{ forloop.index }} anzeigen">
+              {% render 'product-media', media: media, loop: section.settings.enable_video_looping, variant_image: section.settings.hide_variants and variant_images contains media.src, is_duplicate: is_duplicate %}
+            </button>
+          {%- endfor -%}
+        </div>
+        
+        {%- if product.media.size > 3 -%}
+          <button class="thumb-nav thumb-nav--next" aria-label="Nächste Bilder">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+{%- endif -%}

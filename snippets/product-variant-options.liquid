@@ -77,24 +77,35 @@
       additional_props: input_dataset
     %}
   {%- elsif picker_type == 'button' -%}
-    <input
-      type="radio"
-      id="{{ input_id }}"
-      name="{{ input_name | escape }}"
-      value="{{ value | escape }}"
-      form="{{ product_form_id }}"
-      {% if value.selected %}
-        checked
-      {% endif %}
-      {% if option_disabled %}
-        class="disabled"
-      {% endif %}
-      {{ input_dataset }}
-    >
-    <label for="{{ input_id }}">
-      {{ value -}}
-      {{ label_unavailable }}
-    </label>
+    <div class="variant-card{% if value.selected %} variant-card--selected{% endif %}{% if option_disabled %} variant-card--disabled{% endif %}">
+      <input
+        type="radio"
+        id="{{ input_id }}"
+        name="{{ input_name | escape }}"
+        value="{{ value | escape }}"
+        form="{{ product_form_id }}"
+        {% if value.selected %}
+          checked
+        {% endif %}
+        {% if option_disabled %}
+          class="disabled"
+        {% endif %}
+        {{ input_dataset }}
+      >
+      <label for="{{ input_id }}" class="variant-card__content">
+        <div class="variant-card__name">{{ value }}</div>
+        {%- if value.price != 0 -%}
+          <div class="variant-card__price">
+            {%- if value.price > 0 -%}
+              +{{ value.price | money }}
+            {%- else -%}
+              {{ value.price | money }}
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+        {{ label_unavailable }}
+      </label>
+    </div>
   {%- elsif picker_type == 'dropdown' or picker_type == 'swatch_dropdown' -%}
     <option
       id="{{ input_id }}"
