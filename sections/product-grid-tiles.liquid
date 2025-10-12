@@ -11,29 +11,29 @@
     <div class="filter-sort-bar">
       <div class="filter-section">
         <span class="filter-label">Filter:</span>
-        <select class="filter-dropdown">
-          <option>Verfügbarkeit</option>
-          <option>Verfügbar</option>
-          <option>Nicht verfügbar</option>
+        <select class="filter-dropdown" id="availability-filter">
+          <option value="">Verfügbarkeit</option>
+          <option value="available">Verfügbar</option>
+          <option value="unavailable">Nicht verfügbar</option>
         </select>
-        <select class="filter-dropdown">
-          <option>Preis</option>
-          <option>Niedrig zu Hoch</option>
-          <option>Hoch zu Niedrig</option>
+        <select class="filter-dropdown" id="price-filter">
+          <option value="">Preis</option>
+          <option value="low-high">Niedrig zu Hoch</option>
+          <option value="high-low">Hoch zu Niedrig</option>
         </select>
       </div>
       
       <div class="sort-section">
         <span class="sort-label">Sortieren nach:</span>
-        <select class="sort-dropdown">
-          <option>Alphabetisch, A-Z</option>
-          <option>Alphabetisch, Z-A</option>
-          <option>Preis aufsteigend</option>
-          <option>Preis absteigend</option>
+        <select class="sort-dropdown" id="sort-dropdown">
+          <option value="title-asc">Alphabetisch, A-Z</option>
+          <option value="title-desc">Alphabetisch, Z-A</option>
+          <option value="price-asc">Preis aufsteigend</option>
+          <option value="price-desc">Preis absteigend</option>
         </select>
       </div>
       
-      <div class="product-count">
+      <div class="product-count" id="product-count">
         {% assign products_source = collections[section.settings.collection].products | default: collections.all.products %}
         {% assign product_limit = section.settings.products_to_show %}
         {% assign total_products = products_source.size %}
@@ -62,6 +62,10 @@
           href="{{ product.url }}"
           class="product-card"
           aria-label="{{ product.title | escape }}"
+          data-product-title="{{ product.title | escape }}"
+          data-product-price="{{ product.price }}"
+          data-product-available="{{ product.available }}"
+          data-product-id="{{ product.id }}"
         >
           <div class="product-card__image-container">
             {% if product.featured_image %}
@@ -88,10 +92,18 @@
             <div class="product-card__header">
               <h3 class="product-card__title">{{ product.title }}</h3>
               <div class="product-card__availability">
-                <svg class="availability-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                  <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z" fill="#10b981"/>
-                </svg>
-                <span class="availability-text">Verfügbar</span>
+                {% if product.available %}
+                  <svg class="availability-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z" fill="#10b981"/>
+                  </svg>
+                  <span class="availability-text">Verfügbar</span>
+                {% else %}
+                  <svg class="availability-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" fill="#dc2626"/>
+                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" fill="#dc2626"/>
+                  </svg>
+                  <span class="availability-text">Nicht verfügbar</span>
+                {% endif %}
               </div>
             </div>
             
@@ -221,7 +233,7 @@
       position: relative; 
       width: 100%; 
       aspect-ratio: 4/3; 
-      background: #f8f9fa; 
+      background: #ffffff; 
       display: flex; 
       align-items: center; 
       justify-content: center; 
@@ -245,7 +257,7 @@
       display: flex; 
       align-items: center; 
       justify-content: center; 
-      background: #f8f9fa; 
+      background: #ffffff; 
     }
     
     #section-{{ section.id }} .product-card__placeholder-text{ 
@@ -287,8 +299,9 @@
     #section-{{ section.id }} .availability-text{ 
       font-size: 14px; 
       font-weight: 500; 
-      color: #10b981; 
     }
+    
+    /* Verfügbarkeits-Status über JavaScript gesetzt */
     
     #section-{{ section.id }} .product-card__price{ 
       font-size: 16px; 
@@ -334,7 +347,131 @@
         text-align: center; 
       }
     }
+
+    /* Filter states */
+    #section-{{ section.id }} .product-card.hidden {
+      display: none;
+    }
   {% endstyle %}
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const sectionId = 'section-{{ section.id }}';
+      const productCards = document.querySelectorAll(`#${sectionId} .product-card`);
+      const availabilityFilter = document.getElementById('availability-filter');
+      const priceFilter = document.getElementById('price-filter');
+      const sortDropdown = document.getElementById('sort-dropdown');
+      const productCount = document.getElementById('product-count');
+      const grid = document.querySelector(`#${sectionId} .grid`);
+
+      // Verfügbarkeits-Farben setzen
+      function setAvailabilityColors() {
+        productCards.forEach(card => {
+          const isAvailable = card.dataset.productAvailable === 'true';
+          const availabilityText = card.querySelector('.availability-text');
+          if (availabilityText) {
+            if (isAvailable) {
+              availabilityText.style.color = '#10b981'; // Grün für verfügbar
+            } else {
+              availabilityText.style.color = '#dc2626'; // Rot für nicht verfügbar
+            }
+          }
+        });
+      }
+
+      // Initiale Farben setzen
+      setAvailabilityColors();
+
+      function updateProductCount() {
+        const visibleProducts = document.querySelectorAll(`#${sectionId} .product-card:not(.hidden)`);
+        productCount.textContent = `${visibleProducts.length} Produkte`;
+      }
+
+      function filterProducts() {
+        const availabilityValue = availabilityFilter.value;
+        const priceValue = priceFilter.value;
+
+        productCards.forEach(card => {
+          const isAvailable = card.dataset.productAvailable === 'true';
+          const price = parseInt(card.dataset.productPrice);
+          
+          let showCard = true;
+
+          // Verfügbarkeits-Filter
+          if (availabilityValue === 'available' && !isAvailable) {
+            showCard = false;
+          } else if (availabilityValue === 'unavailable' && isAvailable) {
+            showCard = false;
+          }
+
+          // Preis-Filter
+          if (showCard && priceValue === 'low-high') {
+            // Sortierung nach Preis aufsteigend wird in sortProducts() behandelt
+          } else if (showCard && priceValue === 'high-low') {
+            // Sortierung nach Preis absteigend wird in sortProducts() behandelt
+          }
+
+          if (showCard) {
+            card.classList.remove('hidden');
+          } else {
+            card.classList.add('hidden');
+          }
+        });
+
+        // Sortierung anwenden
+        sortProducts();
+
+        // Produktanzahl aktualisieren
+        updateProductCount();
+      }
+
+      function sortProducts() {
+        const sortValue = sortDropdown.value;
+        const visibleCards = Array.from(productCards).filter(card => !card.classList.contains('hidden'));
+        
+        visibleCards.sort((a, b) => {
+          switch (sortValue) {
+            case 'title-asc':
+              return a.dataset.productTitle.localeCompare(b.dataset.productTitle);
+            case 'title-desc':
+              return b.dataset.productTitle.localeCompare(a.dataset.productTitle);
+            case 'price-asc':
+              return parseInt(a.dataset.productPrice) - parseInt(b.dataset.productPrice);
+            case 'price-desc':
+              return parseInt(b.dataset.productPrice) - parseInt(a.dataset.productPrice);
+            default:
+              return 0;
+          }
+        });
+
+        // Karten in neuer Reihenfolge einfügen
+        visibleCards.forEach(card => {
+          grid.appendChild(card);
+        });
+      }
+
+      // Event Listeners
+      availabilityFilter.addEventListener('change', filterProducts);
+      priceFilter.addEventListener('change', function() {
+        if (this.value === 'low-high') {
+          sortDropdown.value = 'price-asc';
+        } else if (this.value === 'high-low') {
+          sortDropdown.value = 'price-desc';
+        }
+        filterProducts();
+      });
+      sortDropdown.addEventListener('change', function() {
+        // Preis-Filter zurücksetzen wenn Sortierung geändert wird
+        if (this.value === 'price-asc' || this.value === 'price-desc') {
+          priceFilter.value = this.value === 'price-asc' ? 'low-high' : 'high-low';
+        } else {
+          priceFilter.value = '';
+        }
+        sortProducts();
+        updateProductCount();
+      });
+    });
+  </script>
 </section>
 
 {% schema %}

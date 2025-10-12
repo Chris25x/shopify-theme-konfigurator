@@ -72,12 +72,15 @@
     #section-{{ section.id }} .tile--bg-light { background: #f1f5f9; }
     #section-{{ section.id }} .tile--bg-white { background: #fff; }
 
-    #section-{{ section.id }} .tile__inner { position: relative; padding: clamp(1rem, 3vw, 2rem); aspect-ratio: 4 / 3; display: flex; flex-direction: column; }
-    #section-{{ section.id }} .tile__media { flex: 1; display: grid; place-items: center; padding: clamp(1rem, 2vw, 2rem); }
+    #section-{{ section.id }} .tile__inner { position: relative; padding: clamp(1rem, 3vw, 2rem); aspect-ratio: 4 / 4.5; display: block; }
+    #section-{{ section.id }} .tile__media { position: absolute; top: clamp(0.5rem, 2vw, 1rem); left: clamp(0.5rem, 2vw, 1rem); right: clamp(0.5rem, 2vw, 1rem); bottom: 70px; display: grid; place-items: center; padding: clamp(0.5rem, 1.5vw, 1.5rem); }
     #section-{{ section.id }} .tile__media img { max-width: 100%; max-height: 100%; width: 100%; height: 100%; object-fit: contain; transform: translateX(4%); transition: transform 0.3s ease, filter 0.3s ease; }
+    
+    /* Bilder sollen vollständig sichtbar sein */
+    #section-{{ section.id }} .tile__media { overflow: visible; }
     #section-{{ section.id }} .tile:hover .tile__media img { transform: translateX(4%) scale(1.05); filter: brightness(1.1); }
 
-    #section-{{ section.id }} .tile__label { display: inline-flex; align-items: center; gap: .5rem; font-size: clamp(1.125rem, .75vw + 1rem, 1.5rem); font-weight: 600; color: #1f2937; padding: 0.5rem 0; }
+    #section-{{ section.id }} .tile__label { position: absolute; bottom: clamp(1rem, 3vw, 2rem); left: clamp(1rem, 3vw, 2rem); right: clamp(1rem, 3vw, 2rem); display: inline-flex; align-items: center; gap: .5rem; font-size: clamp(1.125rem, .75vw + 1rem, 1.5rem); font-weight: 600; color: #1f2937; }
     #section-{{ section.id }} .tile:hover .tile__label .tile__arrow { transform: translateX(2px); }
     #section-{{ section.id }} .tile__arrow { transition: transform .15s ease; }
 
