@@ -37,12 +37,14 @@
         {% assign products_source = collections[section.settings.collection].products | default: collections.all.products %}
         {% assign product_limit = section.settings.products_to_show %}
         {% assign total_products = products_source.size %}
-        {% if product_limit < total_products %}
-          {% assign display_count = product_limit %}
-        {% else %}
-          {% assign display_count = total_products %}
+        {% assign current_page = request.query.page | default: 1 | plus: 0 %}
+        {% assign start_index = current_page | minus: 1 | times: product_limit %}
+        {% assign end_index = start_index | plus: product_limit | minus: 1 %}
+        {% if end_index >= total_products %}
+          {% assign end_index = total_products | minus: 1 %}
         {% endif %}
-        {{ display_count }} Produkte
+        {% assign display_count = end_index | minus: start_index | plus: 1 %}
+        {{ total_products }} Produkte
       </div>
     </div>
 
@@ -54,10 +56,10 @@
         {% assign products_source = collections.all.products %}
       {% endif %}
 
-      {% comment %} Produktlimit anwenden {% endcomment %}
+      {% comment %} Alle Produkte laden für client-seitige Paginierung {% endcomment %}
       {% assign product_limit = section.settings.products_to_show %}
       
-      {% for product in products_source limit: product_limit %}
+      {% for product in products_source %}
         <a
           href="{{ product.url }}"
           class="product-card"
@@ -124,6 +126,23 @@
           <p>Keine Produkte gefunden.</p>
         </div>
       {% endfor %}
+    </div>
+
+    {% comment %} Paginierung Navigation (JavaScript-basiert) {% endcomment %}
+    <div class="pagination" id="pagination" style="display: none;">
+      <div class="pagination__nav">
+        <button class="pagination__btn pagination__btn--prev" id="prev-page" disabled>
+          ← Vorherige
+        </button>
+        
+        <div class="pagination__pages" id="pagination-pages">
+          <!-- Seitenzahlen werden durch JavaScript generiert -->
+        </div>
+        
+        <button class="pagination__btn pagination__btn--next" id="next-page">
+          Nächste →
+        </button>
+      </div>
     </div>
 
     {% if section.settings.show_view_all and section.settings.collection != blank %}
@@ -330,6 +349,66 @@
     /* Empty state */
     #section-{{ section.id }} .empty{ background:#fff; border:1px solid #e2e8f0; border-radius:16px; padding:32px; color:#475569; text-align:center; grid-column: 1 / -1; }
 
+    /* Pagination */
+    #section-{{ section.id }} .pagination{ 
+      margin-top: 32px; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+    }
+    
+    #section-{{ section.id }} .pagination__nav{ 
+      display: flex; 
+      align-items: center; 
+      gap: 8px; 
+    }
+    
+    #section-{{ section.id }} .pagination__btn, 
+    #section-{{ section.id }} .pagination__page{ 
+      display: inline-flex; 
+      align-items: center; 
+      justify-content: center; 
+      min-width: 40px; 
+      height: 40px; 
+      padding: 8px 12px; 
+      border: 1px solid #d1d5db; 
+      border-radius: 6px; 
+      background: #ffffff; 
+      color: #374151; 
+      text-decoration: none; 
+      font-size: 14px; 
+      font-weight: 500; 
+      transition: all 0.2s ease; 
+      cursor: pointer; 
+    }
+    
+    #section-{{ section.id }} .pagination__btn:disabled{ 
+      opacity: 0.5; 
+      cursor: not-allowed; 
+    }
+    
+    #section-{{ section.id }} .pagination__pages{ 
+      display: flex; 
+      gap: 4px; 
+    }
+    
+    #section-{{ section.id }} .pagination__btn:hover, 
+    #section-{{ section.id }} .pagination__page:hover{ 
+      background: #f3f4f6; 
+      border-color: #9ca3af; 
+    }
+    
+    #section-{{ section.id }} .pagination__page--current{ 
+      background: #3b82f6; 
+      border-color: #3b82f6; 
+      color: #ffffff; 
+    }
+    
+    #section-{{ section.id }} .pagination__page--current:hover{ 
+      background: #2563eb; 
+      border-color: #2563eb; 
+    }
+
     /* Responsive adjustments */
     @media (max-width: 767px) {
       #section-{{ section.id }} .filter-sort-bar{ 
@@ -363,6 +442,16 @@
       const sortDropdown = document.getElementById('sort-dropdown');
       const productCount = document.getElementById('product-count');
       const grid = document.querySelector(`#${sectionId} .grid`);
+      const pagination = document.getElementById('pagination');
+      const paginationPages = document.getElementById('pagination-pages');
+      const prevBtn = document.getElementById('prev-page');
+      const nextBtn = document.getElementById('next-page');
+
+      // Paginierung Variablen
+      const productsPerPage = {{ section.settings.products_to_show }};
+      let currentPage = 1;
+      let filteredAndSortedProducts = Array.from(productCards);
+      let totalPages = 1;
 
       // Verfügbarkeits-Farben setzen
       function setAvailabilityColors() {
@@ -384,52 +473,95 @@
 
       function updateProductCount() {
         const visibleProducts = document.querySelectorAll(`#${sectionId} .product-card:not(.hidden)`);
-        productCount.textContent = `${visibleProducts.length} Produkte`;
+        const totalProducts = filteredAndSortedProducts.length;
+        const startIndex = (currentPage - 1) * productsPerPage + 1;
+        const endIndex = Math.min(currentPage * productsPerPage, totalProducts);
+        productCount.textContent = `${endIndex - startIndex + 1} von ${totalProducts} Produkten`;
+      }
+
+      function updatePagination() {
+        const totalProducts = filteredAndSortedProducts.length;
+        totalPages = Math.ceil(totalProducts / productsPerPage);
+        
+        if (totalPages <= 1) {
+          pagination.style.display = 'none';
+          return;
+        }
+        
+        pagination.style.display = 'flex';
+        
+        // Vorherige/Nächste Buttons
+        prevBtn.disabled = currentPage === 1;
+        nextBtn.disabled = currentPage === totalPages;
+        
+        // Seitenzahlen generieren
+        paginationPages.innerHTML = '';
+        const startPage = Math.max(1, currentPage - 2);
+        const endPage = Math.min(totalPages, currentPage + 2);
+        
+        for (let i = startPage; i <= endPage; i++) {
+          const pageBtn = document.createElement('button');
+          pageBtn.className = `pagination__page ${i === currentPage ? 'pagination__page--current' : ''}`;
+          pageBtn.textContent = i;
+          pageBtn.addEventListener('click', () => goToPage(i));
+          paginationPages.appendChild(pageBtn);
+        }
+      }
+
+      function goToPage(page) {
+        currentPage = page;
+        displayProducts();
+        updateProductCount();
+        updatePagination();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      function displayProducts() {
+        // Alle Produkte verstecken
+        productCards.forEach(card => card.style.display = 'none');
+        
+        // Aktuelle Seite anzeigen
+        const startIndex = (currentPage - 1) * productsPerPage;
+        const endIndex = startIndex + productsPerPage;
+        
+        for (let i = startIndex; i < endIndex && i < filteredAndSortedProducts.length; i++) {
+          filteredAndSortedProducts[i].style.display = 'block';
+        }
       }
 
       function filterProducts() {
         const availabilityValue = availabilityFilter.value;
         const priceValue = priceFilter.value;
 
-        productCards.forEach(card => {
+        filteredAndSortedProducts = Array.from(productCards).filter(card => {
           const isAvailable = card.dataset.productAvailable === 'true';
-          const price = parseInt(card.dataset.productPrice);
           
-          let showCard = true;
-
           // Verfügbarkeits-Filter
           if (availabilityValue === 'available' && !isAvailable) {
-            showCard = false;
+            return false;
           } else if (availabilityValue === 'unavailable' && isAvailable) {
-            showCard = false;
+            return false;
           }
-
-          // Preis-Filter
-          if (showCard && priceValue === 'low-high') {
-            // Sortierung nach Preis aufsteigend wird in sortProducts() behandelt
-          } else if (showCard && priceValue === 'high-low') {
-            // Sortierung nach Preis absteigend wird in sortProducts() behandelt
-          }
-
-          if (showCard) {
-            card.classList.remove('hidden');
-          } else {
-            card.classList.add('hidden');
-          }
+          
+          return true;
         });
 
         // Sortierung anwenden
         sortProducts();
-
-        // Produktanzahl aktualisieren
+        
+        // Zur ersten Seite zurücksetzen
+        currentPage = 1;
+        
+        // Produkte anzeigen und Paginierung aktualisieren
+        displayProducts();
         updateProductCount();
+        updatePagination();
       }
 
       function sortProducts() {
         const sortValue = sortDropdown.value;
-        const visibleCards = Array.from(productCards).filter(card => !card.classList.contains('hidden'));
         
-        visibleCards.sort((a, b) => {
+        filteredAndSortedProducts.sort((a, b) => {
           switch (sortValue) {
             case 'title-asc':
               return a.dataset.productTitle.localeCompare(b.dataset.productTitle);
@@ -444,8 +576,8 @@
           }
         });
 
-        // Karten in neuer Reihenfolge einfügen
-        visibleCards.forEach(card => {
+        // Karten in neuer Reihenfolge in das Grid einfügen
+        filteredAndSortedProducts.forEach(card => {
           grid.appendChild(card);
         });
       }
@@ -467,9 +599,36 @@
         } else {
           priceFilter.value = '';
         }
+        
+        // Sortierung anwenden
         sortProducts();
+        
+        // Zur ersten Seite zurücksetzen
+        currentPage = 1;
+        
+        // Produkte anzeigen und Paginierung aktualisieren
+        displayProducts();
         updateProductCount();
+        updatePagination();
       });
+
+      // Paginierung Event Listeners
+      prevBtn.addEventListener('click', () => {
+        if (currentPage > 1) {
+          goToPage(currentPage - 1);
+        }
+      });
+
+      nextBtn.addEventListener('click', () => {
+        if (currentPage < totalPages) {
+          goToPage(currentPage + 1);
+        }
+      });
+
+      // Initialisierung
+      displayProducts();
+      updateProductCount();
+      updatePagination();
     });
   </script>
 </section>
