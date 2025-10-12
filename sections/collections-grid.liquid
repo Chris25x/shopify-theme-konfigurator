@@ -61,8 +61,8 @@
     #section-{{ section.id }} .container { max-width: 1400px; margin: 0 auto; padding: 2.5rem clamp(1rem, 4vw, 50px); }
     #section-{{ section.id }} .heading { font-size: clamp(1.75rem, 2vw + 1rem, 2.5rem); font-weight: 800; margin: 0 0 1rem; }
 
-    /* Grid: 2 cols on md, 4 on xl */
-    #section-{{ section.id }} .grid { display: grid; grid-template-columns: 1fr; gap: 2rem; }
+    /* Grid: 2 cols on mobile, 2 cols on tablet, 4 on xl */
+    #section-{{ section.id }} .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
     @media (min-width: 768px) { #section-{{ section.id }} .grid { grid-template-columns: repeat(2, 1fr); gap: 2rem; } }
     @media (min-width: 1280px){ #section-{{ section.id }} .grid { grid-template-columns: repeat(4, 1fr); gap: 2rem; } }
 
@@ -72,7 +72,7 @@
     #section-{{ section.id }} .tile--bg-light { background: #f1f5f9; }
     #section-{{ section.id }} .tile--bg-white { background: #fff; }
 
-    #section-{{ section.id }} .tile__inner { position: relative; padding: 2rem; aspect-ratio: 4 / 3; display: flex; flex-direction: column; }
+    #section-{{ section.id }} .tile__inner { position: relative; padding: clamp(1rem, 3vw, 2rem); aspect-ratio: 4 / 3; display: flex; flex-direction: column; }
     #section-{{ section.id }} .tile__media { flex: 1; display: grid; place-items: center; padding: clamp(1rem, 2vw, 2rem); }
     #section-{{ section.id }} .tile__media img { max-width: 100%; max-height: 100%; width: 100%; height: 100%; object-fit: contain; transform: translateX(4%); transition: transform 0.3s ease, filter 0.3s ease; }
     #section-{{ section.id }} .tile:hover .tile__media img { transform: translateX(4%) scale(1.05); filter: brightness(1.1); }
