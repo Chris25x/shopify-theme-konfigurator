@@ -1842,6 +1842,20 @@ let rowCounter = 1;
       });
     });
 
+    // Hilfsfunktion für konsistente Reihennummerierung (1-5)
+    function getConsistentRowNumber(rowIndex, isZusatzReihe = false, allRows = []) {
+      if (isZusatzReihe && rowIndex === 1) {
+        return 2; // Zusatzreihe von Reihe 1 wird zu Reihe 2
+      } else if (!isZusatzReihe && rowIndex === 1) {
+        return 1; // Normale Reihe 1 bleibt Reihe 1
+      } else if (!isZusatzReihe && rowIndex > 1) {
+        // Prüfe ob es eine Zusatzreihe von Reihe 1 gibt
+        const hasRow1Zusatz = allRows.some(row => row.originalIndex === 1 && row.isZusatz);
+        return hasRow1Zusatz ? rowIndex + 1 : rowIndex;
+      }
+      return rowIndex;
+    }
+
     function updateSummary() {
       try {
         // --- Alle Reihen zählen ---
@@ -1859,16 +1873,57 @@ let rowCounter = 1;
         // Zweispaltige Tabelle: links Reihe, rechts die Elemente spaltenweise
         const grid = document.createElement('div');
         grid.className = 'summary-elements';
-        // --- Zuerst Reihe 1 ausgeben ---
+        
+        // Sammle alle Reihen in der richtigen Reihenfolge
+        const allRows = [];
+        
+        // --- Reihe 1 ---
         const row1Content = document.getElementById("row1Content");
         if (row1Content) {
-          const isFiBereich = Array.from(row1Content.children).some(box => {
+          allRows.push({
+            content: row1Content,
+            originalIndex: 1,
+            isZusatz: false
+          });
+        }
+        
+        // --- Reihe 1 Zusatz, falls vorhanden ---
+        const row1Content2 = document.getElementById('row1Content_2');
+        if (row1Content2 && row1Content2.children.length > 0) {
+          allRows.push({
+            content: row1Content2,
+            originalIndex: 1,
+            isZusatz: true
+          });
+        }
+        
+        // --- Reihen 2-5 ---
+        for (let i = 2; i <= rowCounter; i++) {
+          const rowContent = document.getElementById("row" + i + "Content");
+          if (rowContent) {
+            allRows.push({
+              content: rowContent,
+              originalIndex: i,
+              isZusatz: false
+            });
+          }
+        }
+        
+        // --- Erstelle Summary-Blöcke mit konsistenter Nummerierung ---
+        allRows.forEach(rowData => {
+          const rowContent = rowData.content;
+          const originalIndex = rowData.originalIndex;
+          const isZusatz = rowData.isZusatz;
+          const displayIndex = getConsistentRowNumber(originalIndex, isZusatz, allRows);
+          
+          const isFiBereich = Array.from(rowContent.children).some(box => {
             const img = box.querySelector('img');
             return img && img.alt === 'FI-/Leitungsschutzschalter';
           });
           const bereichTyp = isFiBereich ? 'FI-Bereich' : 'Freier Bereich';
+
           let reihenElemente = [];
-          Array.from(row1Content.children).forEach(box => {
+          Array.from(rowContent.children).forEach(box => {
             const img = box.querySelector('img');
             if (img) {
               let name = img.alt;
@@ -1893,11 +1948,12 @@ let rowCounter = 1;
               reihenElemente.push(name);
             }
           });
+          
           const rowBlock = document.createElement('div');
           rowBlock.className = 'summary-row ' + (isFiBereich ? 'fi' : 'free');
           const label = document.createElement('div');
           label.className = 'summary-label';
-          label.textContent = `Reihe 1 (${bereichTyp})`;
+          label.textContent = `Reihe ${displayIndex} (${bereichTyp})`;
           const itemsCol = document.createElement('div');
           itemsCol.className = 'summary-items';
           reihenElemente.forEach(txt => {
@@ -1909,106 +1965,7 @@ let rowCounter = 1;
           rowBlock.appendChild(label);
           rowBlock.appendChild(itemsCol);
           grid.appendChild(rowBlock);
-        }
-        // --- Dann Reihe 1 Zusatz, falls vorhanden ---
-        const row1Content2 = document.getElementById('row1Content_2');
-        if (row1Content2 && row1Content2.children.length > 0) {
-          let reihenElemente2 = [];
-          Array.from(row1Content2.children).forEach(box => {
-            const img = box.querySelector('img');
-            if (img) {
-              let name = img.alt;
-              if (name === 'FI-/Leitungsschutzschalter') {
-                const nennstromSelect = box.querySelector('select[id^="nennstrom-"]');
-                const charakteristikSelect = box.querySelector('select[id^="charakteristik-"]');
-                const nennstrom = nennstromSelect ? nennstromSelect.value.trim() : '40';
-                const charakteristik = charakteristikSelect ? charakteristikSelect.value.trim() : 'A';
-                name = `FI-/Leitungsschutzschalter ${nennstrom}A, ${charakteristik}-Charakteristik`;
-              } else if (name === 'Sicherungssockel') {
-                const nennstromSelect = box.querySelector('select[id^="nennstrom-"]');
-                const nennstrom = nennstromSelect ? nennstromSelect.value.trim() : '';
-                if (nennstrom) name = `Sicherungssockel ${nennstrom}A`;
-              }
-              if (name === 'Leitungsschutzschalter 1 polig' || name === 'Leitungsschutzschalter 3 polig') {
-                const nennstromSelect = box.querySelector('select[id^="nennstrom-"]');
-                const charakteristikSelect = box.querySelector('select[id^="charakteristik-"]');
-                const nennstrom = nennstromSelect ? nennstromSelect.value.trim() : '16';
-                const charakteristik = charakteristikSelect ? charakteristikSelect.value.trim() : 'B';
-                name = `${name} ${nennstrom}A, ${charakteristik}-Charakteristik`;
-              }
-              reihenElemente2.push(name);
-            }
-          });
-          const rowBlock = document.createElement('div');
-          rowBlock.className = 'summary-row free';
-          const label = document.createElement('div');
-          label.className = 'summary-label';
-          label.textContent = `Reihe 1 Zusatz (Freier Bereich)`;
-          const itemsCol = document.createElement('div');
-          itemsCol.className = 'summary-items';
-          reihenElemente2.forEach(txt => {
-            const item = document.createElement('div');
-            item.className = 'summary-item';
-            item.textContent = txt;
-            itemsCol.appendChild(item);
-          });
-          rowBlock.appendChild(label);
-          rowBlock.appendChild(itemsCol);
-          grid.appendChild(rowBlock);
-        }
-        // --- Dann alle weiteren Reihen ab 2 ---
-        for (let i = 2; i <= rowCounter; i++) {
-          const rowContent = document.getElementById("row" + i + "Content");
-          if (rowContent) {
-            const isFiBereich = Array.from(rowContent.children).some(box => {
-              const img = box.querySelector('img');
-              return img && img.alt === 'FI-/Leitungsschutzschalter';
-            });
-            const bereichTyp = isFiBereich ? 'FI-Bereich' : 'Freier Bereich';
-            let reihenElemente = [];
-            Array.from(rowContent.children).forEach(box => {
-              const img = box.querySelector('img');
-              if (img) {
-                let name = img.alt;
-                if (name === 'FI-/Leitungsschutzschalter') {
-                  const nennstromSelect = box.querySelector('select[id^="nennstrom-"]');
-                  const charakteristikSelect = box.querySelector('select[id^="charakteristik-"]');
-                  const nennstrom = nennstromSelect ? nennstromSelect.value.trim() : '40';
-                  const charakteristik = charakteristikSelect ? charakteristikSelect.value.trim() : 'A';
-                  name = `FI-/Leitungsschutzschalter ${nennstrom}A, ${charakteristik}-Charakteristik`;
-                } else if (name === 'Sicherungssockel') {
-                  const nennstromSelect = box.querySelector('select[id^="nennstrom-"]');
-                  const nennstrom = nennstromSelect ? nennstromSelect.value.trim() : '';
-                  if (nennstrom) name = `Sicherungssockel ${nennstrom}A`;
-                }
-                if (name === 'Leitungsschutzschalter 1 polig' || name === 'Leitungsschutzschalter 3 polig') {
-                  const nennstromSelect = box.querySelector('select[id^="nennstrom-"]');
-                  const charakteristikSelect = box.querySelector('select[id^="charakteristik-"]');
-                  const nennstrom = nennstromSelect ? nennstromSelect.value.trim() : '16';
-                  const charakteristik = charakteristikSelect ? charakteristikSelect.value.trim() : 'B';
-                  name = `${name} ${nennstrom}A, ${charakteristik}-Charakteristik`;
-                }
-                reihenElemente.push(name);
-              }
-            });
-            const rowBlock = document.createElement('div');
-            rowBlock.className = 'summary-row ' + (isFiBereich ? 'fi' : 'free');
-            const label = document.createElement('div');
-            label.className = 'summary-label';
-            label.textContent = `Reihe ${i} (${bereichTyp})`;
-            const itemsCol = document.createElement('div');
-            itemsCol.className = 'summary-items';
-            reihenElemente.forEach(txt => {
-              const item = document.createElement('div');
-              item.className = 'summary-item';
-              item.textContent = txt;
-              itemsCol.appendChild(item);
-            });
-            rowBlock.appendChild(label);
-            rowBlock.appendChild(itemsCol);
-            grid.appendChild(rowBlock);
-          }
-        }
+        });
         // Aktualisiere die Elemente-Liste in der Zusammenfassung
         const summaryElements = document.getElementById("summaryElements");
         if (summaryElements) {
@@ -2154,58 +2111,57 @@ let rowCounter = 1;
       doc.setTextColor(0, 0, 0);
         
         const maxTextWidth = doc.internal.pageSize.getWidth() - margin * 2;
-        let reihenIndex = 1;
-        for (let i = 1; i <= rowCounter; i++) {
-          const rowContent = document.getElementById('row' + i + 'Content');
-          if (rowContent && rowContent.children.length > 0) {
-            const isFiBereich = Array.from(rowContent.children).some(box => {
-              const img = box.querySelector('img');
-              return img && img.alt === 'FI-/Leitungsschutzschalter';
-            });
-            const bereichTyp = isFiBereich ? 'FI-Bereich' : 'Freier Bereich';
-            let reihenElemente = [];
-            Array.from(rowContent.children).forEach(box => {
-              const img = box.querySelector('img');
-              if (img) {
-                let name = img.alt;
-                if (name === 'FI-/Leitungsschutzschalter') {
-                  const nennstromSelect = box.querySelector('select[id^="nennstrom-"]');
-                  const charakteristikSelect = box.querySelector('select[id^="charakteristik-"]');
-                  const nennstrom = nennstromSelect ? nennstromSelect.value.trim() : '40';
-                  const charakteristik = charakteristikSelect ? charakteristikSelect.value.trim() : 'A';
-                  name = `FI-/Leitungsschutzschalter ${nennstrom}A, ${charakteristik}-Charakteristik`;
-                } else if (name === 'Sicherungssockel') {
-                  const nennstromSelect = box.querySelector('select[id^="nennstrom-"]');
-                  const nennstrom = nennstromSelect ? nennstromSelect.value.trim() : '';
-                  if (nennstrom) name = `Sicherungssockel ${nennstrom}A`;
-                }
-                if (name === 'Leitungsschutzschalter 1 polig' || name === 'Leitungsschutzschalter 3 polig') {
-                  const nennstromSelect = box.querySelector('select[id^="nennstrom-"]');
-                  const charakteristikSelect = box.querySelector('select[id^="charakteristik-"]');
-                  const nennstrom = nennstromSelect ? nennstromSelect.value.trim() : '16';
-                  const charakteristik = charakteristikSelect ? charakteristikSelect.value.trim() : 'B';
-                  name = `${name} ${nennstrom}A, ${charakteristik}-Charakteristik`;
-                }
-                reihenElemente.push(name);
-              }
-            });
-            doc.text(`Reihe ${reihenIndex} (${bereichTyp}):`, margin, yPos);
-            yPos += 7;
-            const elementText = reihenElemente.join('; ');
-            const lines = doc.splitTextToSize(elementText, maxTextWidth - 5);
-            lines.forEach(line => {
-              doc.text(line, margin + 5, yPos);
-              yPos += 7;
-            });
-            yPos += 3;
-            reihenIndex++;
-          }
+        
+        // Sammle alle Reihen in der richtigen Reihenfolge für konsistente Nummerierung
+        const allRows = [];
+        
+        // --- Reihe 1 ---
+        const row1Content = document.getElementById("row1Content");
+        if (row1Content && row1Content.children.length > 0) {
+          allRows.push({
+            content: row1Content,
+            originalIndex: 1,
+            isZusatz: false
+          });
         }
-        // Zusatzreihe row1Content_2 berücksichtigen
+        
+        // --- Reihe 1 Zusatz, falls vorhanden ---
         const row1Content2 = document.getElementById('row1Content_2');
         if (row1Content2 && row1Content2.children.length > 0) {
+          allRows.push({
+            content: row1Content2,
+            originalIndex: 1,
+            isZusatz: true
+          });
+        }
+        
+        // --- Reihen 2-5 ---
+        for (let i = 2; i <= rowCounter; i++) {
+          const rowContent = document.getElementById("row" + i + "Content");
+          if (rowContent && rowContent.children.length > 0) {
+            allRows.push({
+              content: rowContent,
+              originalIndex: i,
+              isZusatz: false
+            });
+          }
+        }
+        
+        // --- Erstelle PDF-Inhalt mit konsistenter Nummerierung ---
+        allRows.forEach(rowData => {
+          const rowContent = rowData.content;
+          const originalIndex = rowData.originalIndex;
+          const isZusatz = rowData.isZusatz;
+          const displayIndex = getConsistentRowNumber(originalIndex, isZusatz, allRows);
+          
+          const isFiBereich = Array.from(rowContent.children).some(box => {
+            const img = box.querySelector('img');
+            return img && img.alt === 'FI-/Leitungsschutzschalter';
+          });
+          const bereichTyp = isFiBereich ? 'FI-Bereich' : 'Freier Bereich';
+
           let reihenElemente = [];
-          Array.from(row1Content2.children).forEach(box => {
+          Array.from(rowContent.children).forEach(box => {
             const img = box.querySelector('img');
             if (img) {
               let name = img.alt;
@@ -2230,7 +2186,8 @@ let rowCounter = 1;
               reihenElemente.push(name);
             }
           });
-          doc.text(`Reihe 1 Zusatz (Freier Bereich):`, margin, yPos);
+          
+          doc.text(`Reihe ${displayIndex} (${bereichTyp}):`, margin, yPos);
           yPos += 7;
           const elementText = reihenElemente.join('; ');
           const lines = doc.splitTextToSize(elementText, maxTextWidth - 5);
@@ -2239,7 +2196,7 @@ let rowCounter = 1;
             yPos += 7;
           });
           yPos += 3;
-        }
+        });
 
         
 
@@ -2424,14 +2381,48 @@ let rowCounter = 1;
         const verdrahtung = (document.getElementById('summaryVerdrahtung')?.textContent || '').trim() || '—';
 
         const reihen = [];
-        const mainRowNodes = Array.from(document.querySelectorAll('.row-content[id^="row"][id$="Content"]'))
-          .filter(n => !/row1Content_2/.test(n.id))
-          .map(n => ({ node: n, num: parseInt((n.id.match(/row(\d+)Content/)||[])[1]||'0', 10) }))
-          .filter(r => r.num > 0 && r.node.children.length > 0)
-          .sort((a,b) => a.num - b.num);
-
-        mainRowNodes.forEach(r => {
-          const rowContent = r.node;
+        // Sammle alle Reihen in der richtigen Reihenfolge für konsistente Nummerierung
+        const allRows = [];
+        
+        // --- Reihe 1 ---
+        const row1Content = document.getElementById("row1Content");
+        if (row1Content && row1Content.children.length > 0) {
+          allRows.push({
+            content: row1Content,
+            originalIndex: 1,
+            isZusatz: false
+          });
+        }
+        
+        // --- Reihe 1 Zusatz, falls vorhanden ---
+        const row1Content2 = document.getElementById('row1Content_2');
+        if (row1Content2 && row1Content2.children.length > 0) {
+          allRows.push({
+            content: row1Content2,
+            originalIndex: 1,
+            isZusatz: true
+          });
+        }
+        
+        // --- Reihen 2-5 ---
+        for (let i = 2; i <= rowCounter; i++) {
+          const rowContent = document.getElementById("row" + i + "Content");
+          if (rowContent && rowContent.children.length > 0) {
+            allRows.push({
+              content: rowContent,
+              originalIndex: i,
+              isZusatz: false
+            });
+          }
+        }
+        
+        // --- Erstelle gestylte PDF-Inhalt mit konsistenter Nummerierung ---
+        allRows.forEach(rowData => {
+          const rowContent = rowData.content;
+          const originalIndex = rowData.originalIndex;
+          const isZusatz = rowData.isZusatz;
+          const displayIndex = getConsistentRowNumber(originalIndex, isZusatz, allRows);
+          
           const isFiBereich = Array.from(rowContent.children).some(box => box.querySelector('img')?.alt === 'FI-/Leitungsschutzschalter');
           const bereichTyp = isFiBereich ? 'FI-Bereich' : 'Freier Bereich';
           const rows = []; let pos = 1;
@@ -2457,56 +2448,10 @@ let rowCounter = 1;
             }
             rows.push({ pos: String(pos++), element: name, qty: '1', note: '' });
           });
-          reihen.push({ heading: `Reihe ${r.num} (${bereichTyp})`, rows });
-
-          if (r.num === 1) {
-            const row1Content2 = document.getElementById('row1Content_2');
-            if (row1Content2 && row1Content2.children.length > 0) {
-              const rows2 = []; let pos2 = 1;
-              Array.from(row1Content2.children).forEach(box => {
-                const img = box.querySelector('img'); if (!img) return; let name = img.alt;
-                if (name === 'FI-/Leitungsschutzschalter') {
-                  const nennstromSelect = box.querySelector('select[id^="nennstrom-"]');
-                  const charakteristikSelect = box.querySelector('select[id^="charakteristik-"]');
-                  const nennstrom = nennstromSelect ? nennstromSelect.value.trim() : '40';
-                  const charakteristik = charakteristikSelect ? charakteristikSelect.value.trim() : 'A';
-                  name = `FI-/Leitungsschutzschalter ${nennstrom}A, ${charakteristik}-Charakteristik`;
-                } else if (name === 'Sicherungssockel') {
-                  const nennstromSelect = box.querySelector('select[id^="nennstrom-"]');
-                  const nennstrom = nennstromSelect ? nennstromSelect.value.trim() : '';
-                  if (nennstrom) name = `Sicherungssockel ${nennstrom}A`;
-                }
-                if (name === 'Leitungsschutzschalter 1 polig' || name === 'Leitungsschutzschalter 3 polig') {
-                  const nennstromSelect = box.querySelector('select[id^="nennstrom-"]');
-                  const charakteristikSelect = box.querySelector('select[id^="charakteristik-"]');
-                  const nennstrom = nennstromSelect ? nennstromSelect.value.trim() : '16';
-                  const charakteristik = charakteristikSelect ? charakteristikSelect.value.trim() : 'B';
-                  name = `${name} ${nennstrom}A, ${charakteristik}-Charakteristik`;
-                }
-                rows2.push({ pos: String(pos2++), element: name, qty: '1', note: '' });
-              });
-              reihen.push({ heading: `Reihe 1 Zusatz (Freier Bereich)`, rows: rows2 });
-            }
-          }
+          reihen.push({ heading: `Reihe ${displayIndex} (${bereichTyp})`, rows });
         });
 
         // Karten
-        drawSectionCard('Verteiler-Informationen', (x, y, w) => {
-          const colW = (w - PADDING) / 2; let yy = y;
-          yy = drawKeyValue(x, yy, 'Name/Referenz*', verteilerName, colW);
-          yy = drawKeyValue(x, yy + 2, 'Anzahl', verteilerAnzahl, colW);
-          const rightX = x + colW + PADDING; let yRight = y;
-          yRight = drawKeyValue(rightX, yRight, 'Position im Verteiler', position, colW);
-          return Math.max(yy, yRight) + 2;
-        });
-
-        drawSectionCard('Konfiguration', (x, y, w) => {
-          let yy = y;
-          yy = drawKeyValue(x, yy, 'Anzahl der Reihen', rowCountText, w / 2);
-          yy = drawKeyValue(x, yy + 2, 'Belegte Einheiten (gesamt)', usedUnits, w / 2);
-          return yy;
-        });
-
         drawSectionCard('Verteiler-Informationen', (x, y, w) => {
           const colW = (w - PADDING) / 2; let yy = y;
           yy = drawKeyValue(x, yy, 'Name/Referenz*', verteilerName, colW);
