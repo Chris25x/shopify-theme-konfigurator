@@ -671,6 +671,9 @@ let rowCounter = 1;
       updateSummary();
       // Preise der sichtbaren Produktkarten dynamisch einsetzen
       updateStaticProductCardPrices();
+      
+      // Keyboard-Support für Dropdown-Trigger hinzufügen
+      addTriggerKeyboardSupport();
 
       document.getElementById("addFiRowButton").addEventListener("click", () => {
         if (getActualRowCount() < maxRows) {
@@ -731,7 +734,7 @@ let rowCounter = 1;
           };
           addFixedProductToRow(rowCounter, fiProduct);
         } else {
-          showWarning('Es werden nur maximal 5 Reihen unterstüzt. Wenn du mehr Platz brauchst, kontaktiere uns – wir finden eine passende Lösung', 'Maximale Anzahl an Reihen erreicht!');
+          showWarning('Es werden nur maximal 5 Reihen unterstüzt. Wenn du mehr Platz brauchst, <a href="/#contact" style="color: #005A9C; text-decoration: underline;">kontaktiere uns</a> – wir finden eine passende Lösung', 'Maximale Anzahl an Reihen erreicht!');
         }
       });
 
@@ -786,7 +789,7 @@ let rowCounter = 1;
           updateInfoBox();
           updateSummary();
         } else {
-          showWarning('Es werden nur maximal 5 Reihen unterstüzt. Wenn du mehr Platz brauchst, kontaktiere uns – wir finden eine passende Lösung', 'Maximale Anzahl an Reihen erreicht!');
+          showWarning('Es werden nur maximal 5 Reihen unterstüzt. Wenn du mehr Platz brauchst, <a href="/#contact" style="color: #005A9C; text-decoration: underline;">kontaktiere uns</a> – wir finden eine passende Lösung', 'Maximale Anzahl an Reihen erreicht!');
         }
       });
 
@@ -1518,32 +1521,90 @@ let rowCounter = 1;
     function renderDropdownOptions(type) {
       const options = type === 'montageart'
         ? [
-            { label: 'Aufputz-Montage', action: () => selectMontageart('Aufputz-Montage') },
-            { label: 'Aufputz(Feuchtraum)-Montage', action: () => selectMontageart('Aufputz(Feuchtraum)-Montage') },
-            { label: 'Unterputz-Montage', action: () => selectMontageart('Unterputz-Montage') },
-            { label: 'Hohlwand-Montage', action: () => selectMontageart('Hohlwand-Montage') }
+            { label: 'Aufputz-Montage', action: () => selectMontageart('Aufputz-Montage'), key: 'Aufputz-Montage' },
+            { label: 'Aufputz(Feuchtraum)-Montage', action: () => selectMontageart('Aufputz(Feuchtraum)-Montage'), key: 'Aufputz(Feuchtraum)-Montage' },
+            { label: 'Unterputz-Montage', action: () => selectMontageart('Unterputz-Montage'), key: 'Unterputz-Montage' },
+            { label: 'Hohlwand-Montage', action: () => selectMontageart('Hohlwand-Montage'), key: 'Hohlwand-Montage' }
           ]
         : [
-            { label: 'Nur Einzelteile (ohne Verdrahtung & Zubehör)', action: () => selectVerdrahtung('Nur Einzelteile (ohne Verdrahtung & Zubehör)') },
-            { label: 'Verdrahtungszubehör (ohne Vormontage & Verdrahtung)', action: () => selectVerdrahtung('Verdrahtungszubehör (ohne Vormontage & Verdrahtung)') },
-            { label: 'Vormontage & Verdrahtung', action: () => selectVerdrahtung('Vormontage & Verdrahtung') }
+            { label: 'Nur Einzelteile (ohne Verdrahtung & Zubehör)', action: () => selectVerdrahtung('Nur Einzelteile (ohne Verdrahtung & Zubehör)'), key: 'Nur Einzelteile (ohne Verdrahtung & Zubehör)' },
+            { label: 'Verdrahtungszubehör (ohne Vormontage & Verdrahtung)', action: () => selectVerdrahtung('Verdrahtungszubehör (ohne Vormontage & Verdrahtung)'), key: 'Verdrahtungszubehör (ohne Vormontage & Verdrahtung)' },
+            { label: 'Vormontage & Verdrahtung', action: () => selectVerdrahtung('Vormontage & Verdrahtung'), key: 'Vormontage & Verdrahtung' }
           ];
+      
       const portal = ensurePortalDropdown();
       portal.innerHTML = '';
+      
       options.forEach(opt => {
         const item = document.createElement('div');
         item.className = 'dropdown-option';
         item.setAttribute('role','menuitem');
         item.tabIndex = 0;
-        item.textContent = opt.label;
         item.style.padding = '12px 16px';
         item.style.cursor = 'pointer';
         item.style.borderBottom = '1px solid #eee';
+        item.style.display = 'flex';
+        item.style.justifyContent = 'space-between';
+        item.style.alignItems = 'center';
+        
+        // Erstelle Label-Container
+        const labelContainer = document.createElement('span');
+        labelContainer.textContent = opt.label;
+        labelContainer.style.flex = '1';
+        
+        // Erstelle Preis-Container
+        const priceContainer = document.createElement('span');
+        priceContainer.className = 'dropdown-price';
+        priceContainer.style.color = '#005A9C';
+        priceContainer.style.fontWeight = '600';
+        priceContainer.style.fontSize = '14px';
+        priceContainer.style.marginLeft = '12px';
+        priceContainer.textContent = 'Lade...';
+        
+        // Berechne den Preis für diese Option
+        const currentRows = typeof getActualRowCount === 'function' ? getActualRowCount() : rowCounter;
+        const actualRows = Math.max(1, Math.min(5, currentRows));
+        const rowKey = String(actualRows);
+        
+        let variantId = null;
+        if (type === 'montageart') {
+          const variantMap = montageartVariantMap[opt.key];
+          if (variantMap) {
+            variantId = variantMap[rowKey];
+          }
+        } else {
+          const variantMap = verdrahtungVariantMap[opt.key];
+          if (variantMap) {
+            variantId = variantMap[rowKey];
+          }
+        }
+        
+        // Lade den Preis synchron
+        if (variantId) {
+          try {
+            const price = getVariantPrice(variantId);
+            if (price > 0) {
+              priceContainer.textContent = `+${price.toFixed(2)} €`;
+            } else {
+              priceContainer.textContent = '0,00 €';
+            }
+          } catch (error) {
+            priceContainer.textContent = 'Preis n/a';
+          }
+        } else {
+          priceContainer.textContent = '0,00 €';
+        }
+        
+        item.appendChild(labelContainer);
+        item.appendChild(priceContainer);
+        
         item.addEventListener('mousedown', (e) => { e.stopPropagation(); opt.action(); closePortalDropdown(); });
         item.addEventListener('touchstart', (e) => { e.stopPropagation(); opt.action(); closePortalDropdown(); }, { passive: true });
         item.addEventListener('click', (e) => { e.stopPropagation(); opt.action(); closePortalDropdown(); });
+        
         portal.appendChild(item);
       });
+      
       if (portal.lastChild) {
         portal.lastChild.style.borderBottom = 'none';
       }
@@ -1552,15 +1613,166 @@ let rowCounter = 1;
     function openDropdownMenu(type, anchorBtn) {
       renderDropdownOptions(type);
       const portal = ensurePortalDropdown();
-      const rect = anchorBtn.getBoundingClientRect();
-      portal.style.minWidth = Math.max(240, Math.floor(rect.width)) + 'px';
-      portal.style.left = Math.floor(rect.left + window.scrollX) + 'px';
-      portal.style.top = Math.floor(rect.bottom + 6 + window.scrollY) + 'px';
+      
+      // Portal-Dropdown-Positionierung
+      positionPortalDropdown(portal, anchorBtn);
+      
+      // ARIA-Attribute setzen
+      anchorBtn.setAttribute('aria-expanded', 'true');
+      portal.setAttribute('aria-hidden', 'false');
+      
+      // Event-Listener hinzufügen
+      addPortalEventListeners(portal, anchorBtn);
+    }
+    
+    function positionPortalDropdown(portal, trigger) {
+      const rect = trigger.getBoundingClientRect();
+      const scrollX = window.pageXOffset;
+      const scrollY = window.pageYOffset;
+      const viewportWidth = window.innerWidth;
+      
+      // Temporär anzeigen um Breite zu messen
       portal.style.display = 'block';
+      portal.style.visibility = 'hidden';
+      
+      // Breite messen
+      const menuWidth = portal.offsetWidth;
+      
+      // Ideale Position berechnen (zentriert)
+      const buttonCenterX = rect.left + (rect.width / 2);
+      let idealLeft = buttonCenterX - (menuWidth / 2) + scrollX;
+      
+      // An Viewport-Grenzen klammern (8px Padding)
+      const minLeft = scrollX + 8;
+      const maxLeft = scrollX + viewportWidth - menuWidth - 8;
+      idealLeft = Math.max(minLeft, Math.min(maxLeft, idealLeft));
+      
+      // Defensive max-width setzen
+      portal.style.maxWidth = Math.max(220, viewportWidth - 16) + 'px';
+      
+      // Position setzen
+      portal.style.position = 'absolute';
+      portal.style.left = Math.floor(idealLeft) + 'px';
+      portal.style.top = Math.floor(rect.bottom + 8 + scrollY) + 'px';
+      portal.style.zIndex = '999999';
+      
+      // Sichtbarkeit wiederherstellen
+      portal.style.visibility = 'visible';
+    }
+    
+    function addPortalEventListeners(portal, trigger) {
+      let isOpen = true;
+      
+      // Repositionierung bei Scroll/Resize/Orientation
+      const handleReposition = () => {
+        if (isOpen) {
+          positionPortalDropdown(portal, trigger);
+        }
+      };
+      
+      const handleResize = () => handleReposition();
+      const handleScroll = () => handleReposition();
+      const handleOrientationChange = () => {
+        setTimeout(handleReposition, 100);
+      };
+      
+      // Keyboard Navigation
+      const handleKeydown = (e) => {
+        if (!isOpen) return;
+        
+        const options = portal.querySelectorAll('.dropdown-option');
+        const currentFocused = document.activeElement;
+        const currentIndex = Array.from(options).indexOf(currentFocused);
+        
+        switch (e.key) {
+          case 'Escape':
+            e.preventDefault();
+            closePortalDropdown();
+            trigger.focus();
+            break;
+            
+          case 'ArrowDown':
+            e.preventDefault();
+            if (currentIndex < options.length - 1) {
+              options[currentIndex + 1].focus();
+            } else {
+              options[0].focus();
+            }
+            break;
+            
+          case 'ArrowUp':
+            e.preventDefault();
+            if (currentIndex > 0) {
+              options[currentIndex - 1].focus();
+            } else {
+              options[options.length - 1].focus();
+            }
+            break;
+            
+          case 'Enter':
+          case ' ':
+            e.preventDefault();
+            if (currentFocused && currentFocused.classList.contains('dropdown-option')) {
+              currentFocused.click();
+            }
+            break;
+        }
+      };
+      
+      // Outside Click Handler
+      const handleClickOutside = (e) => {
+        if (!isOpen) return;
+        
+        if (!portal.contains(e.target) && !trigger.contains(e.target)) {
+          closePortalDropdown();
+        }
+      };
+      
+      // Event-Listener hinzufügen
+      window.addEventListener('resize', handleResize);
+      window.addEventListener('scroll', handleScroll, true);
+      window.addEventListener('orientationchange', handleOrientationChange);
+      document.addEventListener('keydown', handleKeydown);
+      
+      // Outside Click mit Verzögerung
+      setTimeout(() => {
+        document.addEventListener('click', handleClickOutside);
+      }, 0);
+      
+      // Cleanup-Funktion speichern
+      portal._cleanupPortal = () => {
+        isOpen = false;
+        window.removeEventListener('resize', handleResize);
+        window.removeEventListener('scroll', handleScroll, true);
+        window.removeEventListener('orientationchange', handleOrientationChange);
+        document.removeEventListener('keydown', handleKeydown);
+        document.removeEventListener('click', handleClickOutside);
+      };
+      
+      // Erstes Element fokussieren
+      setTimeout(() => {
+        const firstOption = portal.querySelector('.dropdown-option');
+        if (firstOption) firstOption.focus();
+      }, 0);
     }
 
     function closePortalDropdown() {
       const portal = ensurePortalDropdown();
+      
+      // Cleanup Event-Listener
+      if (portal._cleanupPortal) {
+        portal._cleanupPortal();
+        delete portal._cleanupPortal;
+      }
+      
+      // ARIA-Attribute zurücksetzen
+      const triggers = document.querySelectorAll('#montageart-btn, #verdrahtung-btn');
+      triggers.forEach(trigger => {
+        trigger.setAttribute('aria-expanded', 'false');
+      });
+      portal.setAttribute('aria-hidden', 'true');
+      
+      // Portal ausblenden
       portal.style.display = 'none';
     }
 
@@ -1580,6 +1792,28 @@ let rowCounter = 1;
       selectedVerdrahtung = option; // Speichere die ausgewählte Option
       updateInfoBox();
       updateSummary();
+    }
+    
+    // Keyboard-Support für Dropdown-Trigger
+    function addTriggerKeyboardSupport() {
+      const triggers = document.querySelectorAll('#montageart-btn, #verdrahtung-btn');
+      
+      triggers.forEach(trigger => {
+        const handleTriggerKeydown = (e) => {
+          if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown') {
+            e.preventDefault();
+            const type = trigger.id === 'montageart-btn' ? 'montageart' : 'verdrahtung';
+            openDropdownMenu(type, trigger);
+          }
+        };
+        
+        trigger.addEventListener('keydown', handleTriggerKeydown);
+        
+        // Cleanup-Funktion speichern
+        trigger._cleanupTriggerKeyboard = () => {
+          trigger.removeEventListener('keydown', handleTriggerKeydown);
+        };
+      });
     }
 
     // Outside-Close für Portal- und Reihen-Dropdowns
@@ -4239,7 +4473,7 @@ let rowCounter = 1;
           }
           
           // Einheitliche Meldung wie beim Reihen-Button
-          showNiceDialog('Maximale Anzahl an Reihen erreicht!', 'Es werden nur maximal 5 Reihen unterstüzt. Wenn du mehr Platz brauchst, kontaktiere uns – wir finden eine passende Lösung');
+          showNiceDialog('Maximale Anzahl an Reihen erreicht!', 'Es werden nur maximal 5 Reihen unterstüzt. Wenn du mehr Platz brauchst, <a href="/#contact" style="color: #005A9C; text-decoration: underline;">kontaktiere uns</a> – wir finden eine passende Lösung');
           updateSectionARows();
           updateInfoBox();
           updateSummary();
