@@ -329,28 +329,55 @@
 })();
 </script>
 
-{%- comment -%} === /pages/konfigurator (Dawn): Header 100vw mobil + Section Desktop (scroll) === {%- endcomment -%}
+{%- comment -%} === KONFIGURATOR BEST PRACTICE: Desktop-View auf Mobile mit Skalierung === {%- endcomment -%}
 {% if request.page_type == 'page' and request.path contains '/pages/konfigurator' %}
 
-  <script id="konfigurator-viewport-flag">
-    (function () {
-      // Viewport nur hier auf device-width stellen (falls width=1200 existiert)
-      var m = document.querySelector('meta[name="viewport"]');
-      if (m) {
-        m.setAttribute('content','width=device-width, initial-scale=1.0, viewport-fit=cover');
-      } else {
-        m = document.createElement('meta');
-        m.name = 'viewport';
-        m.content = 'width=device-width, initial-scale=1.0, viewport-fit=cover';
-        document.head.appendChild(m);
+  <script id="konfigurator-desktop-mobile-view">
+    (function() {
+      // Konfigurator-spezifische Desktop-View auf Mobile
+      var isLikelyMobile = ('ontouchstart' in window) && (Math.max(screen.width, screen.height) <= 1024);
+      var isKonfiguratorPage = window.location.pathname.includes('/pages/konfigurator');
+      
+      // Konfigurator Desktop-Breite (angepasst an deine komplexe Struktur)
+      var desktopWidth = 1366; // Deine tatsächliche Desktop-Breite
+      var initialScale = 0.5;  // 50% Skalierung für bessere Lesbarkeit
+      
+      function setViewport() {
+        var content = [
+          'width=' + desktopWidth,
+          'initial-scale=' + initialScale,
+          'minimum-scale=0.25',  // Benutzer kann weiter zoomen
+          'maximum-scale=2.0',   // Maximal 200% Zoom
+          'user-scalable=yes',
+          'viewport-fit=cover'
+        ].join(', ');
+
+        var mvp = document.querySelector('meta[name="viewport"]');
+        if (!mvp) {
+          mvp = document.createElement('meta');
+          mvp.setAttribute('name', 'viewport');
+          document.head.appendChild(mvp);
+        }
+        mvp.setAttribute('content', content);
       }
 
-      // Nur mobil (< 990px) Flag setzen für mobil-only Overrides
+      // Viewport nur für Konfigurator-Seite und Mobile setzen
+      if (isLikelyMobile && isKonfiguratorPage) {
+        setViewport();
+        
+        // iOS-Orientierungswechsel behandeln
+        window.addEventListener('orientationchange', function() {
+          setTimeout(setViewport, 100);
+        });
+      }
+      
+      // Fallback: Normale Mobile-Detection für andere Funktionen
       var BP = 990;
       var root = document.documentElement;
       function tick(){
         var vw = Math.max(document.documentElement.clientWidth, window.innerWidth||0);
-        if (vw < BP) root.classList.add('konf-mobile'); else root.classList.remove('konf-mobile');
+        if (vw < BP) root.classList.add('konf-mobile'); 
+        else root.classList.remove('konf-mobile');
       }
       tick();
       window.addEventListener('resize', tick, { passive:true });
@@ -362,15 +389,12 @@
     })();
   </script>
 
-  <style id="konfigurator-mobile-overrides-dawn">
-    /* Nur auf dieser Seite UND nur mobil (Dawn breakpoint) */
-    @media (max-width: 989px) {
-      /* 1) Globale Min-Breiten nur mobil neutralisieren */
-      html.konf-mobile { min-width: 0 !important; }
-      html.konf-mobile body { min-width: 0 !important; overflow-x: hidden; }
-
-      /* 2) DAWN Header auf mobile Breite begrenzen */
-      /* Haupt-Header-Container in Dawn - auf mobile Breite begrenzen */
+  <style id="konfigurator-desktop-mobile-styles">
+    /* Konfigurator: Desktop-View auf Mobile mit optimierter Skalierung */
+    
+    /* 1. Mobile-Header bleibt normal (100vw) */
+    @media (max-width: 1024px) {
+      /* Header auf Mobile-Breite begrenzen */
       html.konf-mobile .shopify-section-header,
       html.konf-mobile .header-wrapper,
       html.konf-mobile header.header {
@@ -378,8 +402,11 @@
         max-width: 100vw !important;
         min-width: 320px !important;
         overflow-x: hidden;
+        position: relative;
+        z-index: 1000;
       }
-      /* Dawn nutzt .page-width als Innen-Container im Header */
+      
+      /* Header-Innencontainer */
       html.konf-mobile .shopify-section-header .page-width,
       html.konf-mobile .header-wrapper .page-width,
       html.konf-mobile header.header .page-width {
@@ -389,36 +416,98 @@
         padding-left: 16px;
         padding-right: 16px;
       }
-      /* Mobile Menü-Drawer von Dawn ebenfalls auf 100vw sicherstellen */
+      
+      /* Mobile Menü-Drawer */
       html.konf-mobile .menu-drawer,
       html.konf-mobile .menu-drawer__inner-container {
         width: 100vw !important;
         max-width: 100vw !important;
       }
+    }
 
-      /* Zusätzliche Sicherheit: Header komplett auf mobile Breite begrenzen */
-      html.konf-mobile .shopify-section-header *,
-      html.konf-mobile .header-wrapper *,
-      html.konf-mobile header.header * {
-        max-width: 100vw !important;
+    /* 2. Konfigurator-Inhalt: Desktop-View mit Skalierung */
+    @media (max-width: 1024px) {
+      /* Globale Min-Breiten neutralisieren */
+      html.konf-mobile { 
+        min-width: 0 !important; 
+        overflow-x: auto;
+      }
+      html.konf-mobile body { 
+        min-width: 0 !important; 
+        overflow-x: auto;
       }
 
-      /* 3) Nur der Seiteninhalt darf horizontal scrollen (Header bleibt 100vw) */
+      /* MainContent für horizontales Scrollen vorbereiten */
       html.konf-mobile #MainContent {
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
+        min-width: 1366px; /* Desktop-Breite erzwingen */
       }
 
-      /* 4) Nur diese Section bleibt Desktop-breit (1:1) */
+      /* Konfigurator-Section: Desktop-Dimensionen beibehalten */
       html.konf-mobile #shopify-section-{{ section.id }} {
-        min-width: 1366px; /* ← auf deine Desktopbreite anpassen (1280/1366/1440) */
+        min-width: 1366px !important;
+        width: 1366px !important;
         display: block;
+        position: relative;
+        z-index: 1;
+      }
+
+      /* Dawn Theme-Anpassungen für Desktop-View */
+      html.konf-mobile .page-width,
+      html.konf-mobile .page-width-desktop {
+        max-width: none !important;
+        width: 100% !important;
+      }
+
+      /* Konfigurator-Container: Desktop-Breite sicherstellen */
+      html.konf-mobile .konfigurator {
+        min-width: 1366px;
+        width: 1366px;
+        margin: 0 auto;
+      }
+
+      /* Touch-Optimierungen für Desktop-View */
+      html.konf-mobile .konfigurator * {
+        -webkit-tap-highlight-color: rgba(0, 90, 156, 0.2);
+      }
+
+      /* Button-Größen für Touch optimieren */
+      html.konf-mobile .button,
+      html.konf-mobile .dropdown-btn,
+      html.konf-mobile .konfigurator-option-btn {
+        min-height: 44px; /* iOS Touch-Target */
+        min-width: 44px;
+      }
+
+      /* Scroll-Indikator für Desktop-View */
+      html.konf-mobile #MainContent::-webkit-scrollbar {
+        height: 8px;
+      }
+      html.konf-mobile #MainContent::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
+      html.konf-mobile #MainContent::-webkit-scrollbar-thumb {
+        background: var(--color-primary);
+        border-radius: 4px;
+      }
+    }
+
+    /* 3. Desktop: Normale Darstellung */
+    @media (min-width: 1025px) {
+      html.konf-mobile #shopify-section-{{ section.id }} {
+        min-width: auto !important;
+        width: auto !important;
+      }
+      html.konf-mobile .konfigurator {
+        min-width: auto;
+        width: auto;
       }
     }
   </style>
 
 {% endif %}
-{%- comment -%} === END Dawn: mobil Header 100vw + Section Desktop, nur /pages/konfigurator === {%- endcomment -%}
+{%- comment -%} === END Konfigurator Desktop-View auf Mobile === {%- endcomment -%}
 
 {% schema %}
 {
