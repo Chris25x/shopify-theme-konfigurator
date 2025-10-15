@@ -34,39 +34,45 @@
       }
     }
     
-    /* Konfigurator-Button auf Mobile ausblenden für /pages/konfigurator */
+    /* Konfigurator-Button auf Mobile kleiner machen für /pages/konfigurator */
     @media (max-width: 1024px) {
       body.konfigurator-page .header__icon--konfigurator,
       body.konfigurator-page .header a[href*="konfigurator"].button,
       body.konfigurator-page .header a[href*="konfigurator"].button--primary {
-        display: none !important;
-        visibility: hidden !important;
-        opacity: 0 !important;
-        height: 0 !important;
-        width: 0 !important;
-        overflow: hidden !important;
-        position: absolute !important;
-        left: -9999px !important;
-        top: -9999px !important;
-        margin: 0 !important;
-        padding: 0 !important;
+        display: inline-flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        height: auto !important;
+        width: auto !important;
+        overflow: visible !important;
+        position: static !important;
+        left: auto !important;
+        top: auto !important;
+        /* Mobile-optimierte Größe */
+        padding: 8px 12px !important;
+        font-size: 12px !important;
+        min-width: 120px !important;
+        margin: 0 4px 0 0 !important;
       }
     }
     
-    /* Zusätzliche Sicherheit: Button ausblenden basierend auf URL */
+    /* Zusätzliche Sicherheit: Button kleiner machen basierend auf URL */
     @media (max-width: 1024px) {
       .header__icon--konfigurator[href*="konfigurator"] {
-        display: none !important;
-        visibility: hidden !important;
-        opacity: 0 !important;
-        height: 0 !important;
-        width: 0 !important;
-        overflow: hidden !important;
-        position: absolute !important;
-        left: -9999px !important;
-        top: -9999px !important;
-        margin: 0 !important;
-        padding: 0 !important;
+        display: inline-flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        height: auto !important;
+        width: auto !important;
+        overflow: visible !important;
+        position: static !important;
+        left: auto !important;
+        top: auto !important;
+        /* Mobile-optimierte Größe */
+        padding: 8px 12px !important;
+        font-size: 12px !important;
+        min-width: 120px !important;
+        margin: 0 4px 0 0 !important;
       }
       
       /* Nav-Items wieder mittig zentrieren */
@@ -241,22 +247,25 @@
       if (window.location.pathname.includes('/pages/konfigurator')) {
         document.body.classList.add('konfigurator-page');
         
-        // Button nur auf Mobile per JavaScript ausblenden
+        // Button auf Mobile kleiner machen statt ausblenden
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         const konfigButton = document.querySelector('.header__icon--konfigurator');
         
         if (konfigButton && isMobile) {
-          konfigButton.style.display = 'none';
-          konfigButton.style.visibility = 'hidden';
-          konfigButton.style.opacity = '0';
-          konfigButton.style.height = '0';
-          konfigButton.style.width = '0';
-          konfigButton.style.overflow = 'hidden';
-          konfigButton.style.position = 'absolute';
-          konfigButton.style.left = '-9999px';
-          konfigButton.style.top = '-9999px';
-          konfigButton.style.margin = '0';
-          konfigButton.style.padding = '0';
+          konfigButton.style.display = 'inline-flex';
+          konfigButton.style.visibility = 'visible';
+          konfigButton.style.opacity = '1';
+          konfigButton.style.height = 'auto';
+          konfigButton.style.width = 'auto';
+          konfigButton.style.overflow = 'visible';
+          konfigButton.style.position = 'static';
+          konfigButton.style.left = 'auto';
+          konfigButton.style.top = 'auto';
+          // Mobile-optimierte Größe
+          konfigButton.style.padding = '8px 12px';
+          konfigButton.style.fontSize = '12px';
+          konfigButton.style.minWidth = '120px';
+          konfigButton.style.margin = '0 4px 0 0';
         }
         
         // PC-Empfehlung anzeigen
@@ -274,19 +283,22 @@
             lastDeviceType = currentDeviceType;
             
             if (currentIsMobile) {
-              konfigButton.style.display = 'none';
-              konfigButton.style.visibility = 'hidden';
-              konfigButton.style.opacity = '0';
-              konfigButton.style.height = '0';
-              konfigButton.style.width = '0';
-              konfigButton.style.overflow = 'hidden';
-              konfigButton.style.position = 'absolute';
-              konfigButton.style.left = '-9999px';
-              konfigButton.style.top = '-9999px';
-              konfigButton.style.margin = '0';
-              konfigButton.style.padding = '0';
+              // Mobile: Button kleiner machen
+              konfigButton.style.display = 'inline-flex';
+              konfigButton.style.visibility = 'visible';
+              konfigButton.style.opacity = '1';
+              konfigButton.style.height = 'auto';
+              konfigButton.style.width = 'auto';
+              konfigButton.style.overflow = 'visible';
+              konfigButton.style.position = 'static';
+              konfigButton.style.left = 'auto';
+              konfigButton.style.top = 'auto';
+              konfigButton.style.padding = '8px 12px';
+              konfigButton.style.fontSize = '12px';
+              konfigButton.style.minWidth = '120px';
+              konfigButton.style.margin = '0 4px 0 0';
             } else {
-              // Desktop: Button wieder anzeigen
+              // Desktop: Button normale Größe
               konfigButton.style.display = '';
               konfigButton.style.visibility = '';
               konfigButton.style.opacity = '';
@@ -298,6 +310,8 @@
               konfigButton.style.top = '';
               konfigButton.style.margin = '';
               konfigButton.style.padding = '';
+              konfigButton.style.fontSize = '';
+              konfigButton.style.minWidth = '';
             }
           }
         });
