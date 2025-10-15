@@ -1,31 +1,132 @@
-<!-- Externe Ressourcen -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<link href="{{ 'page-konfigurator.css' | asset_url }}" rel="stylesheet">
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1200, initial-scale=0.5, maximum-scale=3, user-scalable=yes">
+  <meta name="description" content="Interaktiver Sicherungskasten-Konfigurator: Reihen, Komponenten und Verdrahtung wählen, Preis in Echtzeit berechnen und als PDF exportieren.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+  <link rel="preconnect" href="https://static.wixstatic.com" crossorigin>
+  <title>Sicherungskasten Konfigurator</title>
+  <!-- Font Awesome für Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <!-- jsPDF für PDF-Generierung -->
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <!-- Inter Schriftart (Theme Standard) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Konfigurator CSS -->
+  <link href="{{ 'page-konfigurator.css' | asset_url }}" rel="stylesheet">
+</head>
+<body class="konfigurator-page">
+  
 
-{%- style -%}
-  .section-{{ section.id }}-padding {
-    padding-top: {{ section.settings.padding_top | default: 40 }}px;
-    padding-bottom: {{ section.settings.padding_bottom | default: 40 }}px;
-  }
-  @media (min-width: 750px) {
+  {%- style -%}
     .section-{{ section.id }}-padding {
-      padding-top: {{ section.settings.padding_top_desktop | default: section.settings.padding_top | default: 40 }}px;
-      padding-bottom: {{ section.settings.padding_bottom_desktop | default: section.settings.padding_bottom | default: 40 }}px;
+      padding-top: {{ section.settings.padding_top | default: 40 }}px;
+      padding-bottom: {{ section.settings.padding_bottom | default: 40 }}px;
     }
-  }
-{%- endstyle -%}
-
-<div class="section-{{ section.id }}-padding">
+    @media (min-width: 750px) {
+      .section-{{ section.id }}-padding {
+        padding-top: {{ section.settings.padding_top_desktop | default: section.settings.padding_top | default: 40 }}px;
+        padding-bottom: {{ section.settings.padding_bottom_desktop | default: section.settings.padding_bottom | default: 40 }}px;
+      }
+    }
+    
+    /* Konfigurator-Button auf Mobile ausblenden für /pages/konfigurator */
+    @media (max-width: 1024px) {
+      body.konfigurator-page .header__icon--konfigurator,
+      body.konfigurator-page .header a[href*="konfigurator"].button,
+      body.konfigurator-page .header a[href*="konfigurator"].button--primary {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        height: 0 !important;
+        width: 0 !important;
+        overflow: hidden !important;
+        position: absolute !important;
+        left: -9999px !important;
+        top: -9999px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+    }
+    
+    /* Zusätzliche Sicherheit: Button ausblenden basierend auf URL */
+    @media (max-width: 1024px) {
+      .header__icon--konfigurator[href*="konfigurator"] {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        height: 0 !important;
+        width: 0 !important;
+        overflow: hidden !important;
+        position: absolute !important;
+        left: -9999px !important;
+        top: -9999px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      
+      /* Nav-Items wieder mittig zentrieren */
+      body.konfigurator-page .header__inline-menu,
+      body.konfigurator-page .header .header__inline-menu {
+        align-items: center !important;
+        justify-content: center !important;
+        display: flex !important;
+        flex: 1 !important;
+        margin: 0 auto !important;
+      }
+      
+      /* Header-Container ausbalancieren */
+      body.konfigurator-page .header__icons {
+        justify-content: flex-end !important;
+      }
+      
+      /* Zentrierung der Navigation */
+      body.konfigurator-page .header__inline-menu .list-menu--inline {
+        justify-content: center !important;
+        align-items: center !important;
+        gap: 2rem !important;
+      }
+    }
+  {%- endstyle -%}
+  
+  <script>
+    // Zusätzliche JavaScript-Sicherheit für Konfigurator-Seite
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.location.pathname.includes('/pages/konfigurator')) {
+        document.body.classList.add('konfigurator-page');
+        
+        // Button auch per JavaScript ausblenden
+        const konfigButton = document.querySelector('.header__icon--konfigurator');
+        if (konfigButton) {
+          konfigButton.style.display = 'none';
+          konfigButton.style.visibility = 'hidden';
+          konfigButton.style.opacity = '0';
+          konfigButton.style.height = '0';
+          konfigButton.style.width = '0';
+          konfigButton.style.overflow = 'hidden';
+          konfigButton.style.position = 'absolute';
+          konfigButton.style.left = '-9999px';
+          konfigButton.style.top = '-9999px';
+          konfigButton.style.margin = '0';
+          konfigButton.style.padding = '0';
+        }
+      }
+    });
+  </script>
+  <div class="section-{{ section.id }}-padding">
   <main class="container konfigurator" role="main" aria-label="Sicherungskasten Konfigurator">
     <div class="konfigurator-top-gap"></div>
     <!-- Dashboard für alle Seiten -->
-    <div class="info-box" id="infoBox">
-      <div>Anzahl der Reihen: <span id="rowCount">1</span></div>
-      <div>Verbrauchte Einheiten: <span id="usedUnits">0</span></div>
-      <div>Gesamtpreis: <span id="totalPrice" aria-live="polite">0 €</span></div>
-      <div class="price-disclaimer">Gesamtpreis der Verteilung inkl. 19% MwSt., zzgl. Versand</div>
-    </div>
+        <div class="info-box" id="infoBox">
+          <div>Anzahl der Reihen: <span id="rowCount">1</span></div>
+          <div>Verbrauchte Einheiten: <span id="usedUnits">0</span></div>
+          <div>Gesamtpreis: <span id="totalPrice" aria-live="polite">0 €</span></div>
+          <div class="price-disclaimer">Gesamtpreis der Verteilung inkl. 19% MwSt., zzgl. Versand</div>
+        </div>
 
     <!-- Statusleiste -->
     <div class="status-bar">
@@ -50,39 +151,39 @@
 
         <input type="text" id="verteilerName" placeholder="Verteiler-Name/Referenz eingeben" class="verteiler-input">
           
-        <!-- Produktkarten-Grid (sichtbar direkt nach Markenauswahl) -->
-        <div class="produktkarten-grid">
-          <!-- Unterzähler -->
-          <div class="produktkarte">  
-            <img src="https://cdn.shopify.com/s/files/1/0944/8711/8089/files/Unterzaehler_99c6ffde-7041-40e7-b11f-c31a5cb1e77d.png?v=1756321308" alt="Unterzähler" class="produktbild" loading="lazy" decoding="async">
-            <div class="produktname">Unterzähler</div>
-            <div class="produktpreis"><span class="preis">72,80&nbsp;€</span></div>
-            <div class="produktbuttons">
-              <button id="uez-mit-btn" class="mit-btn" type="button" onclick="toggleUnterzaehler(true)">mit</button>
-              <button id="uez-ohne-btn"class="ohne-btn active" type="button" onclick="toggleUnterzaehler(false)">ohne</button> 
+          <!-- Produktkarten-Grid (sichtbar direkt nach Markenauswahl) -->
+          <div class="produktkarten-grid">
+            <!-- Unterzähler -->
+            <div class="produktkarte">  
+              <img src="https://cdn.shopify.com/s/files/1/0944/8711/8089/files/Unterzaehler_99c6ffde-7041-40e7-b11f-c31a5cb1e77d.png?v=1756321308" alt="Unterzähler" class="produktbild" loading="lazy" decoding="async">
+              <div class="produktname">Unterzähler</div>
+              <div class="produktpreis"><span class="preis">72,80&nbsp;€</span></div>
+              <div class="produktbuttons">
+                <button id="uez-mit-btn" class="mit-btn" type="button" onclick="toggleUnterzaehler(true)">mit</button>
+                <button id="uez-ohne-btn"class="ohne-btn active" type="button" onclick="toggleUnterzaehler(false)">ohne</button> 
+              </div>
+            </div>
+            <!-- Überspannungsschutz -->
+            <div class="produktkarte" data-einheiten="4">
+              <img src="https://cdn.shopify.com/s/files/1/0944/8711/8089/files/Ueberspannungsschutz_b02f7f9b-e3f6-4e26-ac1a-96ce9e681993.png?v=1756321309" alt="Überspannungsschutz" class="produktbild" loading="lazy" decoding="async">
+              <div class="produktname">Überspannungsschutz</div>
+              <div class="produktpreis"><span class="preis">89,90&nbsp;€</span></div>
+              <div class="produktbuttons">
+                <button id="ues-mit-btn" class="mit-btn" type="button" onclick="toggleUeberspannungsschutz(true)">mit</button>
+                <button id="ues-ohne-btn" class="ohne-btn active" type="button" onclick="toggleUeberspannungsschutz(false)">ohne</button>
+              </div>
+            </div>
+            <!-- Hauptschalter -->
+            <div class="produktkarte">
+              <img src="https://cdn.shopify.com/s/files/1/0944/8711/8089/files/Hauptschalter_9db5d20e-8e22-4fb8-9f83-4b1909e10c77.png?v=1756321561" alt="Hauptschalter" class="produktbild" loading="lazy" decoding="async">
+              <div class="produktname">Hauptschalter</div>
+              <div class="produktpreis"><span class="preis">14,11&nbsp;€</span></div>
+              <div class="produktbuttons">
+                <button id="hs-mit-btn" class="mit-btn" type="button" onclick="toggleHauptschalter(true)">mit</button>
+                <button id="hs-ohne-btn" class="ohne-btn active" type="button" onclick="toggleHauptschalter(false)">ohne</button>
+              </div>
             </div>
           </div>
-          <!-- Überspannungsschutz -->
-          <div class="produktkarte" data-einheiten="4">
-            <img src="https://cdn.shopify.com/s/files/1/0944/8711/8089/files/Ueberspannungsschutz_b02f7f9b-e3f6-4e26-ac1a-96ce9e681993.png?v=1756321309" alt="Überspannungsschutz" class="produktbild" loading="lazy" decoding="async">
-            <div class="produktname">Überspannungsschutz</div>
-            <div class="produktpreis"><span class="preis">89,90&nbsp;€</span></div>
-            <div class="produktbuttons">
-              <button id="ues-mit-btn" class="mit-btn" type="button" onclick="toggleUeberspannungsschutz(true)">mit</button>
-              <button id="ues-ohne-btn" class="ohne-btn active" type="button" onclick="toggleUeberspannungsschutz(false)">ohne</button>
-            </div>
-          </div>
-          <!-- Hauptschalter -->
-          <div class="produktkarte">
-            <img src="https://cdn.shopify.com/s/files/1/0944/8711/8089/files/Hauptschalter_9db5d20e-8e22-4fb8-9f83-4b1909e10c77.png?v=1756321561" alt="Hauptschalter" class="produktbild" loading="lazy" decoding="async">
-            <div class="produktname">Hauptschalter</div>
-            <div class="produktpreis"><span class="preis">14,11&nbsp;€</span></div>
-            <div class="produktbuttons">
-              <button id="hs-mit-btn" class="mit-btn" type="button" onclick="toggleHauptschalter(true)">mit</button>
-              <button id="hs-ohne-btn" class="ohne-btn active" type="button" onclick="toggleHauptschalter(false)">ohne</button>
-            </div>
-          </div>
-        </div>
           
         <div id="row1-strip" class="row-strip">
           <div id="buttonsRow1" class="buttons-container-top"></div>
@@ -103,6 +204,7 @@
 
     <!-- Weitere Seiten -->
     
+
     <div id="page3" class="page">
       <div style="text-align: center; margin: 20px 0;">
         <div style="max-width: 800px; margin: 20px auto; padding: 20px; background-color: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
@@ -189,17 +291,16 @@
     <!-- Button-Container für Weiter und Zurück -->
     <div class="button-container" style="display: flex; justify-content: space-between; width: 1200px; margin: 20px auto;">
       <button id="prevButton" class="button" type="button">Zurück</button>
-      <button id="nextButton" class="button" type="button" style="display: inline-block;">Weiter</button>
+      <button id="nextButton" class="button button--outline" type="button">Weiter</button>
     </div>
-  </main>
-  <div class="konfigurator-bottom-gap"></div>
-</div>
-
-<!-- Konfigurator JavaScript -->
-<script src="{{ 'page-konfigurator.js' | asset_url }}" defer></script>
-
-<!-- Konfigurator Produktdaten -->
-<script id="konfigurator-products" type="application/json">
+    </main>
+    <div class="konfigurator-bottom-gap"></div>
+  </div>
+ 
+  <!-- Konfigurator JavaScript -->
+  <script src="{{ 'page-konfigurator.js' | asset_url }}" defer></script>
+  <!-- Konfigurator Produktdaten -->
+  <script id="konfigurator-products" type="application/json">
 [
   {% for product in collections.konfigurator.products %}
     {
@@ -220,7 +321,10 @@
   {% endfor %}
 ]
 </script>
-
+  <script>
+      }
+    }
+</script>
 <script>
   // Funktion zum Laden der Bilder
   function handleImageLoad(img) {
@@ -241,7 +345,10 @@
       }
     });
   });
+
+ 
 </script>
+</div>
 
 <!-- Modal-Overlay und -Dialog für schöne Alerts -->
 <div id="cb-backdrop" class="cb-backdrop" hidden></div>
@@ -258,6 +365,7 @@
     </div>
   </div>
 </div>
+
 
 <script>
 (function(){
@@ -329,185 +437,9 @@
 })();
 </script>
 
-{%- comment -%} === KONFIGURATOR BEST PRACTICE: Desktop-View auf Mobile mit Skalierung === {%- endcomment -%}
-{% if request.page_type == 'page' and request.path contains '/pages/konfigurator' %}
+</body>
+</html>
 
-  <script id="konfigurator-desktop-mobile-view">
-    (function() {
-      // Konfigurator-spezifische Desktop-View auf Mobile
-      var isLikelyMobile = ('ontouchstart' in window) && (Math.max(screen.width, screen.height) <= 1024);
-      var isKonfiguratorPage = window.location.pathname.includes('/pages/konfigurator');
-      
-      // Konfigurator Desktop-Breite (angepasst an deine komplexe Struktur)
-      var desktopWidth = 1366; // Deine tatsächliche Desktop-Breite
-      var initialScale = 0.5;  // 50% Skalierung für bessere Lesbarkeit
-      
-      function setViewport() {
-        var content = [
-          'width=' + desktopWidth,
-          'initial-scale=' + initialScale,
-          'minimum-scale=0.25',  // Benutzer kann weiter zoomen
-          'maximum-scale=2.0',   // Maximal 200% Zoom
-          'user-scalable=yes',
-          'viewport-fit=cover'
-        ].join(', ');
-
-        var mvp = document.querySelector('meta[name="viewport"]');
-        if (!mvp) {
-          mvp = document.createElement('meta');
-          mvp.setAttribute('name', 'viewport');
-          document.head.appendChild(mvp);
-        }
-        mvp.setAttribute('content', content);
-      }
-
-      // Viewport nur für Konfigurator-Seite und Mobile setzen
-      if (isLikelyMobile && isKonfiguratorPage) {
-        setViewport();
-        
-        // iOS-Orientierungswechsel behandeln
-        window.addEventListener('orientationchange', function() {
-          setTimeout(setViewport, 100);
-        });
-      }
-      
-      // Fallback: Normale Mobile-Detection für andere Funktionen
-      var BP = 990;
-      var root = document.documentElement;
-      function tick(){
-        var vw = Math.max(document.documentElement.clientWidth, window.innerWidth||0);
-        if (vw < BP) root.classList.add('konf-mobile'); 
-        else root.classList.remove('konf-mobile');
-      }
-      tick();
-      window.addEventListener('resize', tick, { passive:true });
-
-      // Theme-Editor: aufräumen
-      document.addEventListener('shopify:section:unload', function(){
-        root.classList.remove('konf-mobile');
-      });
-    })();
-  </script>
-
-  <style id="konfigurator-desktop-mobile-styles">
-    /* Konfigurator: Desktop-View auf Mobile mit optimierter Skalierung */
-    
-    /* 1. Mobile-Header bleibt normal (100vw) */
-    @media (max-width: 1024px) {
-      /* Header auf Mobile-Breite begrenzen */
-      html.konf-mobile .shopify-section-header,
-      html.konf-mobile .header-wrapper,
-      html.konf-mobile header.header {
-        width: 100vw !important;
-        max-width: 100vw !important;
-        min-width: 320px !important;
-        overflow-x: hidden;
-        position: relative;
-        z-index: 1000;
-      }
-      
-      /* Header-Innencontainer */
-      html.konf-mobile .shopify-section-header .page-width,
-      html.konf-mobile .header-wrapper .page-width,
-      html.konf-mobile header.header .page-width {
-        width: 100% !important;
-        max-width: 100% !important;
-        margin: 0 auto !important;
-        padding-left: 16px;
-        padding-right: 16px;
-      }
-      
-      /* Mobile Menü-Drawer */
-      html.konf-mobile .menu-drawer,
-      html.konf-mobile .menu-drawer__inner-container {
-        width: 100vw !important;
-        max-width: 100vw !important;
-      }
-    }
-
-    /* 2. Konfigurator-Inhalt: Desktop-View mit Skalierung */
-    @media (max-width: 1024px) {
-      /* Globale Min-Breiten neutralisieren */
-      html.konf-mobile { 
-        min-width: 0 !important; 
-        overflow-x: auto;
-      }
-      html.konf-mobile body { 
-        min-width: 0 !important; 
-        overflow-x: auto;
-      }
-
-      /* MainContent für horizontales Scrollen vorbereiten */
-      html.konf-mobile #MainContent {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        min-width: 1366px; /* Desktop-Breite erzwingen */
-      }
-
-      /* Konfigurator-Section: Desktop-Dimensionen beibehalten */
-      html.konf-mobile #shopify-section-{{ section.id }} {
-        min-width: 1366px !important;
-        width: 1366px !important;
-        display: block;
-        position: relative;
-        z-index: 1;
-      }
-
-      /* Dawn Theme-Anpassungen für Desktop-View */
-      html.konf-mobile .page-width,
-      html.konf-mobile .page-width-desktop {
-        max-width: none !important;
-        width: 100% !important;
-      }
-
-      /* Konfigurator-Container: Desktop-Breite sicherstellen */
-      html.konf-mobile .konfigurator {
-        min-width: 1366px;
-        width: 1366px;
-        margin: 0 auto;
-      }
-
-      /* Touch-Optimierungen für Desktop-View */
-      html.konf-mobile .konfigurator * {
-        -webkit-tap-highlight-color: rgba(0, 90, 156, 0.2);
-      }
-
-      /* Button-Größen für Touch optimieren */
-      html.konf-mobile .button,
-      html.konf-mobile .dropdown-btn,
-      html.konf-mobile .konfigurator-option-btn {
-        min-height: 44px; /* iOS Touch-Target */
-        min-width: 44px;
-      }
-
-      /* Scroll-Indikator für Desktop-View */
-      html.konf-mobile #MainContent::-webkit-scrollbar {
-        height: 8px;
-      }
-      html.konf-mobile #MainContent::-webkit-scrollbar-track {
-        background: #f1f1f1;
-      }
-      html.konf-mobile #MainContent::-webkit-scrollbar-thumb {
-        background: var(--color-primary);
-        border-radius: 4px;
-      }
-    }
-
-    /* 3. Desktop: Normale Darstellung */
-    @media (min-width: 1025px) {
-      html.konf-mobile #shopify-section-{{ section.id }} {
-        min-width: auto !important;
-        width: auto !important;
-      }
-      html.konf-mobile .konfigurator {
-        min-width: auto;
-        width: auto;
-      }
-    }
-  </style>
-
-{% endif %}
-{%- comment -%} === END Konfigurator Desktop-View auf Mobile === {%- endcomment -%}
 
 {% schema %}
 {

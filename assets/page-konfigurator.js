@@ -731,7 +731,7 @@ let rowCounter = 1;
           };
           addFixedProductToRow(rowCounter, fiProduct);
         } else {
-          showWarning('Es werden nur maximal 5 Reihen unterstüzt. Wenn du mehr Platz brauchst, <a href="/#contact">kontaktiere uns</a> – wir finden eine passende Lösung', 'Maximale Anzahl an Reihen erreicht!');
+          showWarning('Es werden nur maximal 5 Reihen unterstüzt. Wenn du mehr Platz brauchst, kontaktiere uns – wir finden eine passende Lösung', 'Maximale Anzahl an Reihen erreicht!');
         }
       });
 
@@ -786,7 +786,7 @@ let rowCounter = 1;
           updateInfoBox();
           updateSummary();
         } else {
-          showWarning('Es werden nur maximal 5 Reihen unterstüzt. Wenn du mehr Platz brauchst, <a href="/#contact">kontaktiere uns</a> – wir finden eine passende Lösung', 'Maximale Anzahl an Reihen erreicht!');
+          showWarning('Es werden nur maximal 5 Reihen unterstüzt. Wenn du mehr Platz brauchst, kontaktiere uns – wir finden eine passende Lösung', 'Maximale Anzahl an Reihen erreicht!');
         }
       });
 
@@ -4239,7 +4239,7 @@ let rowCounter = 1;
           }
           
           // Einheitliche Meldung wie beim Reihen-Button
-          showNiceDialog('Maximale Anzahl an Reihen erreicht!', 'Es werden nur maximal 5 Reihen unterstüzt. Wenn du mehr Platz brauchst, <a href="/#contact">kontaktiere uns</a> – wir finden eine passende Lösung');
+          showNiceDialog('Maximale Anzahl an Reihen erreicht!', 'Es werden nur maximal 5 Reihen unterstüzt. Wenn du mehr Platz brauchst, kontaktiere uns – wir finden eine passende Lösung');
           updateSectionARows();
           updateInfoBox();
           updateSummary();
