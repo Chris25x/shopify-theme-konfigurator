@@ -11,6 +11,7 @@
   "sections": {
     "main": {
       "type": "main-list-collections",
+      "disabled": true,
       "settings": {
         "title": "Collections",
         "sort": "alphabetical",
@@ -18,9 +19,41 @@
         "columns_desktop": 3,
         "columns_mobile": "2"
       }
+    },
+    "collections_grid_8bp67T": {
+      "type": "collections-grid",
+      "blocks": {
+        "tile_8zNixk": {
+          "type": "tile",
+          "settings": {
+            "title": "Test1",
+            "link": "shopify://collections/all",
+            "image": "shopify://shop_images/Ueberspannungsschutz_fd56ba33-16e0-46dc-b3fa-2149cb920dc9.png",
+            "bg_style": "white"
+          }
+        },
+        "tile_7bCyGg": {
+          "type": "tile",
+          "settings": {
+            "title": "Test2",
+            "link": "shopify://collections/all",
+            "image": "shopify://shop_images/Fi_A_63.png",
+            "bg_style": "white"
+          }
+        }
+      },
+      "block_order": [
+        "tile_8zNixk",
+        "tile_7bCyGg"
+      ],
+      "name": "Collections Grid (4 tiles)",
+      "settings": {
+        "heading": "Collections"
+      }
     }
   },
   "order": [
-    "main"
+    "main",
+    "collections_grid_8bp67T"
   ]
 }

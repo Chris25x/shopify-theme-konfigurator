@@ -1,0 +1,402 @@
+<section class="technical-disclaimer" id="technical-disclaimer" aria-labelledby="technical-disclaimer-title" style="padding-top: {{ section.settings.padding_top | default: 60 }}px; padding-bottom: {{ section.settings.padding_bottom | default: 60 }}px;">
+  <div class="technical-disclaimer__container">
+    <!-- Header -->
+    <div class="technical-disclaimer__header">
+      <h2 id="technical-disclaimer-title" class="technical-disclaimer__title">{{ section.settings.title | default: 'Technische Hinweise & Haftungsausschluss' }}</h2>
+    </div>
+
+    <!-- Introduction -->
+    <div class="technical-disclaimer__intro">
+      <p>Unsere vorkonfektionierten Sicherungsverteilungen werden nach Kundenvorgabe gefertigt und dienen der Vormontage und Grundverdrahtung. Sie sind kein betriebsfertiges Produkt, sondern müssen zwingend durch eine Elektrofachkraft vor Ort geprüft, nachgezogen und abgenommen werden. Mit Ihrer Bestätigung im Konfigurator erkennen Sie die folgenden Bedingungen an.</p>
+    </div>
+
+    <!-- Content -->
+    <div class="technical-disclaimer__content">
+      <!-- 1. Allgemeines -->
+      <div class="technical-disclaimer__section">
+        <h3 class="technical-disclaimer__section-title">1. Allgemeines</h3>
+        <ul class="technical-disclaimer__list">
+          <li>Die Konfiguration und Auswahl der Komponenten erfolgt ausschließlich nach Kundenwunsch.</li>
+          <li>Es erfolgt keine Prüfung auf Vollständigkeit oder Normkonformität der gewählten Schutzorgane, FI-Typen, Querschnitte oder Selektivitäten.</li>
+          <li>Der Kunde trägt die alleinige Verantwortung für die technisch richtige Auswahl der Bauteile.</li>
+          <li>Unsere Hinweise und Warnungen im Konfigurator dienen der Orientierung, ersetzen aber keine Fachplanung durch eine Elektrofachkraft.</li>
+        </ul>
+      </div>
+
+      <!-- 2. Fertigung & Prüfung -->
+      <div class="technical-disclaimer__section">
+        <h3 class="technical-disclaimer__section-title">2. Fertigung & Prüfung</h3>
+        <ul class="technical-disclaimer__list">
+          <li>Jede Verteilung wird von einer Elektrofachkraft verdrahtet und intern geprüft.</li>
+          <li>Es erfolgt eine Sicht- und Durchgangsprüfung aller Schutzleiterverbindungen, Klemmen und Beschriftungen.</li>
+          <li>Eine Endprüfung nach DIN VDE 0100-600 oder EN 61439 erfolgt nicht, da diese erst nach dem Anschluss vor Ort möglich ist.</li>
+          <li>Die gelieferten Produkte gelten als vorkonfektionierte Baugruppen, nicht als betriebsfertige Schaltgerätekombinationen.</li>
+        </ul>
+      </div>
+
+      <!-- 3. Transport & mechanische Sicherheit -->
+      <div class="technical-disclaimer__section">
+        <h3 class="technical-disclaimer__section-title">3. Transport & mechanische Sicherheit</h3>
+        <ul class="technical-disclaimer__list">
+          <li>Während des Transports kann es durch Erschütterungen zu Lockerungen von Schraubverbindungen kommen.</li>
+          <li>Vor Inbetriebnahme müssen sämtliche Schraub- und Steckverbindungen nachgezogen und geprüft werden.</li>
+          <li>Diese Prüfung darf ausschließlich durch eine Elektrofachkraft erfolgen.</li>
+        </ul>
+      </div>
+
+      <!-- 4. Prüfung & Abnahme beim Kunden -->
+      <div class="technical-disclaimer__section">
+        <h3 class="technical-disclaimer__section-title">4. Prüfung & Abnahme beim Kunden</h3>
+        <ul class="technical-disclaimer__list">
+          <li>Die abschließende Prüfung, Messung und Inbetriebnahme muss gemäß DIN VDE 0100-600 durch eine Elektrofachkraft erfolgen.</li>
+          <li>Zu prüfen sind insbesondere: Schutzleiterdurchgängigkeit, Isolationswiderstand, Schleifenimpedanz, RCD-Auslösewerte, korrekte Anschlussreihenfolge und Einhaltung der Bemessungsströme je Phase.</li>
+          <li>Erst nach dieser Prüfung darf die Verteilung in Betrieb genommen werden.</li>
+        </ul>
+      </div>
+
+      <!-- 5. FI- und Leitungsschutz -->
+      <div class="technical-disclaimer__section">
+        <h3 class="technical-disclaimer__section-title">5. FI- und Leitungsschutz</h3>
+        <ul class="technical-disclaimer__list">
+          <li>FI-Schutzschalter sind je Phase mit ihrem Bemessungsstrom (z. B. 40 A oder 63 A) zu betrachten.</li>
+          <li>Eine Überschreitung der zulässigen Dauerlast kann zur thermischen Überlastung des FI führen.</li>
+          <li>Der Kunde ist verantwortlich für die richtige Lastverteilung oder den Einsatz eines höher bemessenen FI.</li>
+          <li>Hinweise im Konfigurator dienen der Information und entbinden nicht von der fachlichen Verantwortung.</li>
+        </ul>
+      </div>
+
+      <!-- 6. Normkonformität & Gesamtanlage -->
+      <div class="technical-disclaimer__section">
+        <h3 class="technical-disclaimer__section-title">6. Normkonformität & Gesamtanlage</h3>
+        <ul class="technical-disclaimer__list">
+          <li>Unsere Verteilungen sind nicht als vollständige elektrische Anlage im Sinne der DIN VDE 0100 oder EN 61439 zu verstehen.</li>
+          <li>Eine Prüfung auf Selektivität, Überspannungsschutz, Abschaltbedingungen, Kurzschlussfestigkeit oder Erwärmung erfolgt nicht.</li>
+          <li>Diese Bewertung und Planung obliegen ausschließlich der Elektrofachkraft vor Ort.</li>
+        </ul>
+      </div>
+
+      <!-- 7. Änderungen durch Dritte -->
+      <div class="technical-disclaimer__section">
+        <h3 class="technical-disclaimer__section-title">7. Änderungen durch Dritte</h3>
+        <ul class="technical-disclaimer__list">
+          <li>Nachträgliche Änderungen, Umbauten oder Erweiterungen durch Dritte führen zum Verlust sämtlicher Gewährleistungs- und Haftungsansprüche.</li>
+          <li>Das gilt insbesondere bei Änderungen an Verdrahtungen, Klemmen, Schutzorganen oder Beschriftungen.</li>
+        </ul>
+      </div>
+
+      <!-- 8. Verantwortung für Netz & Zuleitung -->
+      <div class="technical-disclaimer__section">
+        <h3 class="technical-disclaimer__section-title">8. Verantwortung für Netz & Zuleitung</h3>
+        <ul class="technical-disclaimer__list">
+          <li>Für die Dimensionierung und Absicherung der Zuleitung zum Verteiler sowie für die Netzform (TN, TT, IT) und Erdungsanlage ist die Elektrofachkraft vor Ort verantwortlich.</li>
+          <li>Unsere Produkte setzen ein ordnungsgemäß errichtetes Gebäudenetz voraus.</li>
+        </ul>
+      </div>
+
+      <!-- 9. Verwendung nur durch Elektrofachkräfte -->
+      <div class="technical-disclaimer__section">
+        <h3 class="technical-disclaimer__section-title">9. Verwendung nur durch Elektrofachkräfte</h3>
+        <ul class="technical-disclaimer__list">
+          <li>Die gelieferten Verteilungen dürfen ausschließlich durch Elektrofachkräfte im Sinne der DIN VDE 1000-10 installiert, geprüft und in Betrieb genommen werden.</li>
+          <li>Eine Inbetriebnahme durch Laien ist nicht zulässig und führt zum Verlust jeglicher Ansprüche.</li>
+        </ul>
+      </div>
+
+      <!-- 10. Kennzeichnung & Dokumentation -->
+      <div class="technical-disclaimer__section">
+        <h3 class="technical-disclaimer__section-title">10. Kennzeichnung & Dokumentation</h3>
+        <ul class="technical-disclaimer__list">
+          <li>Jede Verteilung erhält eine eindeutige Fertigungsnummer als Nachweis der ordnungsgemäßen Vormontage.</li>
+          <li>Das zugehörige Prüfprotokoll wird intern archiviert und kann bei Bedarf angefordert werden.</li>
+        </ul>
+      </div>
+
+      <!-- 11. Einsatzgrenzen -->
+      <div class="technical-disclaimer__section">
+        <h3 class="technical-disclaimer__section-title">11. Einsatzgrenzen</h3>
+        <ul class="technical-disclaimer__list">
+          <li>Unsere Verteilungen sind nicht für den Einsatz in Ex-Bereichen, im Freien ohne Schutzgehäuse oder in feuchter Umgebung ohne ausreichende IP-Schutzklasse vorgesehen.</li>
+          <li>Der Kunde ist verantwortlich für den ordnungsgemäßen Einsatzort.</li>
+        </ul>
+      </div>
+
+      <!-- 12. CE-Kennzeichnung -->
+      <div class="technical-disclaimer__section">
+        <h3 class="technical-disclaimer__section-title">12. CE-Kennzeichnung</h3>
+        <ul class="technical-disclaimer__list">
+          <li>Die verwendeten Komponenten sind CE-konform.</li>
+          <li>Die vormontierte Verteilung trägt kein CE-Zeichen als Gesamtanlage, da sie erst nach Endabnahme durch eine Elektrofachkraft als fertiges Produkt gilt.</li>
+        </ul>
+      </div>
+
+      <!-- 13. Zusammenfassung -->
+      <div class="technical-disclaimer__section technical-disclaimer__section--summary">
+        <h3 class="technical-disclaimer__section-title">13. Zusammenfassung</h3>
+        <ul class="technical-disclaimer__list">
+          <li>Die Verteilung wird nach Kundenvorgabe gefertigt.</li>
+          <li>Es erfolgt keine Endprüfung nach VDE 0100-600 / EN 61439.</li>
+          <li>Die Verantwortung für Auswahl, Prüfung und Abnahme liegt bei der Elektrofachkraft vor Ort.</li>
+          <li>Vor Inbetriebnahme sind alle Verbindungen nachzuziehen und zu prüfen.</li>
+          <li>Änderungen durch Dritte schließen jede Haftung aus.</li>
+          <li>Ohne fachgerechte Endprüfung darf die Verteilung nicht in Betrieb genommen werden.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="technical-disclaimer__footer">
+      <p class="technical-disclaimer__footer-text">
+        <strong>Stand: Oktober 2025</strong><br>
+        Diese Hinweise sind Bestandteil unserer Lieferbedingungen und gelten für alle über den Konfigurator erstellten Produkte.
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .technical-disclaimer {
+    background: #ffffff;
+    padding: 60px 0;
+  }
+
+  .technical-disclaimer__container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .technical-disclaimer__header {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  .technical-disclaimer__title {
+    font-size: {{ section.settings.title_font_size | default: 28 }}px;
+    font-weight: {{ section.settings.title_font_weight | default: 700 }};
+    color: #111827;
+    margin: 0 0 12px 0;
+    letter-spacing: -0.02em;
+  }
+
+  .technical-disclaimer__intro {
+    background: #f8f9fc;
+    border-left: 4px solid #005A9C;
+    padding: 20px 24px;
+    margin-bottom: 40px;
+    border-radius: 8px;
+  }
+
+  .technical-disclaimer__intro p {
+    font-size: 1.5rem;
+    line-height: 1.6;
+    color: #374151;
+    margin: 0;
+  }
+
+  .technical-disclaimer__content {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .technical-disclaimer__section {
+    padding: 24px;
+    background: #fafbfc;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+  }
+
+  .technical-disclaimer__section--summary {
+    background: #fff7ed;
+    border: 2px solid #fb923c;
+  }
+
+  .technical-disclaimer__section-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #005A9C;
+    margin: 0 0 16px 0;
+  }
+
+  .technical-disclaimer__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .technical-disclaimer__list li {
+    font-size: 1.5rem;
+    line-height: 1.7;
+    color: #4b5563;
+    padding: 10px 0;
+    padding-left: 28px;
+    position: relative;
+  }
+
+  .technical-disclaimer__list li::before {
+    content: '•';
+    position: absolute;
+    left: 8px;
+    color: #005A9C;
+    font-weight: bold;
+    font-size: 1.6rem;
+  }
+
+  .technical-disclaimer__footer {
+    margin-top: 48px;
+    padding: 24px;
+    background: #f8f9fc;
+    border-radius: 12px;
+    text-align: center;
+  }
+
+  .technical-disclaimer__footer-text {
+    font-size: 1.4rem;
+    line-height: 1.6;
+    color: #6b7280;
+    margin: 0;
+  }
+
+  .technical-disclaimer__footer-text strong {
+    color: #111827;
+  }
+
+  /* Mobile Responsive */
+  @media (max-width: 768px) {
+    .technical-disclaimer {
+      padding: 40px 0;
+    }
+
+    .technical-disclaimer__container {
+      padding: 0 16px;
+    }
+
+    .technical-disclaimer__title {
+      font-size: 24px;
+    }
+
+    .technical-disclaimer__intro {
+      padding: 16px 20px;
+      margin-bottom: 32px;
+    }
+
+    .technical-disclaimer__intro p {
+      font-size: 1.4rem;
+    }
+
+    .technical-disclaimer__content {
+      gap: 24px;
+    }
+
+    .technical-disclaimer__section {
+      padding: 20px;
+    }
+
+    .technical-disclaimer__section-title {
+      font-size: 1.6rem;
+    }
+
+    .technical-disclaimer__list li {
+      font-size: 1.4rem;
+      padding: 8px 0;
+      padding-left: 24px;
+    }
+
+    .technical-disclaimer__footer {
+      margin-top: 32px;
+      padding: 20px;
+    }
+
+    .technical-disclaimer__footer-text {
+      font-size: 1.3rem;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Technical Disclaimer",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Überschrift"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titel",
+      "default": "Technische Hinweise & Haftungsausschluss"
+    },
+    {
+      "type": "range",
+      "id": "title_font_size",
+      "min": 16,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Titel Schriftgröße",
+      "default": 28
+    },
+    {
+      "type": "select",
+      "id": "title_font_weight",
+      "label": "Titel Schriftstärke",
+      "options": [
+        {
+          "value": "400",
+          "label": "Normal (400)"
+        },
+        {
+          "value": "500",
+          "label": "Mittel (500)"
+        },
+        {
+          "value": "600",
+          "label": "Semi-Fett (600)"
+        },
+        {
+          "value": "700",
+          "label": "Fett (700)"
+        },
+        {
+          "value": "800",
+          "label": "Extra Fett (800)"
+        }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding oben",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding unten",
+      "default": 60
+    }
+  ],
+  "presets": [
+    {
+      "name": "Technical Disclaimer"
+    }
+  ]
+}
+{% endschema %}
+

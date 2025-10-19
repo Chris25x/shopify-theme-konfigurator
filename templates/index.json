@@ -16,6 +16,7 @@
           "type": "slide",
           "settings": {
             "image": "shopify://shop_images/Kasten.png",
+            "image_mobile": "shopify://shop_images/Mobil-Kasten.png",
             "image_overlay_opacity": 10,
             "heading": "Stellen Sie Ihren perfekten Sicherungskasten in wenigen Klicks zusammen.",
             "heading_size": "h1",
@@ -73,7 +74,7 @@
         "text_font_size": 16,
         "text_font_weight": "400",
         "padding_top": 32,
-        "padding_bottom": 32
+        "padding_bottom": 52
       }
     },
     "image_with_text_kh7zNA": {
@@ -91,7 +92,7 @@
         "text_VHnwmF": {
           "type": "text",
           "settings": {
-            "text": "<p>Unser Online-Konfigurator führt dich Schritt für Schritt zu deinem individuellen Sicherungskasten – perfekt für Heimwerker, Profis und Bauprojekte.<br/><br/>Bauteile auswählen, Aufbau prüfen, bestellen – auf Wunsch steckerfertig!</p>",
+            "text": "<p>Plane deinen Sicherungskasten live in visueller Umgebung – Bauteile, Aufbau und<br/>Reihenfolge siehst du direkt auf dem Bildschirm.<br/><br/>Auf Wunsch liefern wir deinen Verteiler komplett vorverdrahtet und bestückt –<br/>fachgerecht geprüft und montagebereit.</p>",
             "text_font_size": 18,
             "text_font_weight": "400",
             "text_style": "subtitle"
@@ -128,8 +129,8 @@
         "mobile_content_alignment": "left",
         "section_color_scheme": "scheme-1",
         "color_scheme": "",
-        "padding_top": 36,
-        "padding_bottom": 36
+        "padding_top": 100,
+        "padding_bottom": 52
       }
     },
     "how_it_works_4mCpbj": {
@@ -178,8 +179,8 @@
         "subtitle": "In nur drei Schritten zum individuell konfigurierten Sicherungskasten.",
         "cta_text": "",
         "cta_url": "",
-        "padding_top": 60,
-        "padding_bottom": 60
+        "padding_top": 100,
+        "padding_bottom": 52
       }
     },
     "mockup_sticky_BwC7iL": {
@@ -188,29 +189,29 @@
         "feature_ra7apM": {
           "type": "feature",
           "settings": {
-            "title": "Sofortige Live-Vorschau",
-            "description": "Der Aufbau deines Sicherungskastens bleibt beim Scrollen ständig im Blick – wie im echten Projekt."
+            "title": "Live konfigurieren",
+            "description": "Plane und gestalte deine Verteilung direkt online – jede Änderung siehst du in Echtzeit. Vom\nHauptschalter bis zur letzten Sicherung: du entscheidest, wir setzen um."
           }
         },
         "feature_yMRijh": {
           "type": "feature",
           "settings": {
-            "title": "Normorientierte Logik",
-            "description": "FI-Bereiche, TE-Prüfung & sinnvolle Begrenzungen – der Konfigurator führt dich sicher zum Soll-Aufbau."
+            "title": "Fachgerecht vormontiert",
+            "description": "Jede Verteilung wird von einer Elektrofachkraft aufgebaut, geprüft und montagebereit\nausgeliefert – Qualität, die auf der Baustelle zählt"
           }
         },
         "feature_CjdtYy": {
           "type": "feature",
           "settings": {
-            "title": "Vormontiert oder steckerfertig",
-            "description": "Wähle den Grad der Vorkonfektion – von bestückt bis komplett vorverdrahtet."
+            "title": "Spart Zeit, Geld und Aufwand",
+            "description": "Alle benötigten Komponenten sind bereits vorkonfektioniert – kein Suchen, kein Nachbestellen,\nkein Zusammensuchen von Einzelteilen. Einfach konfigurieren und liefern lassen"
           }
         },
         "feature_qfWpQ9": {
           "type": "feature",
           "settings": {
-            "title": "Markenqualität",
-            "description": "Komponenten von ABB/Siemens u. a. – robust, verfügbar und miteinander kompatibel."
+            "title": "Qualität, auf die Verlass ist",
+            "description": "Wir verwenden überwiegend Markenkomponenten von Hager. Diese stehen seit Jahrzehnten für\nzuverlässige Technik, hohe Fertigungsqualität und dauerhafte Sicherheit in jeder Anwendung."
           }
         }
       },
@@ -231,8 +232,8 @@
         "subtitle": "Laptop bleibt sichtbar, während du die Vorteile überfliegst. Klar, fokussiert, überzeugend.",
         "cta_text": "Jetzt konfigurieren",
         "cta_url": "",
-        "padding_top": 28,
-        "padding_bottom": 28
+        "padding_top": 100,
+        "padding_bottom": 52
       }
     },
     "3d_video_rbi4zn": {
@@ -243,8 +244,8 @@
         "title_font_weight": "800",
         "subtitle_font_size": 18,
         "subtitle_font_weight": "400",
-        "padding_top": 60,
-        "padding_bottom": 32
+        "padding_top": 100,
+        "padding_bottom": 52
       }
     },
     "use_cases_wW7JJz": {
@@ -261,8 +262,8 @@
         "cta1_url": "",
         "cta2_text": "Unsicher? Kurz beraten lassen",
         "cta2_url": "",
-        "padding_top": 60,
-        "padding_bottom": 60
+        "padding_top": 100,
+        "padding_bottom": 52
       }
     },
     "technical_details_eRPkNX": {
@@ -271,72 +272,84 @@
         "table_row_AHVBTn": {
           "type": "table_row",
           "settings": {
-            "feature_name": "Verdrahtung intern",
-            "column2_value": "vollständig",
-            "column2_has_check": true,
-            "column3_value": "vollständig",
-            "column3_has_check": true,
-            "column4_value": "",
-            "column4_has_check": false
+            "feature_name": "Geräte im Lieferumfang",
+            "column2_value": "unmontiert",
+            "column2_has_check": false,
+            "column3_value": "unmontiert",
+            "column3_has_check": false,
+            "column4_value": "montiert",
+            "column4_has_check": true
           }
         },
         "table_row_P6pfgG": {
           "type": "table_row",
           "settings": {
-            "feature_name": "Externer Anschluss",
+            "feature_name": "Verdrahtung intern",
             "column2_value": "",
             "column2_has_check": false,
-            "column3_value": "steckerfertig",
-            "column3_has_check": true,
-            "column4_value": "",
-            "column4_has_check": false
+            "column3_value": "",
+            "column3_has_check": false,
+            "column4_value": "vollständig",
+            "column4_has_check": true
           }
         },
         "table_row_7gEjBN": {
           "type": "table_row",
           "settings": {
-            "feature_name": "Prüfprotokoll",
-            "column2_value": "inklusive",
-            "column2_has_check": true,
-            "column3_value": "inklusive",
+            "feature_name": "Verdrahtungssatz (Leitungen/Hülsen/Brücken)",
+            "column2_value": "",
+            "column2_has_check": false,
+            "column3_value": "enthalten",
             "column3_has_check": true,
-            "column4_value": "optional",
-            "column4_has_check": false
+            "column4_value": "bereits verdrahtet",
+            "column4_has_check": true
           }
         },
         "table_row_KKCxfQ": {
           "type": "table_row",
           "settings": {
-            "feature_name": "Dokumentation (Stückliste/Plan)",
+            "feature_name": "Interner PE-Durchgang geprüft",
             "column2_value": "",
-            "column2_has_check": true,
+            "column2_has_check": false,
             "column3_value": "",
-            "column3_has_check": true,
-            "column4_value": "",
+            "column3_has_check": false,
+            "column4_value": "Ja",
             "column4_has_check": true
           }
         },
         "table_row_mXMetV": {
           "type": "table_row",
           "settings": {
-            "feature_name": "Montagezeit vor Ort",
+            "feature_name": "Prüfprotokoll / Fotodoku",
             "column2_value": "kurz",
             "column2_has_check": false,
             "column3_value": "sehr kurz",
             "column3_has_check": false,
-            "column4_value": "lang",
-            "column4_has_check": false
+            "column4_value": "Ja",
+            "column4_has_check": true
           }
         },
         "table_row_fAGc7a": {
           "type": "table_row",
           "settings": {
-            "feature_name": "Preisindikator",
-            "column2_value": "€€",
+            "feature_name": "Montagezeit vor Ort",
+            "column2_value": "lang",
             "column2_has_check": false,
-            "column3_value": "€€€",
+            "column3_value": "mittel",
             "column3_has_check": false,
-            "column4_value": "€",
+            "column4_value": "kurz",
+            "column4_has_check": false
+          }
+        },
+        "table_row_aCY7tC": {
+          "type": "table_row",
+          "settings": {
+            "feature_name": "Preisindikator",
+            "column2_value": "€",
+            "column2_has_check": false,
+            "column3_value": "€€",
+            "column3_has_check": false,
+            "column4_value": "€€€",
             "column4_has_check": false
           }
         }
@@ -347,7 +360,8 @@
         "table_row_7gEjBN",
         "table_row_KKCxfQ",
         "table_row_mXMetV",
-        "table_row_fAGc7a"
+        "table_row_fAGc7a",
+        "table_row_aCY7tC"
       ],
       "name": "Technical Details",
       "settings": {
@@ -358,15 +372,15 @@
         "subtitle_font_weight": "400",
         "subtitle": "Wähle, wie weit wir für dich gehen - vom vormontierten Kasten bis steckerfertig inkl. Prüfprotokoll.",
         "column1_title": "Merkmal",
-        "column2_title": "Vormontiert",
-        "column3_title": "Steckerfertig",
-        "column4_title": "Rohbausatz",
+        "column2_title": "Basis-Kit",
+        "column3_title": "Montage-Kit",
+        "column4_title": "Vormontiert Premium",
         "cta1_text": "Los geht's - Kasten planen",
         "cta1_url": "shopify://pages/konfigurator",
         "cta2_text": "Projekt besprechen",
         "cta2_url": "/#contact",
-        "padding_top": 60,
-        "padding_bottom": 60
+        "padding_top": 100,
+        "padding_bottom": 52
       }
     },
     "faq_custom_gyxdhM": {
@@ -375,29 +389,53 @@
         "faq_item_wWLeGt": {
           "type": "faq_item",
           "settings": {
-            "question": "Kommt der Kasten vormontiert/steckerfertig?",
-            "answer": "Du wählst den Vormontagegrad im Konfigurator. Wir liefern geprüft; auf Wunsch steckerfertig."
+            "question": "Kommt der Kasten vormontiert oder lose geliefert?",
+            "answer": "Du entscheidest selbst, wie weit wir für dich gehen:\n- Basis-Kit: alle Komponenten unmontiert\n- Montage-Kit: inklusive Verdrahtungssatz\n- Vormontiert Premium: komplett bestückt und intern verdrahtet\nDie finale Prüfung und Inbetriebnahme erfolgt immer durch die Elektrofachkraft vor Ort."
           }
         },
         "faq_item_WMByAD": {
           "type": "faq_item",
           "settings": {
             "question": "Wie schnell erhalte ich die Lieferung?",
-            "answer": "Meist in 2-4 Werktagen. Abhängig von Konfiguration & Bestand."
+            "answer": "Wir fertigen und versenden in der Regel innerhalb von 2–5 Werktagen – je nach Konfiguration und\nLagerbestand. Bei größeren Projekten informieren wir dich transparent über die aktuelle Lieferzeit."
           }
         },
         "faq_item_4jd63p": {
           "type": "faq_item",
           "settings": {
-            "question": "Ist alles DIN/VDE-konform?",
-            "answer": "Ja. Wir verwenden VDE-konforme Komponenten und dokumentieren die Endprüfung."
+            "question": "Welche Marken und Bauteile werden verwendet?",
+            "answer": "Wir setzen konsequent auf Hager für FI-, LS-, Schienen- und Trafokomponenten. Ergänzend nutzen\nwir Eltako – z. B. bei Stromstoßschaltern oder Komponenten, die Hager selbst nicht anbietet. So\nkombinieren wir Markenqualität und Systemkompatibilität für langlebige Ergebnisse"
+          }
+        },
+        "faq_item_zxNFa8": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Wie werden die Verteiler geprüft?",
+            "answer": "Vor dem Versand erfolgt eine PE-Prüfung, eine Sichtkontrolle sowie eine Drehmomentprüfung\naller Schraubverbindungen nach Herstellervorgaben. Damit stellen wir sicher, dass du eine\nmechanisch und elektrisch einwandfreie Vormontage erhältst. Die abschließende Abnahme und\nMessung erfolgt durch die Elektrofachkraft vor Ort – wie bei jeder Installation."
+          }
+        },
+        "faq_item_BtpdGd": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Was übernimmt die Elektrofachkraft vor Ort?",
+            "answer": "Die Fachkraft prüft und misst vor Inbetriebnahme alle relevanten Punkte:\nSchutzleiterdurchgängigkeit, Isolationswiderstand, RCD-Auslösung und Schleifenimpedanz. Damit\nwird sichergestellt, dass die Anlage normgerecht und sicher in Betrieb geht."
+          }
+        },
+        "faq_item_iTALTw": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Kann ich später Bauteile nachrüsten oder erweitern?",
+            "answer": "Ja, das ist problemlos möglich. Wir empfehlen, im Konfigurator gleich Reserveplätze einzuplanen\n– das erleichtert spätere Erweiterungen erheblich. Nachrüstungen sollten immer durch eine\nElektrofachkraft erfolgen, um Funktion und Sicherheit zu gewährleisten."
           }
         }
       },
       "block_order": [
         "faq_item_wWLeGt",
         "faq_item_WMByAD",
-        "faq_item_4jd63p"
+        "faq_item_4jd63p",
+        "faq_item_zxNFa8",
+        "faq_item_BtpdGd",
+        "faq_item_iTALTw"
       ],
       "name": "FAQ Custom",
       "settings": {
@@ -409,8 +447,8 @@
         "subtitle": "Die wichtigsten Fragen auf einen Blick.",
         "cta_text": "",
         "cta_url": "",
-        "padding_top": 60,
-        "padding_bottom": 60
+        "padding_top": 100,
+        "padding_bottom": 52
       }
     },
     "contact_form_custom_nhxCkf": {
@@ -422,11 +460,11 @@
         "title_font_weight": "800",
         "button_text": "Nachricht senden",
         "disclaimer_text": "Installation nur durch Fachkräfte. Wir liefern geprüft.",
-        "phone": "01234 567890",
+        "phone": "0152 33896364",
         "vde_text": "VDE-konforme Komponenten, Endprüfung dokumentiert",
         "made_in_germany": "Made in Germany",
-        "padding_top": 60,
-        "padding_bottom": 60
+        "padding_top": 100,
+        "padding_bottom": 100
       }
     }
   },

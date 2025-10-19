@@ -20,71 +20,53 @@
         "padding_bottom_desktop": 80
       }
     },
-    "collapsible_content_PHb8nE": {
-      "type": "collapsible-content",
+    "faq_custom_qznhqn": {
+      "type": "faq-custom",
       "blocks": {
-        "collapsible_row_WXqYRM": {
-          "type": "collapsible_row",
+        "faq_item_pU7Ede": {
+          "type": "faq_item",
           "settings": {
-            "heading": "Welche Marken sind verfügbar?",
-            "icon": "check_mark",
-            "row_content": "<p>Wir setzen auf bewährte Marken (z. B. <strong>ABB, Siemens</strong> u. a.). Die Verfügbarkeit kann variieren; im Konfigurator siehst du die aktuell lieferbaren Varianten.</p>",
-            "page": ""
+            "question": "Kommt der Kasten vormontiert/steckerfertig?",
+            "answer": "Du wählst den Vormontagegrad im Konfigurator. Wir liefern geprüft; auf Wunsch steckerfertig."
           }
         },
-        "collapsible_row_TVQJ3E": {
-          "type": "collapsible_row",
+        "faq_item_mfjFCg": {
+          "type": "faq_item",
           "settings": {
-            "heading": "Rückgabe & Widerruf bei individuell konfigurierten Produkten?",
-            "icon": "check_mark",
-            "row_content": "<p>Individuell konfigurierte/angefertigte Produkte sind in der Regel <strong>vom Widerruf ausgeschlossen</strong>. Prüfe bitte vor dem Bestellen deine Konfiguration – unser Support hilft dir gern vorab.</p>",
-            "page": ""
+            "question": "Wie schnell erhalte ich die Lieferung?",
+            "answer": "Meist in 2-4 Werktagen. Abhängig von Konfiguration & Bestand."
           }
         },
-        "collapsible_row_BUWYFh": {
-          "type": "collapsible_row",
+        "faq_item_hbmnAF": {
+          "type": "faq_item",
           "settings": {
-            "heading": "Bietet ihr Unterstützung bei Planung/Lastaufteilung?",
-            "icon": "check_mark",
-            "row_content": "<p>Ja, kostenlos per E-Mail. Für umfangreichere Projekte bieten wir <strong>Planungs-Support</strong> (gegen Pauschale). Schreib uns über das <a>Kontaktformular</a>.</p>",
-            "page": ""
-          }
-        },
-        "collapsible_row_4P9cbV": {
-          "type": "collapsible_row",
-          "settings": {
-            "heading": "Welche Normen berücksichtigt der Konfigurator?",
-            "icon": "check_mark",
-            "row_content": "<p>Der Aufbau orientiert sich u. a. an <strong>DIN VDE 0100</strong>, <strong>DIN 43880</strong> (Bauformen) und <strong>EN/IEC 61439</strong> (Verteiler). Die <strong>Installation und Prüfung</strong> muss dennoch immer durch eine <strong>Elektrofachkraft</strong> erfolgen.</p>",
-            "page": ""
+            "question": "Ist alles DIN/VDE-konform?",
+            "answer": "Ja. Wir verwenden VDE-konforme Komponenten und dokumentieren die Endprüfung."
           }
         }
       },
       "block_order": [
-        "collapsible_row_WXqYRM",
-        "collapsible_row_TVQJ3E",
-        "collapsible_row_BUWYFh",
-        "collapsible_row_4P9cbV"
+        "faq_item_pU7Ede",
+        "faq_item_mfjFCg",
+        "faq_item_hbmnAF"
       ],
-      "name": "t:sections.collapsible_content.presets.name",
+      "name": "FAQ Custom",
       "settings": {
-        "caption": "",
-        "heading": "Einklappbarer Inhalt",
-        "heading_size": "h1",
-        "heading_alignment": "center",
-        "layout": "none",
-        "container_color_scheme": "",
-        "color_scheme": "",
-        "open_first_collapsible_row": false,
-        "image_ratio": "adapt",
-        "desktop_layout": "image_second",
-        "padding_top": 36,
-        "padding_bottom": 36
+        "title": "FAQ",
+        "title_font_size": 32,
+        "title_font_weight": "800",
+        "subtitle_font_size": 18,
+        "subtitle_font_weight": "400",
+        "subtitle": "Die wichtigsten Fragen auf einen Blick.",
+        "cta_text": "",
+        "cta_url": "",
+        "padding_top": 60,
+        "padding_bottom": 60
       }
     }
   },
   "order": [
     "main",
-    "collapsible_content_PHb8nE"
+    "faq_custom_qznhqn"
   ]
 }

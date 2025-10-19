@@ -242,6 +242,26 @@
   {%- endstyle -%}
   
   <script>
+    // Toggle Disclaimer
+    function toggleDisclaimer() {
+      const content = document.getElementById('disclaimer-content');
+      const button = document.querySelector('.konfigurator-disclaimer__toggle');
+      const icon = document.querySelector('.konfigurator-disclaimer__toggle-icon');
+      const isExpanded = button.getAttribute('aria-expanded') === 'true';
+      
+      if (isExpanded) {
+        content.style.display = 'none';
+        button.setAttribute('aria-expanded', 'false');
+        icon.classList.remove('fa-chevron-up');
+        icon.classList.add('fa-chevron-down');
+      } else {
+        content.style.display = 'block';
+        button.setAttribute('aria-expanded', 'true');
+        icon.classList.remove('fa-chevron-down');
+        icon.classList.add('fa-chevron-up');
+      }
+    }
+
     // Zusätzliche JavaScript-Sicherheit für Konfigurator-Seite
     document.addEventListener('DOMContentLoaded', function() {
       if (window.location.pathname.includes('/pages/konfigurator')) {
@@ -396,6 +416,23 @@
 
     <!-- Neuer Container für Seiten und Button -->
     <div id="page1" class="page active">
+      <!-- Disclaimer unter Statusleiste -->
+      <div class="konfigurator-disclaimer">
+        <button class="konfigurator-disclaimer__toggle" onclick="toggleDisclaimer()" aria-expanded="true" aria-controls="disclaimer-content">
+          <span class="konfigurator-disclaimer__toggle-text">Hinweise zur Verteilung</span>
+          <i class="fas fa-chevron-up konfigurator-disclaimer__toggle-icon"></i>
+        </button>
+        <div class="konfigurator-disclaimer__content" id="disclaimer-content">
+          <ul>
+            <li>Die Hauptanschlussklemme ist Bestandteil jeder Verteilung und ermöglicht den bauseitigen Anschluss der Hauptzuleitung ohne Zusatzaufwand.</li>
+            <li>Die Position der Anschlussklemme kann wahlweise oben oder unten gewählt werden – je nachdem, ob die Hauptzuleitung von oben oder unten eingeführt wird.</li>
+            <li>Bei gewünschter Verdrahtung erfolgt diese grundsätzlich mit 10 mm² Kupferleitungen nach Herstellervorgaben.</li>
+            <li>Wir verwenden HAGER-Komponenten und Gehäuse – nur bei Sonderteilen kommen gleichwertige Markenprodukte wie Eltako zum Einsatz.</li>
+            <li>Sollten Sie auf eine Hauptanschlussklemme verzichten wollen, kontaktieren Sie uns bitte vorab.</li>
+          </ul>
+        </div>
+      </div>
+
       <div id="configurator">
 
         <input type="text" id="verteilerName" placeholder="Verteiler-Name/Referenz eingeben" class="verteiler-input">
