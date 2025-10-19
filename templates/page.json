@@ -16,82 +16,20 @@
         "padding_bottom": 28
       }
     },
-    "rich_text_KbUg8Y": {
-      "type": "rich-text",
-      "blocks": {
-        "heading_HyE4TW": {
-          "type": "heading",
-          "settings": {
-            "heading": "",
-            "heading_size": "h1"
-          }
-        },
-        "text_pVnwLj": {
-          "type": "text",
-          "settings": {
-            "text": "<p>Sicherungskasten – hochwertige Verteilerkästen für Privat & Gewerbe - leer oder bestückt bis zu 5 Reihen</p>"
-          }
-        },
-        "text_yghNVR": {
-          "type": "text",
-          "settings": {
-            "text": "<p>Sicherungskästen in vielen Ausführungen: Finden Sie hier den passenden Verteiler – von Aufputz bis Unterputz, inklusive Feuchtraumlösungen.</p>"
-          }
-        },
-        "text_ALUMJr": {
-          "type": "text",
-          "settings": {
-            "text": "<p> Fachgerechte Verdrahtung und Installation aller Verteilereinbauten</p><p><br/><strong>Hinweis:</strong><br/>Bitte beachten Sie, dass die Verdrahtung und Installation nach aktuellen Anforderungen ausgeführt wird und auf eine max. Last im Aussetzbetrieb (haushaltsüblich) von 63A ausgelegt ist. Die Modulargeräte werden von uns im spannungslosen Zustand auf der Primärseite in 10 mm² (CU) verdrahtet. Wir setzen voraus, dass Sie nach Abschluss Ihrer Hausinstallation und Anschluss der Zuleitungen die gesamte Anlage auf Durchgang, korrekte Verdrahtung (ggf. an Ihre Hausinstallation vor Ort angepasst) überprüfen lassen. Weiterhin sind die elektrotechnische Überprüfung der Orts-Festanlagen (Isolationsprüfung nach VDE und Schleifen Widerstandsmessung) von geeignetem Fachpersonal (Meister der Elektrotechnik) bei Ihnen vor Ort auszuführen. Beachten Sie, dass die konfigurierbaren Verteilung grundsätzlich auf eine Spannung von 400V ausgelegt sind.</p><p>Wir behalten uns die Möglichkeit vor, die Anordnung der Einbauten auf den einzelnen Hutschienen zur besseren Bearbeitung durch einen unserer ausführenden Installateur anpassen zu können.</p><p><strong>ACHTUNG:</strong> Wir halten uns vor die Montage zu stornieren, sollten Anpassungen im Warenkorb durchgeführt werden!</p><p><strong>Die Lieferzeit verlängert sich derzeit je nach Aufwand der Verdrahtung um 3 - 5 Werktage.</strong></p>"
-          }
-        },
-        "button_6rhM8V": {
-          "type": "button",
-          "settings": {
-            "button_label": "Jetzt konfigurieren",
-            "button_link": "shopify://pages/konfigurator",
-            "button_style_secondary": false,
-            "button_label_2": "",
-            "button_link_2": "",
-            "button_style_secondary_2": false
-          }
-        }
-      },
-      "block_order": [
-        "heading_HyE4TW",
-        "text_pVnwLj",
-        "text_yghNVR",
-        "text_ALUMJr",
-        "button_6rhM8V"
-      ],
-      "name": "t:sections.rich-text.presets.name",
+    "technical_disclaimer_j9LwEx": {
+      "type": "technical-disclaimer",
+      "name": "Technical Disclaimer",
       "settings": {
-        "desktop_content_position": "center",
-        "content_alignment": "center",
-        "color_scheme": "",
-        "full_width": true,
-        "padding_top": 40,
-        "padding_bottom": 52
-      }
-    },
-    "video_RwxgMP": {
-      "type": "video",
-      "name": "t:sections.video.presets.name",
-      "settings": {
-        "heading": "Video",
-        "heading_size": "h1",
-        "enable_video_looping": false,
-        "video_url": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
-        "description": "",
-        "full_width": false,
-        "color_scheme": "",
-        "padding_top": 36,
-        "padding_bottom": 36
+        "title": "Technische Hinweise & Haftungsausschluss",
+        "title_font_size": 28,
+        "title_font_weight": "700",
+        "padding_top": 60,
+        "padding_bottom": 60
       }
     }
   },
   "order": [
     "main",
-    "rich_text_KbUg8Y",
-    "video_RwxgMP"
+    "technical_disclaimer_j9LwEx"
   ]
 }

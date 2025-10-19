@@ -321,9 +321,9 @@
           "type": "table_row",
           "settings": {
             "feature_name": "Prüfprotokoll / Fotodoku",
-            "column2_value": "kurz",
+            "column2_value": "-",
             "column2_has_check": false,
-            "column3_value": "sehr kurz",
+            "column3_value": "-",
             "column3_has_check": false,
             "column4_value": "Ja",
             "column4_has_check": true
@@ -414,13 +414,6 @@
             "answer": "Vor dem Versand erfolgt eine PE-Prüfung, eine Sichtkontrolle sowie eine Drehmomentprüfung\naller Schraubverbindungen nach Herstellervorgaben. Damit stellen wir sicher, dass du eine\nmechanisch und elektrisch einwandfreie Vormontage erhältst. Die abschließende Abnahme und\nMessung erfolgt durch die Elektrofachkraft vor Ort – wie bei jeder Installation."
           }
         },
-        "faq_item_BtpdGd": {
-          "type": "faq_item",
-          "settings": {
-            "question": "Was übernimmt die Elektrofachkraft vor Ort?",
-            "answer": "Die Fachkraft prüft und misst vor Inbetriebnahme alle relevanten Punkte:\nSchutzleiterdurchgängigkeit, Isolationswiderstand, RCD-Auslösung und Schleifenimpedanz. Damit\nwird sichergestellt, dass die Anlage normgerecht und sicher in Betrieb geht."
-          }
-        },
         "faq_item_iTALTw": {
           "type": "faq_item",
           "settings": {
@@ -434,7 +427,6 @@
         "faq_item_WMByAD",
         "faq_item_4jd63p",
         "faq_item_zxNFa8",
-        "faq_item_BtpdGd",
         "faq_item_iTALTw"
       ],
       "name": "FAQ Custom",

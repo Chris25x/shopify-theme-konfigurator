@@ -988,8 +988,19 @@ let rowCounter = 1;
       const nextButton = document.getElementById("nextButton");
       if (pageNumber === 5) {
         nextButton.innerHTML = '<i class="fas fa-shopping-cart"></i> In den Warenkorb legen';
+        // Button auf page5 deaktivieren, bis Checkbox aktiviert ist
+        const disclaimerCheckbox = document.getElementById('disclaimerCheckbox');
+        if (disclaimerCheckbox) {
+          nextButton.disabled = !disclaimerCheckbox.checked;
+        } else {
+          nextButton.disabled = true;
+        }
       } else {
         nextButton.textContent = "Weiter";
+        // Button nur aktivieren, wenn er nicht "In den Warenkorb" ist
+        if (!nextButton.textContent.includes('Warenkorb')) {
+          nextButton.disabled = false;
+        }
       }
 
       // Blende den Zurück-Button auf Seite 1 aus, sonst ein
@@ -1046,6 +1057,27 @@ let rowCounter = 1;
     // Füge Event-Listener für Fenstergrößenänderung hinzu
     window.addEventListener('resize', function() {
       showPage(currentPage);
+    });
+
+    // Event-Listener für Disclaimer-Checkbox
+    document.addEventListener('DOMContentLoaded', function() {
+      const disclaimerCheckbox = document.getElementById('disclaimerCheckbox');
+      const nextButton = document.getElementById('nextButton');
+      
+      if (disclaimerCheckbox && nextButton) {
+        // Initial: Button deaktiviert, wenn auf page5
+        if (nextButton.textContent.includes('Warenkorb')) {
+          nextButton.disabled = true;
+        }
+        
+        // Event-Listener für Checkbox-Änderungen
+        disclaimerCheckbox.addEventListener('change', function() {
+          // Nur Button-Status ändern, wenn Button "In den Warenkorb" ist
+          if (nextButton.textContent.includes('Warenkorb')) {
+            nextButton.disabled = !this.checked;
+          }
+        });
+      }
     });
 
     function setupRow(rowNumber) {
