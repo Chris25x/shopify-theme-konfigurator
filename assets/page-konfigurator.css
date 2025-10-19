@@ -100,6 +100,86 @@
   margin-bottom: 0;
 }
 
+/* Disclaimer Checkbox für page5 */
+.disclaimer-checkbox-container {
+  width: 273px;
+  margin: 20px 0 20px auto;
+  padding: 10px 12px;
+  background-color: #f8f9fc;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.disclaimer-checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #374151;
+}
+
+.disclaimer-checkbox {
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  margin-top: 2px;
+  cursor: pointer;
+  accent-color: #005A9C;
+  border: 2px solid #d1d5db;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.disclaimer-checkbox:checked {
+  background-color: #005A9C;
+  border-color: #005A9C;
+}
+
+.disclaimer-checkbox:focus {
+  outline: 2px solid #005A9C;
+  outline-offset: 2px;
+}
+
+.disclaimer-checkbox-text {
+  flex: 1;
+  user-select: none;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.disclaimer-link {
+  color: #005A9C;
+  text-decoration: underline;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.disclaimer-link:hover {
+  color: #00467a;
+  text-decoration: underline;
+}
+
+/* Button disabled state */
+.button:disabled,
+.button--outline:disabled {
+  opacity: 0.5;
+  cursor: not-allowed !important;
+  background-color: #e5e7eb !important;
+  color: #9ca3af !important;
+}
+
+.button:disabled:hover,
+.button--outline:disabled:hover {
+  background-color: #e5e7eb !important;
+  color: #9ca3af !important;
+  transform: none !important;
+}
+
 :root {
   /* Theme Font Variables */
   --font-body-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
