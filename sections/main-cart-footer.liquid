@@ -143,6 +143,31 @@
                 <div class="cart-summary-card">
                   <h2 class="cart-summary-title">Zusammenfassung</h2>
                   
+                  {%- comment -%} VAT FIX START: korrekt berechnete inkludierte MwSt. {%- endcomment -%}
+                  {%- assign gross = cart.total_price -%}
+                  
+                  {%- comment -%} Rate dynamisch aus tax_lines aggregieren {%- endcomment -%}
+                  {%- assign tax_rate = 0 -%}
+                  {%- for tl in cart.tax_lines -%}
+                    {%- assign tax_rate = tax_rate | plus: tl.rate -%}
+                  {%- endfor -%}
+                  
+                  {%- if tax_rate == 0 and cart.taxes_included -%}
+                    {%- comment -%} Fallback – nur als Notnagel, z. B. Deutschland 19% {%- endcomment -%}
+                    {%- assign tax_rate = 0.19 -%}
+                  {%- endif -%}
+                  
+                  {%- if cart.taxes_included and tax_rate > 0 -%}
+                    {%- assign divisor = 1 | plus: tax_rate -%}
+                    {%- assign net = gross | divided_by: divisor -%}
+                    {%- assign vat_included = gross | minus: net -%}
+                    {%- assign vat_label_rate = tax_rate | times: 100 | round -%}
+                  {%- else -%}
+                    {%- assign vat_included = cart.total_tax -%}
+                    {%- assign vat_label_rate = tax_rate | times: 100 | round -%}
+                  {%- endif -%}
+                  {%- comment -%} VAT FIX END {%- endcomment -%}
+                  
                   <div class="cart-summary-line">
                     <span class="cart-summary-line-label">Zwischensumme</span>
                     <span class="cart-summary-line-value">{{ cart.total_price | money }}</span>
@@ -154,8 +179,8 @@
                   </div>
                   
                   <div class="cart-summary-line">
-                    <span class="cart-summary-line-label">inkl. MwSt. (19%)</span>
-                    <span class="cart-summary-line-vat">{{ cart.total_price | times: 0.19 | money }}</span>
+                    <span class="cart-summary-line-label">inkl. MwSt. ({{ vat_label_rate }}%)</span>
+                    <span class="cart-summary-line-vat">{{ vat_included | money }}</span>
                   </div>
                   
                   <div class="cart-summary-divider"></div>
