@@ -26,29 +26,53 @@
         "faq_item_pU7Ede": {
           "type": "faq_item",
           "settings": {
-            "question": "Kommt der Kasten vormontiert/steckerfertig?",
-            "answer": "Du wählst den Vormontagegrad im Konfigurator. Wir liefern geprüft; auf Wunsch steckerfertig."
+            "question": "Kommt der Kasten vormontiert oder lose geliefert?",
+            "answer": "Du entscheidest selbst, wie weit wir für dich gehen: - Basis-Kit: alle Komponenten unmontiert - Montage-Kit: inklusive Verdrahtungssatz - Vormontiert Premium: komplett bestückt und intern verdrahtet Die finale Prüfung und Inbetriebnahme erfolgt immer durch die Elektrofachkraft vor Ort."
           }
         },
         "faq_item_mfjFCg": {
           "type": "faq_item",
           "settings": {
             "question": "Wie schnell erhalte ich die Lieferung?",
-            "answer": "Meist in 2-4 Werktagen. Abhängig von Konfiguration & Bestand."
+            "answer": "Wir fertigen und versenden in der Regel innerhalb von 2–5 Werktagen – je nach Konfiguration und Lagerbestand. Bei größeren Projekten informieren wir dich transparent über die aktuelle Lieferzeit."
           }
         },
         "faq_item_hbmnAF": {
           "type": "faq_item",
           "settings": {
-            "question": "Ist alles DIN/VDE-konform?",
-            "answer": "Ja. Wir verwenden VDE-konforme Komponenten und dokumentieren die Endprüfung."
+            "question": "Welche Marken und Bauteile werden verwendet?",
+            "answer": "Wir setzen konsequent auf Hager für FI-, LS-, Schienen- und Trafokomponenten. Ergänzend nutzen wir Eltako – z. B. bei Stromstoßschaltern oder Komponenten, die Hager selbst nicht anbietet. So kombinieren wir Markenqualität und Systemkompatibilität für langlebige Ergebnisse"
+          }
+        },
+        "faq_item_nFcrfz": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Wie werden die Verteiler geprüft?",
+            "answer": "Vor dem Versand erfolgt eine PE-Prüfung, eine Sichtkontrolle sowie eine Drehmomentprüfung aller Schraubverbindungen nach Herstellervorgaben. Damit stellen wir sicher, dass du eine mechanisch und elektrisch einwandfreie Vormontage erhältst. Die abschließende Abnahme und Messung erfolgt durch die Elektrofachkraft vor Ort – wie bei jeder Installation."
+          }
+        },
+        "faq_item_fUXU9h": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Kommt der Kasten vormontiert/steckerfertig?",
+            "answer": "Du wählst den Vormontagegrad im Konfigurator. Wir liefern geprüft; auf Wunsch steckerfertig."
+          }
+        },
+        "faq_item_dHVRDQ": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Kann ich später Bauteile nachrüsten oder erweitern?",
+            "answer": "Ja, das ist problemlos möglich. Wir empfehlen, im Konfigurator gleich Reserveplätze einzuplanen – das erleichtert spätere Erweiterungen erheblich. Nachrüstungen sollten immer durch eine Elektrofachkraft erfolgen, um Funktion und Sicherheit zu gewährleisten."
           }
         }
       },
       "block_order": [
         "faq_item_pU7Ede",
         "faq_item_mfjFCg",
-        "faq_item_hbmnAF"
+        "faq_item_hbmnAF",
+        "faq_item_nFcrfz",
+        "faq_item_fUXU9h",
+        "faq_item_dHVRDQ"
       ],
       "name": "FAQ Custom",
       "settings": {

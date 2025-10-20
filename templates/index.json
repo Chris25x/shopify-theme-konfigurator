@@ -139,19 +139,19 @@
         "step_XrDxAd": {
           "type": "step",
           "settings": {
-            "image": "shopify://shop_images/Bildschirmfoto_2025-08-31_um_20.16.31.png",
+            "image": "shopify://shop_images/Bildschirmfoto_2025-08-31_um_20.16.40.png",
             "image_alt": "",
-            "title": "Größe wählen",
-            "description": "Wählen Sie die passende Größe und Ausführung Ihres Sicherungskastens."
+            "title": "Komponenten auswählen",
+            "description": "Bestimmen Sie Sicherungen, FI-Schalter und weitere Elemente individuell."
           }
         },
         "step_AFwKc9": {
           "type": "step",
           "settings": {
-            "image": "shopify://shop_images/Bildschirmfoto_2025-08-31_um_20.16.40.png",
+            "image": "shopify://shop_images/Bildschirmfoto_2025-08-31_um_20.16.31.png",
             "image_alt": "",
-            "title": "Komponenten auswählen",
-            "description": "Bestimmen Sie Sicherungen, FI-Schalter und weitere Elemente individuell."
+            "title": "Größe wählen",
+            "description": "Wählen Sie die passende Größe und Ausführung Ihres Sicherungskastens."
           }
         },
         "step_dPqH3P": {
@@ -259,9 +259,9 @@
         "subtitle_font_weight": "400",
         "subtitle": "Wähle dein Szenario - wir führen dich zur passenden Konfiguration.",
         "cta1_text": "Jetzt konfigurieren",
-        "cta1_url": "",
+        "cta1_url": "shopify://pages/konfigurator",
         "cta2_text": "Unsicher? Kurz beraten lassen",
-        "cta2_url": "",
+        "cta2_url": "/#contact",
         "padding_top": 100,
         "padding_bottom": 52
       }
@@ -352,6 +352,24 @@
             "column4_value": "€€€",
             "column4_has_check": false
           }
+        },
+        "card_dWDKrx": {
+          "type": "card",
+          "settings": {
+            "card_text": "<p><strong>Basis-Kit:</strong> Unmontiert – für Eigenbauer.</p>"
+          }
+        },
+        "card_MiPtNA": {
+          "type": "card",
+          "settings": {
+            "card_text": "<p><strong>Montage-Kit:</strong> Mit Verdrahtungssatz – schneller Aufbau.</p>"
+          }
+        },
+        "card_BcE7i6": {
+          "type": "card",
+          "settings": {
+            "card_text": "<p><strong>Premium:</strong> Komplett montiert, geprüft & dokumentiert.</p>"
+          }
         }
       },
       "block_order": [
@@ -361,7 +379,10 @@
         "table_row_KKCxfQ",
         "table_row_mXMetV",
         "table_row_fAGc7a",
-        "table_row_aCY7tC"
+        "table_row_aCY7tC",
+        "card_dWDKrx",
+        "card_MiPtNA",
+        "card_BcE7i6"
       ],
       "name": "Technical Details",
       "settings": {
@@ -370,7 +391,7 @@
         "title_font_weight": "800",
         "subtitle_font_size": 18,
         "subtitle_font_weight": "400",
-        "subtitle": "Wähle, wie weit wir für dich gehen - vom bestückten Kasten bis zur vollständigen Verdrahtung.",
+        "subtitle": "Wähle, wie weit wir für dich gehen – vom leeren Kasten bis zur komplett verdrahteten Lösung.",
         "column1_title": "Merkmal",
         "column2_title": "Basis-Kit",
         "column3_title": "Montage-Kit",
