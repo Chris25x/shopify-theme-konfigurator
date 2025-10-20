@@ -283,6 +283,20 @@
         {%- endif -%}
       </div>
       <div class="footer__column footer__column--info">
+        <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 15px;">
+          <img 
+            src="https://cdn.shopify.com/s/files/1/0944/8711/8089/files/hbLogo.png?v=1760953110" 
+            alt="Hausbau Logo" 
+            style="height: 48px; width: auto; opacity: 0.8;"
+            loading="lazy"
+          >
+          <img 
+            src="https://cdn.shopify.com/s/files/1/0944/8711/8089/files/faircommerce.png?v=1760953638" 
+            alt="FairCommerce Logo" 
+            style="height: 90px; width: auto; opacity: 0.8; object-fit: contain;"
+            loading="lazy"
+          >
+        </div>
         {%- if section.settings.payment_enable -%}
           <div class="footer__payment">
             <span class="visually-hidden">{{ 'sections.footer.payment' | t }}</span>
