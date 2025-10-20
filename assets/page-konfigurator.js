@@ -2595,7 +2595,6 @@ let rowCounter = 1;
           nennstromDropdown.innerHTML = `
             <label for="nennstrom-${rowNumber}">Nennstrom</label>
             <select id="nennstrom-${rowNumber}">
-              <option value="16">16A</option>
               <option value="40">40A</option>
               <option value="63">63A</option>
             </select>
@@ -2627,7 +2626,6 @@ let rowCounter = 1;
             const charakteristik = charakteristikSelect.value;
             // VariantIDs für verschiedene Kombinationen
             const variantMap = {
-              '16-A': '56312732942601', // 16A mit A-Charakteristik
               '40-A': '55553541800201', // 40A mit A-Charakteristik
               '40-B': '55553541865737', // 40A mit B-Charakteristik
               '40-F': '55553541931273', // 40A mit F-Charakteristik
@@ -2780,9 +2778,7 @@ let rowCounter = 1;
               let nennstrom = nennstromSelect ? nennstromSelect.value.trim() : '40';
               let charakteristik = charakteristikSelect ? charakteristikSelect.value.trim() : 'A';
               let variantId = '';
-              if (nennstrom === '16' && charakteristik === 'A') {
-                variantId = '56312732942601';
-              } else if (nennstrom === '40' && charakteristik === 'A') {
+              if (nennstrom === '40' && charakteristik === 'A') {
                 variantId = '55553541800201';
               } else if (nennstrom === '40' && charakteristik === 'B') {
                 variantId = '55553541865737';
@@ -2920,9 +2916,7 @@ let rowCounter = 1;
             let nennstrom = nennstromSelect ? nennstromSelect.value.trim() : '40';
             let charakteristik = charakteristikSelect ? charakteristikSelect.value.trim() : 'A';
             let variantId = '';
-            if (nennstrom === '16' && charakteristik === 'A') {
-              variantId = '56312732942601';
-            } else if (nennstrom === '40' && charakteristik === 'A') {
+            if (nennstrom === '40' && charakteristik === 'A') {
               variantId = '55553541800201';
             } else if (nennstrom === '40' && charakteristik === 'B') {
               variantId = '55553541865737';
@@ -3853,8 +3847,8 @@ let rowCounter = 1;
           <option value="16">16A</option>
           <option value="20">20A</option>
           <option value="25">25A</option>
-          <option value="35">35A</option>
-          <option value="40" selected>40A</option>
+          <option value="35" selected>35A</option>
+          <option value="40">40A</option>
           <option value="50">50A</option>
           <option value="63">63A</option>
         </select>
