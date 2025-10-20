@@ -26,29 +26,21 @@
         "tile_8zNixk": {
           "type": "tile",
           "settings": {
-            "title": "Test1",
+            "title": "Einzelteile & Zubehör",
             "link": "shopify://collections/all",
             "image": "shopify://shop_images/Ueberspannungsschutz_fd56ba33-16e0-46dc-b3fa-2149cb920dc9.png",
-            "bg_style": "white"
-          }
-        },
-        "tile_7bCyGg": {
-          "type": "tile",
-          "settings": {
-            "title": "Test2",
-            "link": "shopify://collections/all",
-            "image": "shopify://shop_images/Fi_A_63.png",
             "bg_style": "white"
           }
         }
       },
       "block_order": [
-        "tile_8zNixk",
-        "tile_7bCyGg"
+        "tile_8zNixk"
       ],
       "name": "Collections Grid (4 tiles)",
       "settings": {
-        "heading": "Collections"
+        "heading": "Produkte",
+        "padding_top": 100,
+        "padding_bottom": 100
       }
     }
   },

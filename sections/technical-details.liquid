@@ -64,21 +64,15 @@
 
     <!-- Vorteile / Hinweise -->
     <div class="technical-details__cards">
-      <div class="technical-details__card">
-        <div class="technical-details__card-content">
-          Ideal für <strong>Heimwerker</strong>: schnell montiert, saubere Beschriftung, klare Doku.
-        </div>
-      </div>
-      <div class="technical-details__card">
-        <div class="technical-details__card-content">
-          Für <strong>Profis</strong>: Prüfprotokoll & Stückliste belegbar - spart Zeit auf der Baustelle.
-        </div>
-      </div>
-      <div class="technical-details__card">
-        <div class="technical-details__card-content">
-          Projektabhängig: Wir beraten, welche Option wirtschaftlich am meisten Sinn macht.
-        </div>
-      </div>
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'card' -%}
+          <div class="technical-details__card" {{ block.shopify_attributes }}>
+            <div class="technical-details__card-content">
+              {{ block.settings.card_text }}
+            </div>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
     </div>
 
     <!-- Call to Actions -->
@@ -486,6 +480,18 @@
           "default": false
         }
       ]
+    },
+    {
+      "type": "card",
+      "name": "Info-Karte",
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "card_text",
+          "label": "Karten-Text",
+          "default": "<p>Ideal für <strong>Heimwerker</strong>: schnell montiert, saubere Beschriftung, klare Doku.</p>"
+        }
+      ]
     }
   ],
   "presets": [
@@ -552,6 +558,24 @@
             "column2_value": "€€",
             "column3_value": "€€€",
             "column4_value": "€"
+          }
+        },
+        {
+          "type": "card",
+          "settings": {
+            "card_text": "<p>Ideal für <strong>Heimwerker</strong>: schnell montiert, saubere Beschriftung, klare Doku.</p>"
+          }
+        },
+        {
+          "type": "card",
+          "settings": {
+            "card_text": "<p>Für <strong>Profis</strong>: Prüfprotokoll & Stückliste belegbar - spart Zeit auf der Baustelle.</p>"
+          }
+        },
+        {
+          "type": "card",
+          "settings": {
+            "card_text": "<p>Projektabhängig: Wir beraten, welche Option wirtschaftlich am meisten Sinn macht.</p>"
           }
         }
       ]
