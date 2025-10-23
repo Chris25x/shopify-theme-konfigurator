@@ -837,7 +837,7 @@ body { overflow-x: auto; }
   justify-content: flex-start;
   box-sizing: border-box;
   overflow: hidden;
-  margin-bottom: 50px;
+  margin-bottom: 30px;
   margin-top: 20px;
 }
 
@@ -2437,7 +2437,10 @@ body { overflow-x: auto; }
       padding: 10px 12px;
     }
     .summary-info-label { font-weight: 600; color: #111827; }
-    .summary-info-value { color: #111827; }
+    .summary-info-value { 
+      color: #111827; 
+      text-align: justify;
+    }
 
     /* Entferne das Styling für die Scrollbar */
     .dropdown::-webkit-scrollbar {
@@ -2738,7 +2741,7 @@ body { overflow-x: auto; }
       justify-content: flex-start;
       box-sizing: border-box;
       overflow: hidden;
-      margin-bottom: 50px;
+      margin-bottom: 30px;
       margin-top: 20px;
     }
     .produktkarte:hover {

@@ -33,6 +33,93 @@
       }
     }
     
+    /* Mobile Scroll-Fix: Verhindert Section-internes Scrollen - PRÄZISE */
+    @media (max-width: 1024px) {
+      /* Body-Scroll komplett normalisieren */
+      body.konfigurator-page {
+        overflow-x: visible !important;
+        overflow-y: visible !important;
+        position: static !important;
+        height: auto !important;
+        width: 100% !important;
+      }
+      
+      /* HTML-Element normalisieren */
+      html.konfigurator-page {
+        overflow-x: visible !important;
+        overflow-y: visible !important;
+        height: auto !important;
+        width: 100% !important;
+      }
+      
+      /* Nur spezifische Scroll-Container normalisieren - FAQ-Section schützen */
+      .konfigurator-page .page-container,
+      .konfigurator-page .main-content,
+      .konfigurator-page .page-content,
+      .konfigurator-page .konfigurator-container,
+      .konfigurator-page .konfigurator-content,
+      .konfigurator-page .container {
+        overflow-x: visible !important;
+        overflow-y: visible !important;
+      }
+      
+      /* FAQ-Section schützen - normale Overflow-Eigenschaften beibehalten */
+      .konfigurator-page .faq-section,
+      .konfigurator-page .faq-item,
+      .konfigurator-page .faq-content,
+      .konfigurator-page .collapsible-content {
+        overflow-x: visible !important;
+        overflow-y: visible !important;
+      }
+      
+      /* Fixed/Sticky Elemente auf Mobile deaktivieren */
+      .konfigurator-page .fixed:not(.button-row):not(.button-container),
+      .konfigurator-page .sticky:not(.button-row):not(.button-container) {
+        position: static !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+      }
+      
+      /* Button-Row und Button-Container auf Mobile normalisieren */
+      .konfigurator-page .button-row,
+      .konfigurator-page .button-container {
+        background: none !important;
+        box-shadow: none !important;
+        position: static !important;
+      }
+      
+      /* Konfigurator-Disclaimer weißen Hintergrund auf Mobile */
+      .konfigurator-page .konfigurator-disclaimer,
+      .konfigurator-page .konfigurator-disclaimer__toggle,
+      .konfigurator-page .konfigurator-disclaimer__content {
+        background: #ffffff !important;
+      }
+      
+      /* Disclaimer auf Mobile standardmäßig eingeklappt */
+      .konfigurator-page .konfigurator-disclaimer__content {
+        display: none !important;
+      }
+      
+      .konfigurator-page .konfigurator-disclaimer__toggle-icon {
+        transform: rotate(0deg) !important;
+      }
+      
+      /* Touch-Scroll für normale Seiten-Scroll optimieren */
+      .konfigurator-page {
+        -webkit-overflow-scrolling: touch !important;
+        overscroll-behavior: auto !important;
+      }
+    }
+    
+    /* Konfigurator-Disclaimer weißen Hintergrund auf Desktop */
+    .konfigurator-page .konfigurator-disclaimer,
+    .konfigurator-page .konfigurator-disclaimer__toggle,
+    .konfigurator-page .konfigurator-disclaimer__content {
+      background: #ffffff !important;
+    }
+    
     /* Konfigurator-Button auf Mobile kleiner machen für /pages/konfigurator */
     @media (max-width: 1024px) {
       body.konfigurator-page .header__icon--konfigurator,
@@ -97,147 +184,6 @@
       }
     }
     
-    /* PC-Empfehlungs-Modal */
-    #pc-recommendation-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      z-index: 99999;
-      background-color: rgba(0, 0, 0, 0.7);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      transition: opacity 0.3s ease;
-    }
-    
-    .pc-recommendation-modal-content {
-      background: white;
-      border-radius: 16px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-      max-width: 400px;
-      width: 100%;
-      max-height: 90vh;
-      overflow-y: auto;
-      animation: modalSlideIn 0.3s ease;
-    }
-    
-    @keyframes modalSlideIn {
-      from {
-        opacity: 0;
-        transform: scale(0.9) translateY(-20px);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-      }
-    }
-    
-    .pc-recommendation-modal-header {
-      padding: 24px 24px 16px;
-      text-align: center;
-      border-bottom: 1px solid #f0f0f0;
-    }
-    
-    .pc-recommendation-icon {
-      font-size: 48px;
-      margin-bottom: 12px;
-    }
-    
-    .pc-recommendation-modal-header h3 {
-      margin: 0;
-      font-size: 20px;
-      font-weight: 600;
-      color: #333;
-    }
-    
-    .pc-recommendation-modal-body {
-      padding: 20px 24px;
-    }
-    
-    .pc-recommendation-modal-body p {
-      margin: 0 0 12px 0;
-      font-size: 16px;
-      line-height: 1.5;
-      color: #555;
-    }
-    
-    .pc-recommendation-note {
-      font-size: 14px !important;
-      color: #777 !important;
-      font-style: italic;
-    }
-    
-    .pc-recommendation-modal-footer {
-      padding: 16px 24px 24px;
-      display: flex;
-      gap: 12px;
-      flex-direction: column;
-    }
-    
-    .pc-recommendation-btn {
-      padding: 12px 20px;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      text-align: center;
-      min-height: 48px;
-    }
-    
-    .pc-recommendation-btn-primary {
-      background: linear-gradient(135deg, #005A9C 0%, #00467a 100%);
-      color: white;
-    }
-    
-    .pc-recommendation-btn-primary:hover {
-      background: linear-gradient(135deg, #00467a 0%, #003d66 100%);
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(0, 90, 156, 0.3);
-    }
-    
-    .pc-recommendation-btn-secondary {
-      background: #f8f9fa;
-      color: #666;
-      border: 1px solid #e0e0e0;
-    }
-    
-    .pc-recommendation-btn-secondary:hover {
-      background: #e9ecef;
-      color: #333;
-    }
-    
-    /* Modal auf Mobile anpassen */
-    @media (max-width: 768px) {
-      #pc-recommendation-modal {
-        padding: 16px;
-      }
-      
-      .pc-recommendation-modal-content {
-        max-width: 100%;
-      }
-      
-      .pc-recommendation-modal-header {
-        padding: 20px 20px 12px;
-      }
-      
-      .pc-recommendation-modal-body {
-        padding: 16px 20px;
-      }
-      
-      .pc-recommendation-modal-footer {
-        padding: 12px 20px 20px;
-      }
-      
-      .pc-recommendation-btn {
-        font-size: 15px;
-        padding: 14px 20px;
-      }
-    }
   {%- endstyle -%}
   
   <script>
@@ -259,12 +205,88 @@
         icon.classList.remove('fa-chevron-down');
         icon.classList.add('fa-chevron-up');
       }
+      
+      // Flag setzen, dass User den Disclaimer manuell geändert hat
+      window.disclaimerInitialized = true;
     }
 
     // Zusätzliche JavaScript-Sicherheit für Konfigurator-Seite
     document.addEventListener('DOMContentLoaded', function() {
       if (window.location.pathname.includes('/pages/konfigurator')) {
         document.body.classList.add('konfigurator-page');
+        
+        // Mobile Scroll-Fix: Verhindert Section-internes Scrollen - PRÄZISE
+        function fixMobileScroll() {
+          if (window.innerWidth <= 1024) {
+            // HTML und Body komplett normalisieren
+            document.documentElement.style.overflow = 'visible';
+            document.body.style.overflow = 'visible';
+            document.body.style.position = 'static';
+            document.body.style.height = 'auto';
+            document.body.style.width = '100%';
+            
+            // Nur spezifische Scroll-Container normalisieren - FAQ-Section schützen
+            const scrollContainers = document.querySelectorAll('.page-container, .main-content, .page-content, .konfigurator-container, .konfigurator-content, .container');
+            scrollContainers.forEach(container => {
+              container.style.overflowX = 'visible';
+              container.style.overflowY = 'visible';
+            });
+            
+            // FAQ-Section schützen - normale Overflow-Eigenschaften beibehalten
+            const faqElements = document.querySelectorAll('.faq-section, .faq-item, .faq-content, .collapsible-content');
+            faqElements.forEach(element => {
+              element.style.overflowX = 'visible';
+              element.style.overflowY = 'visible';
+            });
+            
+            // Fixed/Sticky Elemente normalisieren - aber Button-Container ausnehmen
+            const fixedElements = document.querySelectorAll('.fixed:not(.button-row):not(.button-container), .sticky:not(.button-row):not(.button-container)');
+            fixedElements.forEach(element => {
+              element.style.position = 'static';
+              element.style.top = 'auto';
+              element.style.left = 'auto';
+              element.style.right = 'auto';
+              element.style.bottom = 'auto';
+            });
+            
+            // Button-Row und Button-Container auf Mobile normalisieren
+            const buttonRows = document.querySelectorAll('.button-row, .button-container');
+            buttonRows.forEach(buttonRow => {
+              buttonRow.style.background = 'none';
+              buttonRow.style.boxShadow = 'none';
+              buttonRow.style.position = 'static';
+            });
+            
+            // Konfigurator-Disclaimer weißen Hintergrund geben
+            const disclaimerElements = document.querySelectorAll('.konfigurator-disclaimer, .konfigurator-disclaimer__toggle, .konfigurator-disclaimer__content');
+            disclaimerElements.forEach(disclaimer => {
+              disclaimer.style.background = '#ffffff';
+            });
+            
+            // Disclaimer auf Mobile standardmäßig eingeklappt - NUR beim ersten Laden
+            if (!window.disclaimerInitialized) {
+              const disclaimerContent = document.getElementById('disclaimer-content');
+              const disclaimerToggle = document.querySelector('.konfigurator-disclaimer__toggle');
+              const disclaimerIcon = document.querySelector('.konfigurator-disclaimer__toggle-icon');
+              
+              if (disclaimerContent) {
+                disclaimerContent.style.display = 'none';
+              }
+              if (disclaimerToggle) {
+                disclaimerToggle.setAttribute('aria-expanded', 'false');
+              }
+              if (disclaimerIcon) {
+                disclaimerIcon.className = 'fas fa-chevron-down konfigurator-disclaimer__toggle-icon';
+                disclaimerIcon.style.transform = 'rotate(0deg)';
+              }
+              window.disclaimerInitialized = true;
+            }
+          }
+        }
+        
+        // Bei Seitenlade und Resize
+        fixMobileScroll();
+        window.addEventListener('resize', fixMobileScroll);
         
         // Button auf Mobile kleiner machen statt ausblenden
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
@@ -287,8 +309,6 @@
           konfigButton.style.margin = '0 4px 0 0';
         }
         
-        // PC-Empfehlung anzeigen
-        showPCRecommendation();
         
         // Bei Größenänderung reagieren (nur wenn es wirklich ein Gerätewechsel ist)
         let lastDeviceType = isMobile ? 'mobile' : 'desktop';
@@ -337,53 +357,6 @@
       }
     });
     
-    function showPCRecommendation() {
-      // Prüfe ob Mobile/Tablet
-      const isMobile = window.innerWidth <= 1024 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-      
-      if (isMobile) {
-        // Erstelle Modal-Overlay
-        const overlay = document.createElement('div');
-        overlay.id = 'pc-recommendation-modal';
-        overlay.innerHTML = `
-          <div class="pc-recommendation-modal-content">
-            <div class="pc-recommendation-modal-header">
-              <div class="pc-recommendation-icon">💻</div>
-              <h3>Empfehlung</h3>
-            </div>
-            <div class="pc-recommendation-modal-body">
-              <p>Für die beste Erfahrung empfehlen wir, den Konfigurator auf einem Desktop oder Laptop zu verwenden.</p>
-              <p class="pc-recommendation-note">Auf Desktop-Geräten bietet der Konfigurator eine optimierte Benutzeroberfläche und bessere Übersichtlichkeit.</p>
-            </div>
-            <div class="pc-recommendation-modal-footer">
-              <button class="pc-recommendation-btn pc-recommendation-btn-primary" onclick="closePCRecommendation()">
-                Fortfahren
-              </button>
-            </div>
-          </div>
-        `;
-        
-        // Füge Modal zur Seite hinzu
-        document.body.appendChild(overlay);
-        
-        // Verhindere Scrollen im Hintergrund
-        document.body.style.overflow = 'hidden';
-      }
-    }
-    
-    function closePCRecommendation() {
-      const modal = document.getElementById('pc-recommendation-modal');
-      if (modal) {
-        modal.style.opacity = '0';
-        setTimeout(() => {
-          if (modal && modal.parentNode) {
-            modal.remove();
-            // Erlaube Scrollen wieder
-            document.body.style.overflow = '';
-          }
-        }, 300);
-      }
-    }
   </script>
   <div class="section-{{ section.id }}-padding">
   <main class="container konfigurator" role="main" aria-label="Sicherungskasten Konfigurator">
@@ -417,11 +390,11 @@
     <div id="page1" class="page active">
       <!-- Disclaimer unter Statusleiste -->
       <div class="konfigurator-disclaimer">
-        <button class="konfigurator-disclaimer__toggle" onclick="toggleDisclaimer()" aria-expanded="true" aria-controls="disclaimer-content">
+        <button class="konfigurator-disclaimer__toggle" onclick="toggleDisclaimer()" aria-expanded="false" aria-controls="disclaimer-content">
           <span class="konfigurator-disclaimer__toggle-text">Hinweise zur Verteilung</span>
-          <i class="fas fa-chevron-up konfigurator-disclaimer__toggle-icon"></i>
+          <i class="fas fa-chevron-down konfigurator-disclaimer__toggle-icon"></i>
         </button>
-        <div class="konfigurator-disclaimer__content" id="disclaimer-content">
+        <div class="konfigurator-disclaimer__content" id="disclaimer-content" style="display: none;">
           <ul>
             <li>Die Hauptanschlussklemme ist Bestandteil jeder Verteilung und ermöglicht den bauseitigen Anschluss der Hauptzuleitung ohne Zusatzaufwand.</li>
             <li>Die Position der Anschlussklemme kann wahlweise oben oder unten gewählt werden – je nachdem, ob die Hauptzuleitung von oben oder unten eingeführt wird.</li>
@@ -491,9 +464,9 @@
     
 
     <div id="page3" class="page">
-      <div style="text-align: center; margin: 20px 0;">
-        <div style="max-width: 800px; margin: 20px auto; padding: 20px; background-color: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-          <h2 style="margin-top: 0;">Verteilerschrank</h2>
+        <div style="text-align: center; margin: 20px 0;">
+          <div style="max-width: 1200px; margin: 20px auto; padding: 20px; background-color: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <h2 style="margin-top: 0;">Verteilerschrank</h2>
           <div style="margin-bottom: 30px;">
             <div class="dropdown-container" style="margin-bottom: 20px;">
               <button id="montageart-btn" class="button dropdown-btn" type="button" aria-haspopup="menu" aria-expanded="false" style="width: 300px; justify-content: center;" onclick="openDropdownMenu('montageart', this)">
@@ -507,9 +480,9 @@
     </div>
 
     <div id="page4" class="page">
-      <div style="text-align: center; margin: 20px 0;">
-        <div style="max-width: 800px; margin: 20px auto; padding: 20px; background-color: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-          <h2 style="margin-top: 0;">Verdrahtung</h2>
+        <div style="text-align: center; margin: 20px 0;">
+          <div style="max-width: 1200px; margin: 20px auto; padding: 20px; background-color: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <h2 style="margin-top: 0;">Verdrahtung</h2>
           <div style="margin-bottom: 30px;">
             <div class="dropdown-container" style="margin-bottom: 20px;">
               <button id="verdrahtung-btn" class="button dropdown-btn" type="button" aria-haspopup="menu" aria-expanded="false" style="width: 450px; justify-content: center;" onclick="openDropdownMenu('verdrahtung', this)">
@@ -523,9 +496,9 @@
     </div>
 
     <div id="page5" class="page">
-      <div style="text-align: center; margin: 20px 0;">
-        <div style="max-width: 800px; margin: 20px auto; padding: 20px; background-color: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-          <h2 style="margin-top: 0;">Zusammenfassung</h2>
+        <div style="text-align: center; margin: 20px 0;">
+          <div style="max-width: 1200px; margin: 20px auto; padding: 20px; background-color: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <h2 style="margin-top: 0;">Zusammenfassung</h2>
           <div style="margin-bottom: 30px;">
             <div class="summary-row free">
               <div class="summary-info-label">Name/Referenz</div>
