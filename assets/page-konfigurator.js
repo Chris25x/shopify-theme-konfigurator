@@ -411,7 +411,7 @@ let rowCounter = 1;
                 updateStaticProductCardPrices();
               }
               updateInfoBox();
-              if (typeof currentPage !== 'undefined' && currentPage === 5) {
+              if (typeof currentPage !== 'undefined' && currentPage === 4) {
                 updateGesamtpreis();
               }
             } else {
@@ -794,15 +794,15 @@ let rowCounter = 1;
       });
 
       document.getElementById("nextButton").addEventListener("click", () => {
-        if (currentPage < 5) {
-          // Pflichtauswahl auf Seite 3 (Verteilerschrank) bevor wir zu Seite 4 wechseln
-          if (currentPage === 3) {
+        if (currentPage < 4) {
+          // Pflichtauswahl auf Seite 2 (Verteilerschrank) bevor wir zu Seite 3 wechseln
+          if (currentPage === 2) {
             if (!validatePage(currentPage)) {
               return; // Seitenwechsel verhindern, wenn die Validierung fehlschlägt
             }
           }
-          // Pflichtauswahl auf Seite 4 (Verdrahtung) bevor wir zu Seite 5 wechseln
-          if (currentPage === 4) {
+          // Pflichtauswahl auf Seite 3 (Verdrahtung) bevor wir zu Seite 4 wechseln
+          if (currentPage === 3) {
             const verdrahtungBtn = document.getElementById('verdrahtung-btn');
             const verdrahtungText = (selectedVerdrahtung || (verdrahtungBtn ? verdrahtungBtn.textContent.trim() : ''));
             let errorBox = document.getElementById("verdrahtung-error");
@@ -819,7 +819,7 @@ let rowCounter = 1;
                 errorBox.style.textAlign = "center";
                 errorBox.textContent = "Bitte wählen Sie eine Verdrahtungsoption aus.";
                 // Füge die Fehlermeldung unterhalb der Dropdowns ein
-                const verdrahtungBox = document.querySelector('#page4 .dropdown-container');
+                const verdrahtungBox = document.querySelector('#page3 .dropdown-container');
                 if (verdrahtungBox && verdrahtungBox.parentNode) {
                   verdrahtungBox.parentNode.insertBefore(errorBox, verdrahtungBox.nextSibling);
                 }
@@ -829,14 +829,13 @@ let rowCounter = 1;
               if (errorBox) errorBox.remove();
             }
           }
-          // Nächste Seite berechnen und Seite 2 überspringen
+          // Nächste Seite berechnen
           let targetPage = currentPage + 1;
-          if (targetPage === 2) targetPage = 3;
           currentPage = targetPage;
-          if (currentPage === 5) {
+          if (currentPage === 4) {
             updateSummary();
           }
-        } else if (currentPage === 5) {
+        } else if (currentPage === 4) {
           addToCart();
         }
         showPage(currentPage);
@@ -844,11 +843,10 @@ let rowCounter = 1;
 
       document.getElementById("prevButton").addEventListener("click", () => {
         if (currentPage > 1) {
-          // Vorherige Seite berechnen und Seite 2 überspringen
+          // Vorherige Seite berechnen
           let targetPage = currentPage - 1;
-          if (targetPage === 2) targetPage = 1;
           currentPage = targetPage;
-          if (currentPage < 5) {
+          if (currentPage < 4) {
             document.getElementById("nextButton").textContent = "Weiter";
           }
         }
@@ -939,10 +937,10 @@ let rowCounter = 1;
       
       // Scroll-Verhalten beim Seitenwechsel
       if (pageNumber > 1) {
-        if (pageNumber === 5) {
-          // Bei Page 5 (Zusammenfassung): KEIN Scrollen
+        if (pageNumber === 4) {
+          // Bei Page 4 (Zusammenfassung): KEIN Scrollen
           // Der Benutzer bleibt an der aktuellen Position
-        } else if (pageNumber === 3 || pageNumber === 4) {
+        } else if (pageNumber === 2 || pageNumber === 3) {
           // Bei Page 3 und 4: Section-Container in den Fokus bringen
           const sectionContainer = document.querySelector('.page-konfigurator-section');
           if (sectionContainer) {
@@ -970,7 +968,7 @@ let rowCounter = 1;
       // Reihenklemmen entfernt
 
       // NEU: Bei Anzeige der Zusammenfassung die Preise aktualisieren
-      if (pageNumber === 5) {
+      if (pageNumber === 4) {
         updateInfoBox();
       }
 
@@ -986,9 +984,9 @@ let rowCounter = 1;
 
       // Button-Text aktualisieren
       const nextButton = document.getElementById("nextButton");
-      if (pageNumber === 5) {
+      if (pageNumber === 4) {
         nextButton.innerHTML = '<i class="fas fa-shopping-cart"></i> In den Warenkorb legen';
-        // Button auf page5 deaktivieren, bis Checkbox aktiviert ist
+        // Button auf page4 deaktivieren, bis Checkbox aktiviert ist
         const disclaimerCheckbox = document.getElementById('disclaimerCheckbox');
         if (disclaimerCheckbox) {
           nextButton.disabled = !disclaimerCheckbox.checked;
@@ -1065,7 +1063,7 @@ let rowCounter = 1;
       const nextButton = document.getElementById('nextButton');
       
       if (disclaimerCheckbox && nextButton) {
-        // Initial: Button deaktiviert, wenn auf page5
+        // Initial: Button deaktiviert, wenn auf page4
         if (nextButton.textContent.includes('Warenkorb')) {
           nextButton.disabled = true;
         }
@@ -1426,7 +1424,7 @@ let rowCounter = 1;
       config[type] = value;
       
       // Aktualisiere die Zusammenfassung, falls wir auf der Zusammenfassungsseite sind
-      if (currentPage === 5) {
+      if (currentPage === 4) {
         updateSummary();
       }
     }
@@ -2643,7 +2641,7 @@ let rowCounter = 1;
               charakteristik: charakteristik
             });
             // Aktualisiere die Zusammenfassung, falls wir auf der Zusammenfassungsseite sind
-            if (currentPage === 5) {
+            if (currentPage === 4) {
               updateSummary();
             }
             updateInfoBox();
@@ -3250,7 +3248,7 @@ let rowCounter = 1;
       selectedMarke = option;
       
       // Aktualisiere die Zusammenfassung, falls wir auf der Zusammenfassungsseite sind
-      if (currentPage === 5) {
+      if (currentPage === 4) {
         updateSummary();
       }
     }
@@ -3752,7 +3750,7 @@ let rowCounter = 1;
         if (variantId) {
           productBox.setAttribute('data-variant-id', variantId);
         }
-        if (currentPage === 5) {
+        if (currentPage === 4) {
           updateSummary();
         }
         updateInfoBox();
@@ -3823,7 +3821,7 @@ let rowCounter = 1;
         if (variantId) {
           productBox.setAttribute('data-variant-id', variantId);
         }
-        if (currentPage === 5) {
+        if (currentPage === 4) {
           updateSummary();
         }
         updateInfoBox();
@@ -3895,7 +3893,7 @@ let rowCounter = 1;
           productBox.setAttribute('data-variant-id', variantId);
         }
         productBox.setAttribute('data-nennstrom', nennstrom);
-        if (typeof currentPage !== 'undefined' && currentPage === 5) {
+        if (typeof currentPage !== 'undefined' && currentPage === 4) {
           updateSummary();
         }
         updateInfoBox();
@@ -4567,8 +4565,8 @@ let rowCounter = 1;
 
     // ... existing code ...
       function validatePage(currentPage) {
-        // Pflichtauswahl auf Seite 3 (Verteilerschrank)
-        if (currentPage === 3) {
+        // Pflichtauswahl auf Seite 2 (Verteilerschrank)
+        if (currentPage === 2) {
           const btn = document.getElementById('montageart-btn');
           const btnText = btn ? btn.textContent.trim() : '';
           const montageartText = selectedMontageart || btnText;
@@ -4586,7 +4584,7 @@ let rowCounter = 1;
               errorBox.style.textAlign = "center";
               errorBox.textContent = "Bitte wählen Sie eine Montageart aus.";
               // Füge die Fehlermeldung unterhalb der Dropdowns ein
-              const dropdowns = document.querySelectorAll('#page3 .dropdown-container');
+              const dropdowns = document.querySelectorAll('#page2 .dropdown-container');
               if (dropdowns.length > 0 && dropdowns[0].parentNode) {
                 dropdowns[0].parentNode.insertBefore(errorBox, dropdowns[0].nextSibling);
               }
