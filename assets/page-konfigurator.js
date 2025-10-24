@@ -30,6 +30,24 @@ const CSS_CONSTANTS = {
   }
 };
 
+// Google Pixel Tracking Funktion
+function trackKonfiguratorStep(stepNumber, stepName, additionalData = {}) {
+  if (typeof gtag !== 'undefined') {
+    gtag('event', 'konfigurator_step', {
+      'event_category': 'konfigurator',
+      'event_label': `step_${stepNumber}`,
+      'value': additionalData.price || 0,
+      'currency': 'EUR',
+      'custom_parameters': {
+        'step_number': stepNumber,
+        'step_name': stepName,
+        'page': stepNumber,
+        ...additionalData
+      }
+    });
+  }
+}
+
 let rowCounter = 1;
     const maxRows = 5;
     const maxUnitsPerRow = 12;
@@ -829,13 +847,49 @@ let rowCounter = 1;
               if (errorBox) errorBox.remove();
             }
           }
+          
           // Nächste Seite berechnen
           let targetPage = currentPage + 1;
           currentPage = targetPage;
           if (currentPage === 4) {
             updateSummary();
           }
+          
+          // Google Pixel Tracking nach erfolgreichem Seitenwechsel
+          let trackingData = {};
+          if (currentPage === 2) {
+            trackingData = {
+              step_name: 'Konfiguration abgeschlossen',
+              configuration: 'Basic setup completed'
+            };
+          } else if (currentPage === 3) {
+            const montageartBtn = document.getElementById('montageart-btn');
+            const montageartText = montageartBtn ? montageartBtn.textContent.trim() : '';
+            trackingData = {
+              step_name: 'Verteilerschrank ausgewählt',
+              product: 'Verteilerschrank',
+              montageart: montageartText
+            };
+          } else if (currentPage === 4) {
+            const verdrahtungBtn = document.getElementById('verdrahtung-btn');
+            const verdrahtungText = verdrahtungBtn ? verdrahtungBtn.textContent.trim() : '';
+            trackingData = {
+              step_name: 'Verdrahtung ausgewählt',
+              product: 'Verdrahtung',
+              verdrahtung: verdrahtungText
+            };
+          }
+          
+          // Tracking Event senden
+          trackKonfiguratorStep(currentPage, trackingData.step_name, trackingData);
         } else if (currentPage === 4) {
+          // Google Pixel Tracking für "In den Warenkorb"
+          trackKonfiguratorStep(4, 'Konfiguration abgeschlossen - In den Warenkorb', {
+            product: 'Vollständige Sicherungskasten-Konfiguration',
+            configuration_complete: true,
+            final_step: true
+          });
+          
           addToCart();
         }
         showPage(currentPage);
