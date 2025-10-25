@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=1200, initial-scale=0.5, maximum-scale=3, user-scalable=yes">
   <meta name="description" content="Interaktiver Sicherungskasten-Konfigurator: Reihen, Komponenten und Verdrahtung wählen, Preis in Echtzeit berechnen und als PDF exportieren.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
   <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
@@ -14,7 +13,6 @@
   <!-- jsPDF für PDF-Generierung -->
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <!-- Inter Schriftart (Theme Standard) -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <!-- Konfigurator CSS -->
   <link href="{{ 'page-konfigurator.css' | asset_url }}" rel="stylesheet">
 </head>
@@ -402,6 +400,12 @@
             <li>Sollten Sie auf eine Hauptanschlussklemme verzichten wollen, kontaktieren Sie uns bitte vorab.</li>
           </ul>
         </div>
+      </div>
+
+      <!-- Marken-Info -->
+      <div class="konfigurator-brand-info">
+        <span class="brand-label">Marke der Komponenten:</span>
+        <img src="https://cdn.shopify.com/s/files/1/0944/8711/8089/files/hager.png?v=1746554364" alt="Hager Logo" class="brand-logo" loading="lazy">
       </div>
 
       <div id="configurator">
