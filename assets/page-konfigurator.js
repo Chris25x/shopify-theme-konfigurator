@@ -31,11 +31,25 @@ const CSS_CONSTANTS = {
 };
 
 // Google Pixel Tracking Funktion
+let trackingSession = {
+  step1Tracked: false,
+  step2Tracked: false,
+  step3Tracked: false,
+  cartTracked: false
+};
+
 function trackKonfiguratorStep(stepNumber, stepName, additionalData = {}) {
   if (typeof gtag !== 'undefined') {
-    gtag('event', 'konfigurator_step', {
+    // Prüfen ob dieser Schritt bereits in dieser Sitzung getrackt wurde
+    const stepKey = `step${stepNumber}Tracked`;
+    if (trackingSession[stepKey]) {
+      return; // Bereits getrackt, nichts senden
+    }
+    
+    // Event senden
+    gtag('event', `konfigurator_step${stepNumber}`, {
       'event_category': 'konfigurator',
-      'event_label': `step_${stepNumber}`,
+      'event_label': stepName,
       'value': additionalData.price || 0,
       'currency': 'EUR',
       'custom_parameters': {
@@ -45,6 +59,84 @@ function trackKonfiguratorStep(stepNumber, stepName, additionalData = {}) {
         ...additionalData
       }
     });
+    
+    // Als getrackt markieren
+    trackingSession[stepKey] = true;
+  }
+}
+
+function trackKonfiguratorCart(additionalData = {}) {
+  if (typeof gtag !== 'undefined') {
+    // Prüfen ob Cart bereits in dieser Sitzung getrackt wurde
+    if (trackingSession.cartTracked) {
+      return; // Bereits getrackt, nichts senden
+    }
+    
+    // Event senden
+    gtag('event', 'konfigurator_cart', {
+      'event_category': 'konfigurator',
+      'event_label': 'Konfiguration abgeschlossen - In den Warenkorb',
+      'value': additionalData.price || 0,
+      'currency': 'EUR',
+      'custom_parameters': {
+        'step_name': 'Konfiguration abgeschlossen - In den Warenkorb',
+        'configuration_complete': true,
+        'final_step': true,
+        ...additionalData
+      }
+    });
+    
+    // Als getrackt markieren
+    trackingSession.cartTracked = true;
+    
+    // Shopify add_to_cart Events für diese Sitzung unterdrücken
+    suppressShopifyCartEvents();
+  }
+}
+
+// Globale Shopify Event Unterdrückung für Konfigurator-Seiten
+function initializeKonfiguratorTracking() {
+  if (typeof gtag !== 'undefined' && window.location.pathname.includes('konfigurator')) {
+    // Override der Shopify add_to_cart Events für Konfigurator-Seiten
+    const originalGtag = window.gtag;
+    window.gtag = function(...args) {
+      // Wenn es ein add_to_cart Event ist und wir bereits konfigurator_cart gesendet haben, unterdrücken
+      if (args[0] === 'event' && args[1] === 'add_to_cart' && trackingSession.cartTracked) {
+        console.log('Shopify add_to_cart Event unterdrückt (Konfigurator)');
+        return; // Event unterdrücken
+      }
+      // Alle anderen Events normal verarbeiten
+      return originalGtag.apply(this, args);
+    };
+    
+    // Nach 15 Sekunden die ursprüngliche gtag Funktion wiederherstellen
+    setTimeout(() => {
+      window.gtag = originalGtag;
+      console.log('Shopify add_to_cart Events wieder aktiviert');
+    }, 15000);
+  }
+}
+
+function suppressShopifyCartEvents() {
+  // Temporär Shopify add_to_cart Events unterdrücken
+  if (typeof gtag !== 'undefined') {
+    // Override der Shopify add_to_cart Events
+    const originalGtag = window.gtag;
+    window.gtag = function(...args) {
+      // Wenn es ein add_to_cart Event ist und wir bereits konfigurator_cart gesendet haben, unterdrücken
+      if (args[0] === 'event' && args[1] === 'add_to_cart' && trackingSession.cartTracked) {
+        console.log('Shopify add_to_cart Event unterdrückt (Konfigurator)');
+        return; // Event unterdrücken
+      }
+      // Alle anderen Events normal verarbeiten
+      return originalGtag.apply(this, args);
+    };
+    
+    // Nach 10 Sekunden die ursprüngliche gtag Funktion wiederherstellen
+    setTimeout(() => {
+      window.gtag = originalGtag;
+      console.log('Shopify add_to_cart Events wieder aktiviert');
+    }, 10000);
   }
 }
 
@@ -858,33 +950,39 @@ let rowCounter = 1;
           // Google Pixel Tracking nach erfolgreichem Seitenwechsel
           let trackingData = {};
           if (currentPage === 2) {
+            // Erster "Weiter"-Button: Page1 → Page2
             trackingData = {
               step_name: 'Konfiguration abgeschlossen',
-              configuration: 'Basic setup completed'
+              configuration: 'Basic setup completed',
+              button_type: 'first_continue'
             };
+            trackKonfiguratorStep(1, trackingData.step_name, trackingData);
           } else if (currentPage === 3) {
+            // Zweiter "Weiter"-Button: Page2 → Page3
             const montageartBtn = document.getElementById('montageart-btn');
             const montageartText = montageartBtn ? montageartBtn.textContent.trim() : '';
             trackingData = {
               step_name: 'Verteilerschrank ausgewählt',
               product: 'Verteilerschrank',
-              montageart: montageartText
+              montageart: montageartText,
+              button_type: 'second_continue'
             };
+            trackKonfiguratorStep(2, trackingData.step_name, trackingData);
           } else if (currentPage === 4) {
+            // Dritter "Weiter"-Button: Page3 → Page4
             const verdrahtungBtn = document.getElementById('verdrahtung-btn');
             const verdrahtungText = verdrahtungBtn ? verdrahtungBtn.textContent.trim() : '';
             trackingData = {
               step_name: 'Verdrahtung ausgewählt',
               product: 'Verdrahtung',
-              verdrahtung: verdrahtungText
+              verdrahtung: verdrahtungText,
+              button_type: 'third_continue'
             };
+            trackKonfiguratorStep(3, trackingData.step_name, trackingData);
           }
-          
-          // Tracking Event senden
-          trackKonfiguratorStep(currentPage, trackingData.step_name, trackingData);
         } else if (currentPage === 4) {
           // Google Pixel Tracking für "In den Warenkorb"
-          trackKonfiguratorStep(4, 'Konfiguration abgeschlossen - In den Warenkorb', {
+          trackKonfiguratorCart({
             product: 'Vollständige Sicherungskasten-Konfiguration',
             configuration_complete: true,
             final_step: true
@@ -971,6 +1069,9 @@ let rowCounter = 1;
 
     // Füge Event-Listener für das initiale Laden hinzu
     document.addEventListener('DOMContentLoaded', function() {
+      // Konfigurator Tracking initialisieren
+      initializeKonfiguratorTracking();
+      
       showPage(currentPage);
       // Zusätzliche Sicherheit: Verstecke den Zurück-Button auf Page 1
       const prevButton = document.getElementById("prevButton");
@@ -1973,7 +2074,7 @@ let rowCounter = 1;
         
         // --- Reihe 1 Zusatz, falls vorhanden ---
         const row1Content2 = document.getElementById('row1Content_2');
-        if (row1Content2 && row1Content2.children.length > 0) {
+        if (row1Content2) {
           allRows.push({
             content: row1Content2,
             originalIndex: 1,
@@ -2040,12 +2141,19 @@ let rowCounter = 1;
           label.textContent = `Reihe ${displayIndex} (${bereichTyp})`;
           const itemsCol = document.createElement('div');
           itemsCol.className = 'summary-items';
-          reihenElemente.forEach(txt => {
+          if (reihenElemente.length > 0) {
+            reihenElemente.forEach(txt => {
+              const item = document.createElement('div');
+              item.className = 'summary-item';
+              item.textContent = txt;
+              itemsCol.appendChild(item);
+            });
+          } else {
             const item = document.createElement('div');
             item.className = 'summary-item';
-            item.textContent = txt;
+            item.textContent = 'Keine Elemente';
             itemsCol.appendChild(item);
-          });
+          }
           rowBlock.appendChild(label);
           rowBlock.appendChild(itemsCol);
           grid.appendChild(rowBlock);
@@ -2201,7 +2309,7 @@ let rowCounter = 1;
         
         // --- Reihe 1 ---
         const row1Content = document.getElementById("row1Content");
-        if (row1Content && row1Content.children.length > 0) {
+        if (row1Content) {
           allRows.push({
             content: row1Content,
             originalIndex: 1,
@@ -2211,7 +2319,7 @@ let rowCounter = 1;
         
         // --- Reihe 1 Zusatz, falls vorhanden ---
         const row1Content2 = document.getElementById('row1Content_2');
-        if (row1Content2 && row1Content2.children.length > 0) {
+        if (row1Content2) {
           allRows.push({
             content: row1Content2,
             originalIndex: 1,
@@ -2222,7 +2330,7 @@ let rowCounter = 1;
         // --- Reihen 2-5 ---
         for (let i = 2; i <= rowCounter; i++) {
           const rowContent = document.getElementById("row" + i + "Content");
-          if (rowContent && rowContent.children.length > 0) {
+          if (rowContent) {
             allRows.push({
               content: rowContent,
               originalIndex: i,
@@ -2273,7 +2381,7 @@ let rowCounter = 1;
           
           doc.text(`Reihe ${displayIndex} (${bereichTyp}):`, margin, yPos);
           yPos += 7;
-          const elementText = reihenElemente.join('; ');
+          const elementText = reihenElemente.length > 0 ? reihenElemente.join('; ') : 'Keine Elemente';
           const lines = doc.splitTextToSize(elementText, maxTextWidth - 5);
           lines.forEach(line => {
             doc.text(line, margin + 5, yPos);
@@ -2470,7 +2578,7 @@ let rowCounter = 1;
         
         // --- Reihe 1 ---
         const row1Content = document.getElementById("row1Content");
-        if (row1Content && row1Content.children.length > 0) {
+        if (row1Content) {
           allRows.push({
             content: row1Content,
             originalIndex: 1,
@@ -2480,7 +2588,7 @@ let rowCounter = 1;
         
         // --- Reihe 1 Zusatz, falls vorhanden ---
         const row1Content2 = document.getElementById('row1Content_2');
-        if (row1Content2 && row1Content2.children.length > 0) {
+        if (row1Content2) {
           allRows.push({
             content: row1Content2,
             originalIndex: 1,
@@ -2491,7 +2599,7 @@ let rowCounter = 1;
         // --- Reihen 2-5 ---
         for (let i = 2; i <= rowCounter; i++) {
           const rowContent = document.getElementById("row" + i + "Content");
-          if (rowContent && rowContent.children.length > 0) {
+          if (rowContent) {
             allRows.push({
               content: rowContent,
               originalIndex: i,
@@ -2574,11 +2682,18 @@ let rowCounter = 1;
           reihen.forEach(r => {
             // Zeilen (rechts) vorbereiten
             const itemLines = [];
-            r.rows.forEach(item => {
-              const text = `- ${item.element}`;
+            if (r.rows.length > 0) {
+              r.rows.forEach(item => {
+                const text = `- ${item.element}`;
+                const lines = doc.splitTextToSize(text, itemsW - 6);
+                itemLines.push(lines);
+              });
+            } else {
+              // Wenn keine Elemente vorhanden sind, zeige "Keine Elemente"
+              const text = "Keine Elemente";
               const lines = doc.splitTextToSize(text, itemsW - 6);
               itemLines.push(lines);
-            });
+            }
             const itemsHeight = itemLines.reduce((acc, lines) => acc + lines.length * lineH + 1.5, 0);
             const labelLines = doc.splitTextToSize(r.heading, labelW - 4);
             const labelHeight = labelLines.length * lineH + 2;
