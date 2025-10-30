@@ -478,7 +478,7 @@
                       <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                   </div>
-                  <span>Kostenlose Lieferung</span>
+                  <span>{{ block.settings.badge1_text | default: 'Kostenlose Lieferung' }}</span>
                 </div>
                 
                 <div class="trust-badge">
@@ -487,7 +487,7 @@
                       <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                   </div>
-                  <span>Made in Germany</span>
+                  <span>{{ block.settings.badge2_text | default: 'Made in Germany' }}</span>
                 </div>
                 
                 <div class="trust-badge">
@@ -496,7 +496,7 @@
                       <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                   </div>
-                  <span>2–4 Werktage</span>
+                  <span>{{ block.settings.badge3_text | default: '2–4 Werktage' }}</span>
                 </div>
               </div>
             {%- endif -%}
@@ -892,6 +892,28 @@
           "id": "button2_style_secondary",
           "label": "Zweiter Button - Secondary Style",
           "default": false
+        },
+        {
+          "type": "header",
+          "content": "Trust-Badges"
+        },
+        {
+          "type": "text",
+          "id": "badge1_text",
+          "label": "Badge 1 Text",
+          "default": "Kostenlose Lieferung"
+        },
+        {
+          "type": "text",
+          "id": "badge2_text",
+          "label": "Badge 2 Text",
+          "default": "Made in Germany"
+        },
+        {
+          "type": "text",
+          "id": "badge3_text",
+          "label": "Badge 3 Text",
+          "default": "2–4 Werktage"
         },
         {
           "type": "header",
