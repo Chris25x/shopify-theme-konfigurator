@@ -41,6 +41,7 @@
     },
     "product_grid_tiles_9batR7": {
       "type": "product-grid-tiles",
+      "disabled": true,
       "name": "Product Grid Tiles",
       "settings": {
         "heading": "Unsere Produkte",
@@ -61,11 +62,61 @@
         "show_price": true,
         "image_fit": "contain"
       }
+    },
+    "collections_grid_LVm6qJ": {
+      "type": "collections-grid",
+      "blocks": {
+        "tile_AHGGNg": {
+          "type": "tile",
+          "settings": {
+            "title": "Aufputz",
+            "link": "",
+            "bg_style": "light"
+          }
+        },
+        "tile_JPEqTf": {
+          "type": "tile",
+          "settings": {
+            "title": "Unterputz",
+            "link": "",
+            "bg_style": "white"
+          }
+        },
+        "tile_Hc3a7p": {
+          "type": "tile",
+          "settings": {
+            "title": "Hohlwand",
+            "link": "",
+            "bg_style": "white"
+          }
+        },
+        "tile_Mr3DWL": {
+          "type": "tile",
+          "settings": {
+            "title": "Feuchtraum",
+            "link": "",
+            "bg_style": "light"
+          }
+        }
+      },
+      "block_order": [
+        "tile_AHGGNg",
+        "tile_JPEqTf",
+        "tile_Hc3a7p",
+        "tile_Mr3DWL"
+      ],
+      "name": "Collections Grid (4 tiles)",
+      "settings": {
+        "heading": "Montageart",
+        "padding_top": 40,
+        "padding_bottom": 40
+      }
     }
   },
   "order": [
     "banner",
     "product-grid",
-    "product_grid_tiles_9batR7"
+    "product_grid_tiles_9batR7",
+    "collections_grid_LVm6qJ"
   ]
 }
