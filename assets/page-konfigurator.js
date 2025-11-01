@@ -102,7 +102,6 @@ function initializeKonfiguratorTracking() {
     window.gtag = function(...args) {
       // Wenn es ein add_to_cart Event ist und wir bereits konfigurator_cart gesendet haben, unterdrücken
       if (args[0] === 'event' && args[1] === 'add_to_cart' && trackingSession.cartTracked) {
-        console.log('Shopify add_to_cart Event unterdrückt (Konfigurator)');
         return; // Event unterdrücken
       }
       // Alle anderen Events normal verarbeiten
@@ -112,7 +111,6 @@ function initializeKonfiguratorTracking() {
     // Nach 15 Sekunden die ursprüngliche gtag Funktion wiederherstellen
     setTimeout(() => {
       window.gtag = originalGtag;
-      console.log('Shopify add_to_cart Events wieder aktiviert');
     }, 15000);
   }
 }
@@ -125,7 +123,6 @@ function suppressShopifyCartEvents() {
     window.gtag = function(...args) {
       // Wenn es ein add_to_cart Event ist und wir bereits konfigurator_cart gesendet haben, unterdrücken
       if (args[0] === 'event' && args[1] === 'add_to_cart' && trackingSession.cartTracked) {
-        console.log('Shopify add_to_cart Event unterdrückt (Konfigurator)');
         return; // Event unterdrücken
       }
       // Alle anderen Events normal verarbeiten
@@ -135,7 +132,6 @@ function suppressShopifyCartEvents() {
     // Nach 10 Sekunden die ursprüngliche gtag Funktion wiederherstellen
     setTimeout(() => {
       window.gtag = originalGtag;
-      console.log('Shopify add_to_cart Events wieder aktiviert');
     }, 10000);
   }
 }
@@ -466,8 +462,7 @@ let rowCounter = 1;
           shopifyProducts = JSON.parse(productsScript.textContent.trim());
           // Produktdaten erfolgreich geladen
         } catch (e) {
-          console.warn('Konnte Produktdaten nicht parsen:', e);
-          console.log('Script content:', productsScript.textContent.substring(0, 200));
+          // Fehler beim Parsen der Produktdaten
         }
       }
       // ... bestehender Code ...
@@ -578,7 +573,7 @@ let rowCounter = 1;
           }, 1200);
         }
       } catch (e) {
-        console.warn('Konnte Produktkarten-Preise nicht aktualisieren:', e);
+        // Fehler beim Aktualisieren der Produktkarten-Preise
       }
     }
 
@@ -1413,7 +1408,6 @@ let rowCounter = 1;
           try {
             return total + parseFloat(productBox.dataset.size);
           } catch (e) {
-            console.warn("Fehler beim Berechnen der Einheiten eines Produkts");
             return total;
           }
         }, 0);
@@ -1646,7 +1640,6 @@ let rowCounter = 1;
             try {
               return total + parseFloat(productBox.dataset.size);
             } catch (e) {
-              console.warn("Fehler beim Berechnen der Einheiten eines Produkts");
               return total;
             }
           }, 0);
@@ -3223,6 +3216,109 @@ let rowCounter = 1;
       return selectedProducts;
     }
 
+    function buildOrderAttributes() {
+      const reihenInfo = {};
+      const qtyEl = document.getElementById('verteilerAnzahl');
+      const qtyVal = qtyEl ? String(Math.max(0, Math.min(10, parseInt(qtyEl.value) || 0))) : '1';
+      reihenInfo["Anzahl"] = qtyVal;
+      const nameOutEl = document.getElementById('summaryVerteilerName');
+      reihenInfo["Name/Referenz"] = (nameOutEl?.textContent || 'Nicht angegeben').trim();
+      const posEl = document.getElementById('summaryPosition');
+      reihenInfo["Position im Verteiler"] = (posEl?.textContent || '').trim() || '—';
+      reihenInfo["Anzahl Reihen"] = String(getActualRowCount());
+      const usedUnitsEl = document.getElementById('summaryUsedUnits');
+      reihenInfo["Belegte Einheiten"] = (usedUnitsEl?.textContent || '').trim() || '0';
+      reihenInfo["Montageart"] = selectedMontageart ? selectedMontageart : 'Nicht ausgewählt';
+      reihenInfo["Verdrahtungsoption"] = selectedVerdrahtung ? selectedVerdrahtung : 'Nicht ausgewählt';
+
+      // Sammle alle Reihen in der richtigen Reihenfolge (wie in updateSummary)
+      const allRows = [];
+      
+      // --- Reihe 1 ---
+      const row1Content = document.getElementById("row1Content");
+      if (row1Content) {
+        allRows.push({
+          content: row1Content,
+          originalIndex: 1,
+          isZusatz: false
+        });
+      }
+      
+      // --- Reihe 1 Zusatz, falls vorhanden ---
+      const row1Content2 = document.getElementById('row1Content_2');
+      if (row1Content2) {
+        allRows.push({
+          content: row1Content2,
+          originalIndex: 1,
+          isZusatz: true
+        });
+      }
+      
+      // --- Reihen 2-5 ---
+      for (let i = 2; i <= rowCounter; i++) {
+        const rowContent = document.getElementById("row" + i + "Content");
+        if (rowContent) {
+          allRows.push({
+            content: rowContent,
+            originalIndex: i,
+            isZusatz: false
+          });
+        }
+      }
+
+      // Durchlaufe alle Reihen und sammle die Elemente (exakt wie in updateSummary)
+      allRows.forEach(rowData => {
+        const rowContent = rowData.content;
+        const originalIndex = rowData.originalIndex;
+        const isZusatz = rowData.isZusatz;
+        const displayIndex = getConsistentRowNumber(originalIndex, isZusatz, allRows);
+        
+        // Bestimme FI-Bereich direkt aus DOM (wie in updateSummary)
+        const isFiBereich = Array.from(rowContent.children).some(box => {
+          const img = box.querySelector('img');
+          return img && img.alt === 'FI-/Leitungsschutzschalter';
+        });
+        const bereichTyp = isFiBereich ? 'FI-Bereich' : 'Freier Bereich';
+        
+        const elements = [];
+        
+        // Sammle Elemente aus der Reihe (gleiche Logik wie in updateSummary)
+        Array.from(rowContent.children).forEach(box => {
+          const img = box.querySelector('img');
+          if (img) {
+            let name = img.alt;
+            if (name === 'FI-/Leitungsschutzschalter') {
+              const nennstromSelect = box.querySelector('select[id^="nennstrom-"]');
+              const charakteristikSelect = box.querySelector('select[id^="charakteristik-"]');
+              const nennstrom = nennstromSelect ? nennstromSelect.value.trim() : '40';
+              const charakteristik = charakteristikSelect ? charakteristikSelect.value.trim() : 'A';
+              name = `1x FI-/Leitungsschutzschalter ${nennstrom}A, ${charakteristik}-Charakteristik`;
+            } else if (name === 'Sicherungssockel') {
+              const nennstromSelect = box.querySelector('select[id^="nennstrom-"]');
+              const nennstrom = nennstromSelect ? nennstromSelect.value.trim() : '';
+              name = nennstrom ? `1x Sicherungssockel ${nennstrom}A` : '1x Sicherungssockel';
+            } else if (name === 'Leitungsschutzschalter 1 polig' || name === 'Leitungsschutzschalter 3 polig') {
+              const nennstromSelect = box.querySelector('select[id^="nennstrom-"]');
+              const charakteristikSelect = box.querySelector('select[id^="charakteristik-"]');
+              const nennstrom = nennstromSelect ? nennstromSelect.value.trim() : '16';
+              const charakteristik = charakteristikSelect ? charakteristikSelect.value.trim() : 'B';
+              name = `1x ${name} ${nennstrom}A, ${charakteristik}-Charakteristik`;
+            } else {
+              name = `1x ${name}`;
+            }
+            elements.push(name);
+          }
+        });
+
+        const reihenKey = `Reihe ${displayIndex} - ${bereichTyp}`;
+        // Auch leere Reihen hinzufügen
+        const reihenValue = elements.length > 0 ? elements.join(", ") : "Keine Elemente";
+        reihenInfo[reihenKey] = reihenValue;
+      });
+      
+      return reihenInfo;
+    }
+
     // Funktion zum Hinzufügen zum Shopify-Warenkorb
     async function addToShopifyCart(items) {
       try {
@@ -3238,129 +3334,7 @@ let rowCounter = 1;
         }
         
         // Sammle die Reiheninformationen
-        // Reihenfolge wie gewünscht/auf der Zusammenfassungsseite
-        const reihenInfo = {};
-        // Anzahl (Menge)
-        const qtyEl = document.getElementById('verteilerAnzahl');
-        const qtyVal = qtyEl ? String(Math.max(0, Math.min(10, parseInt(qtyEl.value) || 0))) : '1';
-        reihenInfo["Anzahl"] = qtyVal;
-        // Name/Referenz
-        const nameOutEl = document.getElementById('summaryVerteilerName');
-        reihenInfo["Name/Referenz"] = (nameOutEl?.textContent || 'Nicht angegeben').trim();
-        // Position im Verteiler
-        const posEl = document.getElementById('summaryPosition');
-        reihenInfo["Position im Verteiler"] = (posEl?.textContent || '').trim() || '—';
-        // Anzahl Reihen
-        reihenInfo["Anzahl Reihen"] = String(getActualRowCount());
-        // Belegte Einheiten
-        const usedUnitsEl = document.getElementById('summaryUsedUnits');
-        reihenInfo["Belegte Einheiten"] = (usedUnitsEl?.textContent || '').trim() || '0';
-        // Montageart
-        reihenInfo["Montageart"] = selectedMontageart ? selectedMontageart : 'Nicht ausgewählt';
-        // Verdrahtungsoption
-        reihenInfo["Verdrahtungsoption"] = selectedVerdrahtung ? selectedVerdrahtung : 'Nicht ausgewählt';
-
-        // Durchlaufe alle Reihen und sammle die Elemente (nur reihenbezogen)
-        for (let i = 1; i <= rowCounter; i++) {
-          const rowContent = document.getElementById(`row${i}Content`);
-          // Korrigiertes ID-Target für Zusatzreihe von Reihe 1
-          const row1_2Content = document.getElementById('row1Content_2');
-          
-          // Sammle Elemente aus der Hauptreihe
-          const elements = [];
-          if (rowContent) {
-            Array.from(rowContent.children).forEach(productBox => {
-              const productName = productBox.querySelector('img')?.alt;
-              if (productName) {
-                if (productName === "FI-/Leitungsschutzschalter") {
-                  const nennstromSelect = productBox.querySelector('select[id^="nennstrom-"]');
-                  const charakteristikSelect = productBox.querySelector('select[id^="charakteristik-"]');
-                  const nennstrom = nennstromSelect ? nennstromSelect.value.trim() : '40';
-                  const charakteristik = charakteristikSelect ? charakteristikSelect.value.trim() : 'A';
-                  const label = `1x FI-/Leitungsschutzschalter ${nennstrom}A, ${charakteristik}-Charakteristik`;
-                  elements.push(label);
-                } else if (productName === "Leitungsschutzschalter 1 polig") {
-                  const nennstromSelect = productBox.querySelector('select[id^="nennstrom-"]');
-                  const charakteristikSelect = productBox.querySelector('select[id^="charakteristik-"]');
-                  const nennstrom = nennstromSelect ? nennstromSelect.value.trim() : '16';
-                  const charakteristik = charakteristikSelect ? charakteristikSelect.value.trim() : 'B';
-                  const label = `1x Leitungsschutzschalter 1 polig ${nennstrom}A, ${charakteristik}-Charakteristik`;
-                  elements.push(label);
-                } else if (productName === "Leitungsschutzschalter 3 polig") {
-                  const nennstromSelect = productBox.querySelector('select[id^="nennstrom-"]');
-                  const charakteristikSelect = productBox.querySelector('select[id^="charakteristik-"]');
-                  const nennstrom = nennstromSelect ? nennstromSelect.value.trim() : '16';
-                  const charakteristik = charakteristikSelect ? charakteristikSelect.value.trim() : 'B';
-                  const label = `1x Leitungsschutzschalter 3 polig ${nennstrom}A, ${charakteristik}-Charakteristik`;
-                  elements.push(label);
-                } else if (productName === "Sicherungssockel") {
-                  const nennstromSelect = productBox.querySelector('select[id^="nennstrom-"]');
-                  const nennstrom = nennstromSelect ? nennstromSelect.value.trim() : '';
-                  const label = `1x Sicherungssockel${nennstrom ? ' ' + nennstrom + 'A' : ''}`;
-                  elements.push(label);
-                } else {
-                  const label = `1x ${productName}`;
-                  elements.push(label);
-                }
-              }
-            });
-          }
-
-          // Wenn es sich um Reihe 1 handelt und row1_2 existiert, füge deren Elemente hinzu
-          if (i === 1 && row1_2Content) {
-            Array.from(row1_2Content.children).forEach(productBox => {
-              const productName = productBox.querySelector('img')?.alt;
-              if (productName) {
-                if (productName === "FI-/Leitungsschutzschalter") {
-                  const nennstromSelect = productBox.querySelector('select[id^="nennstrom-"]');
-                  const charakteristikSelect = productBox.querySelector('select[id^="charakteristik-"]');
-                  const nennstrom = nennstromSelect ? nennstromSelect.value.trim() : '40';
-                  const charakteristik = charakteristikSelect ? charakteristikSelect.value.trim() : 'A';
-                  const label = `1x FI-/Leitungsschutzschalter ${nennstrom}A, ${charakteristik}-Charakteristik`;
-                  elements.push(label);
-                } else if (productName === "Leitungsschutzschalter 1 polig") {
-                  const nennstromSelect = productBox.querySelector('select[id^="nennstrom-"]');
-                  const charakteristikSelect = productBox.querySelector('select[id^="charakteristik-"]');
-                  const nennstrom = nennstromSelect ? nennstromSelect.value.trim() : '16';
-                  const charakteristik = charakteristikSelect ? charakteristikSelect.value.trim() : 'B';
-                  const label = `1x Leitungsschutzschalter 1 polig ${nennstrom}A, ${charakteristik}-Charakteristik`;
-                  elements.push(label);
-                } else if (productName === "Leitungsschutzschalter 3 polig") {
-                  const nennstromSelect = productBox.querySelector('select[id^="nennstrom-"]');
-                  const charakteristikSelect = productBox.querySelector('select[id^="charakteristik-"]');
-                  const nennstrom = nennstromSelect ? nennstromSelect.value.trim() : '16';
-                  const charakteristik = charakteristikSelect ? charakteristikSelect.value.trim() : 'B';
-                  const label = `1x Leitungsschutzschalter 3 polig ${nennstrom}A, ${charakteristik}-Charakteristik`;
-                  elements.push(label);
-                } else if (productName === "Sicherungssockel") {
-                  const nennstromSelect = productBox.querySelector('select[id^="nennstrom-"]');
-                  const nennstrom = nennstromSelect ? nennstromSelect.value.trim() : '';
-                  const label = `1x Sicherungssockel${nennstrom ? ' ' + nennstrom + 'A' : ''}`;
-                  elements.push(label);
-                } else {
-                  const label = `1x ${productName}`;
-                  elements.push(label);
-                }
-              }
-            });
-          }
-
-          if (elements.length > 0) {
-            // Bestimme den Bereichstyp
-            const isFiBereich = elements.some(element => 
-              element.includes('FI-/Leitungsschutzschalter') || 
-              element.includes('Leitungsschutzschalter 1 polig') || 
-              element.includes('Leitungsschutzschalter 3 polig')
-            );
-            const bereichTyp = isFiBereich ? " - FI-Bereich" : " - Freier Bereich";
-            const reihenKey = `Reihe ${i}${bereichTyp}`;
-            const reihenValue = elements.join(", ");
-            reihenInfo[reihenKey] = reihenValue;
-          }
-        }
-
-        // Keine globale Zusammenfassung – nur reihenbezogene Einträge
-        // Bereits oben gesetzt: Montageart und Verdrahtungsoption
+        const reihenInfo = buildOrderAttributes();
         
         // Füge die Produkte zum Warenkorb hinzu
         const response = await fetch('/cart/add.js', {
@@ -4255,7 +4229,6 @@ let rowCounter = 1;
         // Entferne zuerst die alte Hauptleitungsklemme, falls vorhanden
         Array.from(row1Content.children).forEach(box => {
           if (box.querySelector('img')?.alt === "Hauptleitungsklemme") {
-            console.log('Alte Hauptleitungsklemme gefunden und wird entfernt');
             box.remove();
             occupiedSpace -= parseFloat(box.dataset.size) || 0;
           }
@@ -4263,14 +4236,12 @@ let rowCounter = 1;
 
         // Prüfe, ob die Hauptleitungsklemme in row1Content passt
         if (occupiedSpace + parseFloat(element.size) <= 12) {
-          console.log('Hauptleitungsklemme passt in row1Content');
           row1Content.insertBefore(productBox, row1Content.firstChild);
           totalUnits += parseFloat(element.size);
           updateInfoBox();
           updateSummary();
           checkAndMoveElements();
         } else {
-          console.log('Kein Platz für Hauptleitungsklemme in row1Content');
           showWarning('Kein Platz mehr verfügbar!', 'Bereich voll');
           return;
         }
@@ -4279,14 +4250,12 @@ let rowCounter = 1;
 
       // Prüfe, ob das neue Element in row1Content passt
       if (occupiedSpace + parseFloat(element.size) <= 12) {
-        console.log('Element passt in row1Content');
         row1Content.appendChild(productBox);
         totalUnits += parseFloat(element.size);
         updateInfoBox();
         updateSummary();
         checkAndMoveElements();
       } else {
-        console.log('Element passt nicht in row1Content, prüfe row1Content_2');
         manageRow1Content2();
         const row1Content2 = document.getElementById('row1Content_2');
         
@@ -4296,17 +4265,14 @@ let rowCounter = 1;
           Array.from(row1Content2.children).forEach(box => {
             occupiedSpace2 += parseFloat(box.dataset.size) || 0;
           });
-          console.log('Aktuell belegter Platz in row1Content_2:', occupiedSpace2, 'von 12 Einheiten');
 
           // Prüfe, ob das Element in row1Content_2 passt
           if (occupiedSpace2 + parseFloat(element.size) <= 12) {
-            console.log('Element passt in row1Content_2');
             row1Content2.appendChild(productBox);
             totalUnits += parseFloat(element.size);
             updateInfoBox();
             updateSummary();
           } else {
-            console.log('Kein Platz mehr in beiden Reihen verfügbar');
             showWarning('Kein Platz mehr verfügbar!', 'Bereich voll');
             return;
           }
@@ -4861,7 +4827,6 @@ let rowCounter = 1;
             try {
               return total + parseFloat(productBox.dataset.size);
             } catch (e) {
-              console.warn("Fehler beim Berechnen der Einheiten eines Produkts");
               return total;
             }
           }, 0);
