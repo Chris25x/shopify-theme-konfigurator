@@ -404,8 +404,29 @@
 
       <!-- Marken-Info -->
       <div class="konfigurator-brand-info">
-        <span class="brand-label">Marke der Komponenten:</span>
-        <img src="https://cdn.shopify.com/s/files/1/0944/8711/8089/files/hager.png?v=1746554364" alt="Hager Logo" class="brand-logo" loading="lazy">
+        <span class="brand-label">Marke der Komponenten wählen:</span>
+        <div class="brand-selector-container">
+          <button id="marken-btn" class="button brand-selector-btn" type="button" aria-haspopup="menu" aria-expanded="false">
+            <img id="brand-logo" src="https://cdn.shopify.com/s/files/1/0944/8711/8089/files/Gewiss-Logo.png?v=1761993681" alt="Gewiss Logo" class="brand-logo" loading="lazy">
+            <i class="fas fa-chevron-down brand-selector-icon"></i>
+          </button>
+          <div id="marken-dropdown" class="dropdown" aria-hidden="true" style="display: none;">
+            <div class="dropdown-option" onclick="selectMarke('Hager', 'https://cdn.shopify.com/s/files/1/0944/8711/8089/files/hager.png?v=1746554364')">
+              <img src="https://cdn.shopify.com/s/files/1/0944/8711/8089/files/hager.png?v=1746554364" alt="Hager Logo" class="brand-logo-option" loading="lazy">
+              <span>Hager</span>
+            </div>
+            <div class="dropdown-option" onclick="selectMarke('Gewiss', 'https://cdn.shopify.com/s/files/1/0944/8711/8089/files/Gewiss-Logo.png?v=1761993681')">
+              <img src="https://cdn.shopify.com/s/files/1/0944/8711/8089/files/Gewiss-Logo.png?v=1761993681" alt="Gewiss Logo" class="brand-logo-option" loading="lazy">
+              <span>Gewiss</span>
+            </div>
+          </div>
+        </div>
+        <div class="brand-info-tooltip-container">
+          <i class="fas fa-info-circle brand-info-icon" id="brand-info-icon" aria-label="Info"></i>
+          <div class="brand-info-tooltip" id="brand-info-tooltip">
+            Die Wahl der Marke wirkt sich ausschließlich auf den Hauptschalter, den FI-Schalter und die Leitungsschutzschalter aus.
+          </div>
+        </div>
       </div>
 
       <div id="configurator">
@@ -459,6 +480,21 @@
           <button id="addFreeRowButton" class="button button--outline" type="button">
             <i class="fas fa-plus"></i> Freien Bereich ohne Sammel-FI hinzufügen
           </button>
+        </div>
+      </div>
+      
+      <!-- Sonstige Hinweise Textfeld -->
+      <div class="sonstige-hinweise-container">
+        <label for="sonstigeHinweise" class="sonstige-hinweise-label">Sonstige Hinweise</label>
+        <textarea 
+          id="sonstigeHinweise" 
+          name="sonstigeHinweise" 
+          class="sonstige-hinweise-textarea" 
+          maxlength="300" 
+          placeholder="Optional: Weitere Anmerkungen oder besondere Wünsche (max. 300 Zeichen)"
+        ></textarea>
+        <div class="sonstige-hinweise-counter">
+          <span id="sonstigeHinweiseCounter">0</span> / 300 Zeichen
         </div>
       </div>
     </div>
@@ -516,6 +552,10 @@
               <div class="summary-info-value"><span id="summaryMontageart">Nicht ausgewählt</span></div>
               <div class="summary-info-label">Verdrahtungsoption</div>
               <div class="summary-info-value"><span id="summaryVerdrahtung">Nicht ausgewählt</span></div>
+              <div class="summary-info-label">Marke</div>
+              <div class="summary-info-value"><span id="summaryMarke">Gewiss</span></div>
+              <div class="summary-info-label">Sonstige Hinweise</div>
+              <div class="summary-info-value"><span id="summarySonstigeHinweise">—</span></div>
             </div>
 
             <div style="text-align: left; margin-bottom: 20px;">
