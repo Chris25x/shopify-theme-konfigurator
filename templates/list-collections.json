@@ -26,19 +26,39 @@
         "tile_8zNixk": {
           "type": "tile",
           "settings": {
-            "title": "Einzelteile & Zubehör",
-            "link": "shopify://collections/all",
-            "image": "shopify://shop_images/Ueberspannungsschutz_fd56ba33-16e0-46dc-b3fa-2149cb920dc9.png",
+            "title": "Aufputz",
+            "link": "shopify://pages/aufputz",
+            "image": "shopify://shop_images/aufputz_leer.png",
+            "bg_style": "white"
+          }
+        },
+        "tile_gyf3zk": {
+          "type": "tile",
+          "settings": {
+            "title": "Unterputz",
+            "link": "shopify://pages/unterputz",
+            "image": "shopify://shop_images/Unterputz_leer.png",
+            "bg_style": "white"
+          }
+        },
+        "tile_phWD6f": {
+          "type": "tile",
+          "settings": {
+            "title": "Hohlwand",
+            "link": "shopify://pages/hohlwand",
+            "image": "shopify://shop_images/Hohlwand_leer.png",
             "bg_style": "white"
           }
         }
       },
       "block_order": [
-        "tile_8zNixk"
+        "tile_8zNixk",
+        "tile_gyf3zk",
+        "tile_phWD6f"
       ],
       "name": "Collections Grid (4 tiles)",
       "settings": {
-        "heading": "Produkte",
+        "heading": "Sicherungskästen fertig verdrahtet",
         "padding_top": 100,
         "padding_bottom": 100
       }

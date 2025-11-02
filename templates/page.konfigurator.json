@@ -41,7 +41,7 @@
           "type": "faq_item",
           "settings": {
             "question": "Welche Marken und Bauteile werden verwendet?",
-            "answer": "Wir setzen konsequent auf Hager für FI-, LS-, Schienen- und Trafokomponenten. Ergänzend nutzen wir Eltako – z. B. bei Stromstoßschaltern oder Komponenten, die Hager selbst nicht anbietet. So kombinieren wir Markenqualität und Systemkompatibilität für langlebige Ergebnisse"
+            "answer": "Für das Standardmaterial wie FI- und Leitungsschutzschalter setzen wir auf HAGER und GEWISS. Bei Spezialkomponenten – etwa Stromstoßschaltern – greifen wir auf Marken wie Eltako zurück. So bleibt alles qualitativ hochwertig und technisch kompatibel."
           }
         },
         "faq_item_nFcrfz": {
@@ -49,13 +49,6 @@
           "settings": {
             "question": "Wie werden die Verteiler geprüft?",
             "answer": "Vor dem Versand erfolgt eine PE-Prüfung, eine Sichtkontrolle sowie eine Drehmomentprüfung aller Schraubverbindungen nach Herstellervorgaben. Damit stellen wir sicher, dass du eine mechanisch und elektrisch einwandfreie Vormontage erhältst. Die abschließende Abnahme und Messung erfolgt durch die Elektrofachkraft vor Ort – wie bei jeder Installation."
-          }
-        },
-        "faq_item_fUXU9h": {
-          "type": "faq_item",
-          "settings": {
-            "question": "Kommt der Kasten vormontiert/steckerfertig?",
-            "answer": "Du wählst den Vormontagegrad im Konfigurator. Wir liefern geprüft; auf Wunsch steckerfertig."
           }
         },
         "faq_item_dHVRDQ": {
@@ -71,7 +64,6 @@
         "faq_item_mfjFCg",
         "faq_item_hbmnAF",
         "faq_item_nFcrfz",
-        "faq_item_fUXU9h",
         "faq_item_dHVRDQ"
       ],
       "name": "FAQ Custom",
