@@ -2289,12 +2289,12 @@ let rowCounter = 1;
           const itemsCol = document.createElement('div');
           itemsCol.className = 'summary-items';
           if (reihenElemente.length > 0) {
-            reihenElemente.forEach(txt => {
-              const item = document.createElement('div');
-              item.className = 'summary-item';
-              item.textContent = txt;
-              itemsCol.appendChild(item);
-            });
+          reihenElemente.forEach(txt => {
+            const item = document.createElement('div');
+            item.className = 'summary-item';
+            item.textContent = txt;
+            itemsCol.appendChild(item);
+          });
           } else {
             const item = document.createElement('div');
             item.className = 'summary-item';
@@ -2857,11 +2857,11 @@ let rowCounter = 1;
             // Zeilen (rechts) vorbereiten
             const itemLines = [];
             if (r.rows.length > 0) {
-              r.rows.forEach(item => {
-                const text = `- ${item.element}`;
-                const lines = doc.splitTextToSize(text, itemsW - 6);
-                itemLines.push(lines);
-              });
+            r.rows.forEach(item => {
+              const text = `- ${item.element}`;
+              const lines = doc.splitTextToSize(text, itemsW - 6);
+              itemLines.push(lines);
+            });
             } else {
               // Wenn keine Elemente vorhanden sind, zeige "Keine Elemente"
               const text = "Keine Elemente";
@@ -2992,7 +2992,7 @@ let rowCounter = 1;
           if (product.name === "Hauptschalter") {
             productBox.setAttribute('data-variant-id', getHauptschalterVariantId());
           } else {
-            productBox.setAttribute('data-variant-id', product.variantId);
+          productBox.setAttribute('data-variant-id', product.variantId);
           }
         }
         
@@ -3312,22 +3312,22 @@ let rowCounter = 1;
     }
 
     function buildOrderAttributes() {
-      const reihenInfo = {};
-      const qtyEl = document.getElementById('verteilerAnzahl');
-      const qtyVal = qtyEl ? String(Math.max(0, Math.min(10, parseInt(qtyEl.value) || 0))) : '1';
-      reihenInfo["Anzahl"] = qtyVal;
-      const nameOutEl = document.getElementById('summaryVerteilerName');
-      reihenInfo["Name/Referenz"] = (nameOutEl?.textContent || 'Nicht angegeben').trim();
-      const posEl = document.getElementById('summaryPosition');
-      reihenInfo["Position im Verteiler"] = (posEl?.textContent || '').trim() || '—';
-      reihenInfo["Anzahl Reihen"] = String(getActualRowCount());
-      const usedUnitsEl = document.getElementById('summaryUsedUnits');
-      reihenInfo["Belegte Einheiten"] = (usedUnitsEl?.textContent || '').trim() || '0';
-      reihenInfo["Montageart"] = selectedMontageart ? selectedMontageart : 'Nicht ausgewählt';
-      reihenInfo["Verdrahtungsoption"] = selectedVerdrahtung ? selectedVerdrahtung : 'Nicht ausgewählt';
+        const reihenInfo = {};
+        const qtyEl = document.getElementById('verteilerAnzahl');
+        const qtyVal = qtyEl ? String(Math.max(0, Math.min(10, parseInt(qtyEl.value) || 0))) : '1';
+        reihenInfo["Anzahl"] = qtyVal;
+        const nameOutEl = document.getElementById('summaryVerteilerName');
+        reihenInfo["Name/Referenz"] = (nameOutEl?.textContent || 'Nicht angegeben').trim();
+        const posEl = document.getElementById('summaryPosition');
+        reihenInfo["Position im Verteiler"] = (posEl?.textContent || '').trim() || '—';
+        reihenInfo["Anzahl Reihen"] = String(getActualRowCount());
+        const usedUnitsEl = document.getElementById('summaryUsedUnits');
+        reihenInfo["Belegte Einheiten"] = (usedUnitsEl?.textContent || '').trim() || '0';
+        reihenInfo["Montageart"] = selectedMontageart ? selectedMontageart : 'Nicht ausgewählt';
+        reihenInfo["Verdrahtungsoption"] = selectedVerdrahtung ? selectedVerdrahtung : 'Nicht ausgewählt';
       reihenInfo["Marke"] = selectedMarke ? selectedMarke : 'Gewiss';
       
-      // Sonstige Hinweise
+        // Sonstige Hinweise
       const sonstigeHinweiseEl = document.getElementById('sonstigeHinweise');
       const sonstigeHinweiseText = sonstigeHinweiseEl ? sonstigeHinweiseEl.value.trim() : '';
       reihenInfo["Sonstige Hinweise"] = sonstigeHinweiseText || '—';
@@ -3358,7 +3358,7 @@ let rowCounter = 1;
       // --- Reihen 2-5 ---
       for (let i = 2; i <= rowCounter; i++) {
         const rowContent = document.getElementById("row" + i + "Content");
-        if (rowContent) {
+          if (rowContent) {
           allRows.push({
             content: rowContent,
             originalIndex: i,
@@ -3391,8 +3391,8 @@ let rowCounter = 1;
             if (name === 'FI-/Leitungsschutzschalter') {
               const nennstromSelect = box.querySelector('select[id^="nennstrom-"]');
               const charakteristikSelect = box.querySelector('select[id^="charakteristik-"]');
-              const nennstrom = nennstromSelect ? nennstromSelect.value.trim() : '40';
-              const charakteristik = charakteristikSelect ? charakteristikSelect.value.trim() : 'A';
+                  const nennstrom = nennstromSelect ? nennstromSelect.value.trim() : '40';
+                  const charakteristik = charakteristikSelect ? charakteristikSelect.value.trim() : 'A';
               name = `1x FI-/Leitungsschutzschalter ${nennstrom}A, ${charakteristik}-Charakteristik`;
             } else if (name === 'Sicherungssockel') {
               const nennstromSelect = box.querySelector('select[id^="nennstrom-"]');
@@ -3401,10 +3401,10 @@ let rowCounter = 1;
             } else if (name === 'Leitungsschutzschalter 1 polig' || name === 'Leitungsschutzschalter 3 polig') {
               const nennstromSelect = box.querySelector('select[id^="nennstrom-"]');
               const charakteristikSelect = box.querySelector('select[id^="charakteristik-"]');
-              const nennstrom = nennstromSelect ? nennstromSelect.value.trim() : '16';
-              const charakteristik = charakteristikSelect ? charakteristikSelect.value.trim() : 'B';
+                  const nennstrom = nennstromSelect ? nennstromSelect.value.trim() : '16';
+                  const charakteristik = charakteristikSelect ? charakteristikSelect.value.trim() : 'B';
               name = `1x ${name} ${nennstrom}A, ${charakteristik}-Charakteristik`;
-            } else {
+                } else {
               name = `1x ${name}`;
             }
             elements.push(name);
@@ -3414,7 +3414,7 @@ let rowCounter = 1;
         const reihenKey = `Reihe ${displayIndex} - ${bereichTyp}`;
         // Auch leere Reihen hinzufügen
         const reihenValue = elements.length > 0 ? elements.join(", ") : "Keine Elemente";
-        reihenInfo[reihenKey] = reihenValue;
+            reihenInfo[reihenKey] = reihenValue;
       });
       
       return reihenInfo;
@@ -3703,11 +3703,11 @@ let rowCounter = 1;
             }
           });
         });
-        
-        // Aktualisiere die Zusammenfassung, falls wir auf der Zusammenfassungsseite sind
-        if (currentPage === 4) {
-          updateSummary();
-        }
+      
+      // Aktualisiere die Zusammenfassung, falls wir auf der Zusammenfassungsseite sind
+      if (currentPage === 4) {
+        updateSummary();
+      }
         
         // Aktualisiere die Produktkarten-Preise (für Hauptschalter)
         if (typeof updateStaticProductCardPrices === 'function') {

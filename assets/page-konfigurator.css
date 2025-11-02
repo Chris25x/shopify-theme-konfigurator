@@ -484,6 +484,7 @@ h1, h2, h3, h4, h5, h6 {
     padding: 10px 12px;
     flex-direction: column;
     align-items: flex-start;
+    overflow: visible;
   }
 
   .brand-label {
@@ -509,6 +510,29 @@ h1, h2, h3, h4, h5, h6 {
   .brand-info-tooltip::after {
     right: auto;
     left: 20px;
+  }
+
+  /* Marken-Dropdown auf mobilen Geräten */
+  #marken-dropdown.dropdown {
+    position: absolute !important;
+    top: calc(100% + 6px) !important;
+    left: 0 !important;
+    right: auto !important;
+    bottom: auto !important;
+    width: 100% !important;
+    max-width: 280px !important;
+    min-width: 200px !important;
+    z-index: 10000 !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  }
+
+  .brand-selector-container {
+    width: 100%;
+    max-width: 200px;
+    position: relative;
+    overflow: visible;
+    z-index: 10001;
   }
 }
 
@@ -1935,6 +1959,21 @@ body { overflow-x: auto; }
         border-radius: 0;
         max-height: 50vh;
         overflow-y: auto;
+      }
+
+      /* OVERRIDE: Marken-Dropdown nicht fixed, sondern absolute positioniert */
+      #marken-dropdown.dropdown {
+        position: absolute !important;
+        top: calc(100% + 6px) !important;
+        bottom: auto !important;
+        left: 0 !important;
+        right: auto !important;
+        width: 100% !important;
+        max-width: 280px !important;
+        min-width: 200px !important;
+        z-index: 10000 !important;
+        border-radius: 8px !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
       }
 
       .dropdown-option {

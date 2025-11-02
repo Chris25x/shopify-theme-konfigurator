@@ -159,26 +159,61 @@
         margin: 0 4px 0 0 !important;
       }
       
-      /* Nav-Items wieder mittig zentrieren */
-      body.konfigurator-page .header__inline-menu,
-      body.konfigurator-page .header .header__inline-menu {
-        align-items: center !important;
-        justify-content: center !important;
+      /* Navigation auf Touch-Geräten zentriert zwischen Logo und Icons */
+      body.konfigurator-page.touch-device .header,
+      body.konfigurator-page.is-mobile .header {
         display: flex !important;
-        flex: 1 !important;
-        margin: 0 auto !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        position: relative !important;
+        flex-wrap: nowrap !important;
       }
-      
-      /* Header-Container ausbalancieren */
-      body.konfigurator-page .header__icons {
-        justify-content: flex-end !important;
+
+      body.konfigurator-page.touch-device .header__heading,
+      body.konfigurator-page.is-mobile .header__heading {
+        flex: 0 0 auto !important;
+        order: 1 !important;
+        margin-right: 0 !important;
       }
-      
-      /* Zentrierung der Navigation */
-      body.konfigurator-page .header__inline-menu .list-menu--inline {
+
+      body.konfigurator-page.touch-device .header__inline-menu,
+      body.konfigurator-page.is-mobile .header__inline-menu {
+        position: absolute !important;
+        left: calc(50% + 20px) !important;
+        transform: translateX(-50%) !important;
+        display: flex !important;
+        flex: 0 0 auto !important;
+        z-index: 1 !important;
+        margin: 0 !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        order: 2 !important;
+        width: auto !important;
+      }
+
+      body.konfigurator-page.touch-device .header__icons,
+      body.konfigurator-page.is-mobile .header__icons {
+        flex: 0 0 auto !important;
+        margin-left: auto !important;
+        order: 3 !important;
+      }
+
+      body.konfigurator-page.touch-device .header__inline-menu .list-menu--inline,
+      body.konfigurator-page.is-mobile .header__inline-menu .list-menu--inline {
         justify-content: center !important;
         align-items: center !important;
-        gap: 2rem !important;
+        gap: 0.8rem !important;
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        white-space: nowrap !important;
+      }
+
+      body.konfigurator-page.touch-device .header__inline-menu .list-menu__item,
+      body.konfigurator-page.is-mobile .header__inline-menu .list-menu__item {
+        display: inline-block !important;
+        white-space: nowrap !important;
+        flex-shrink: 0 !important;
       }
     }
     
@@ -212,6 +247,32 @@
     document.addEventListener('DOMContentLoaded', function() {
       if (window.location.pathname.includes('/pages/konfigurator')) {
         document.body.classList.add('konfigurator-page');
+        
+        // Erkenne Touch-Geräte für Button-Ausblendung (auch wenn als Desktop erkannt)
+        const isTouchDevice = ('ontouchstart' in window) || 
+                              (navigator.maxTouchPoints > 0) || 
+                              (navigator.msMaxTouchPoints > 0) ||
+                              /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        
+        if (isTouchDevice) {
+          document.body.classList.add('touch-device', 'is-mobile');
+          
+          // Verstecke den Konfigurator-Button im Header
+          const konfigButton = document.querySelector('.header__icon--konfigurator');
+          if (konfigButton) {
+            konfigButton.style.display = 'none';
+            konfigButton.style.visibility = 'hidden';
+            konfigButton.style.opacity = '0';
+            konfigButton.style.height = '0';
+            konfigButton.style.width = '0';
+            konfigButton.style.overflow = 'hidden';
+            konfigButton.style.position = 'absolute';
+            konfigButton.style.left = '-9999px';
+            konfigButton.style.top = '-9999px';
+            konfigButton.style.margin = '0';
+            konfigButton.style.padding = '0';
+          }
+        }
         
         // Mobile Scroll-Fix: Verhindert Section-internes Scrollen - PRÄZISE
         function fixMobileScroll() {
@@ -393,11 +454,11 @@
         </button>
         <div class="konfigurator-disclaimer__content" id="disclaimer-content" style="display: none;">
           <ul>
-            <li>Die Hauptanschlussklemme ist Bestandteil jeder Verteilung und ermöglicht den bauseitigen Anschluss der Hauptzuleitung ohne Zusatzaufwand.</li>
-            <li>Die Position der Anschlussklemme kann wahlweise oben oder unten gewählt werden – je nachdem, ob die Hauptzuleitung von oben oder unten eingeführt wird.</li>
-            <li>Bei gewünschter Verdrahtung erfolgt diese grundsätzlich mit 10 mm² Kupferleitungen nach Herstellervorgaben.</li>
-            <li>Wir verwenden HAGER-Komponenten und Gehäuse – nur bei Sonderteilen kommen gleichwertige Markenprodukte wie Eltako zum Einsatz.</li>
-            <li>Sollten Sie auf eine Hauptanschlussklemme verzichten wollen, kontaktieren Sie uns bitte vorab.</li>
+            <li>Die Hauptanschlussklemme ist fester Bestandteil jeder Verteilung und ermöglicht den direkten Anschluss der Hauptzuleitung ohne zusätzlichen Aufwand.</li>
+            <li>Die Position kann oben oder unten gewählt werden – abhängig davon, von wo die Zuleitung eingeführt wird.</li>
+            <li>Die Verdrahtung erfolgt standardmäßig mit 10 mm² Kupferleitung gemäß Herstellervorgaben.</li>
+            <li>Für das übliche Installationsmaterial wie FI- und Leitungsschutzschalter setzen wir auf HAGER und GEWISS. Bei Sonderkomponenten, etwa Stromstoßschaltern, verwenden wir gleichwertige Marken wie Eltako.</li>
+            <li>Wenn Sie auf eine Hauptanschlussklemme verzichten möchten, kontaktieren Sie uns bitte vorab.</li>
           </ul>
         </div>
       </div>

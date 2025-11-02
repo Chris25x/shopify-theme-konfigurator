@@ -18,7 +18,6 @@
 
   <style>
   /* Inter Font Import */
-  @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
 
   :root{
     --font-body-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -457,6 +456,79 @@
       left: -9999px !important;
       top: -9999px !important;
     }
+  }
+
+  /* Verstecke Button auf Konfigurator-Seite für Touch-Geräte (auch wenn als Desktop erkannt) */
+  body.konfigurator-page.touch-device .header__icon--konfigurator,
+  body.konfigurator-page.is-mobile .header__icon--konfigurator {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    height: 0 !important;
+    width: 0 !important;
+    overflow: hidden !important;
+    position: absolute !important;
+    left: -9999px !important;
+    top: -9999px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Navigation auf Touch-Geräten zentriert zwischen Logo und Icons anzeigen */
+  body.konfigurator-page.touch-device .header,
+  body.konfigurator-page.is-mobile .header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    position: relative !important;
+    flex-wrap: nowrap !important;
+  }
+
+  body.konfigurator-page.touch-device .header__heading,
+  body.konfigurator-page.is-mobile .header__heading {
+    flex: 0 0 auto !important;
+    order: 1 !important;
+    margin-right: 0 !important;
+  }
+
+  body.konfigurator-page.touch-device .header__inline-menu,
+  body.konfigurator-page.is-mobile .header__inline-menu {
+    position: absolute !important;
+    left: calc(50% + 20px) !important;
+    transform: translateX(-50%) !important;
+    display: flex !important;
+    flex: 0 0 auto !important;
+    z-index: 1 !important;
+    margin: 0 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    order: 2 !important;
+    width: auto !important;
+  }
+
+  body.konfigurator-page.touch-device .header__icons,
+  body.konfigurator-page.is-mobile .header__icons {
+    flex: 0 0 auto !important;
+    margin-left: auto !important;
+    order: 3 !important;
+  }
+
+  body.konfigurator-page.touch-device .header__inline-menu .list-menu--inline,
+  body.konfigurator-page.is-mobile .header__inline-menu .list-menu--inline {
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 0.8rem !important;
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    white-space: nowrap !important;
+  }
+
+  body.konfigurator-page.touch-device .header__inline-menu .list-menu__item,
+  body.konfigurator-page.is-mobile .header__inline-menu .list-menu__item {
+    display: inline-block !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
   }
 
   /* Mobile Menu CTA Button */
