@@ -25,6 +25,31 @@
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
   }
+
+  /* Verstecke Country/Region Selector Spalte im Footer */
+  .footer__column.footer__localization {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    height: 0 !important;
+    width: 0 !important;
+    overflow: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Zentriere die Info-Spalte im Footer */
+  .footer__column.footer__column--info {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    margin: 0 auto !important;
+  }
+  
+  .footer__column--info > div:first-child {
+    justify-content: center !important;
+  }
 {%- endstyle -%}
 
 <footer class="footer color-{{ section.settings.color_scheme }} gradient section-{{ section.id }}-padding">

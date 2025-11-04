@@ -50,6 +50,32 @@
 
     {{ content_for_header }}
 
+    <!-- Optimize render-blocking stylesheets from Shopify Apps -->
+    <script>
+      (function() {
+        // Optimize accelerated-checkout CSS after content_for_header loads
+        function optimizeAppStylesheets() {
+          const stylesheets = document.querySelectorAll('link[rel="stylesheet"][href*="accelerated-checkout"]');
+          stylesheets.forEach(function(link) {
+            if (link.media !== 'print') {
+              link.media = 'print';
+              link.onload = function() {
+                this.media = 'all';
+              };
+            }
+          });
+        }
+        
+        // Run after DOMContentLoaded and with a delay to catch dynamically added stylesheets
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', optimizeAppStylesheets);
+        } else {
+          optimizeAppStylesheets();
+        }
+        setTimeout(optimizeAppStylesheets, 100);
+      })();
+    </script>
+
     {%- liquid
       assign body_font_bold = settings.type_body_font | font_modify: 'weight', 'bold'
       assign body_font_italic = settings.type_body_font | font_modify: 'style', 'italic'

@@ -519,8 +519,6 @@ let rowCounter = 1;
               if (typeof currentPage !== 'undefined' && currentPage === 4) {
                 updateGesamtpreis();
               }
-            } else {
-              console.error(`Preis konnte nicht gefunden werden für VariantID ${variantId} (Shopify-Response ohne Preis).`);
             }
           })
           .catch((err) => {
@@ -530,8 +528,7 @@ let rowCounter = 1;
             variantPriceFetchInFlight.delete(variantId);
           });
       }
-      // Wenn wir hier ankommen, gibt es noch keinen Preis; Fehlerhinweis in der Konsole
-      console.error(`Preis nicht gefunden für VariantID ${variantId}. Variante nicht im vorab geladenen JSON und noch nicht gecacht.`);
+      // Wenn wir hier ankommen, gibt es noch keinen Preis
       return 0;
     }
 
@@ -709,10 +706,46 @@ let rowCounter = 1;
       
       // Phasenschiene für jeden FI-Bereich hinzufügen
       let fiBereichCount = 0;
-      // Zähle FI-Bereiche in allen Reihen
+      // Prüfe auf drei aufeinanderfolgende FI-Reihen (nur für Hager)
+      let hasThreeConsecutiveFiRows = false;
+      let threeFiRowsIndices = [];
+      
+      if (selectedMarke === 'Hager') {
+        // Prüfe auf drei aufeinanderfolgende FI-Reihen
+        for (let i = 1; i <= rowCounter - 2; i++) {
+          const row1 = document.getElementById(`row${i}Content`);
+          const row2 = document.getElementById(`row${i + 1}Content`);
+          const row3 = document.getElementById(`row${i + 2}Content`);
+          
+          if (row1 && row2 && row3) {
+            const hasFi1 = Array.from(row1.getElementsByClassName('product-box')).some(box => {
+              return box.querySelector('img')?.alt === "FI-/Leitungsschutzschalter";
+            });
+            const hasFi2 = Array.from(row2.getElementsByClassName('product-box')).some(box => {
+              return box.querySelector('img')?.alt === "FI-/Leitungsschutzschalter";
+            });
+            const hasFi3 = Array.from(row3.getElementsByClassName('product-box')).some(box => {
+              return box.querySelector('img')?.alt === "FI-/Leitungsschutzschalter";
+            });
+            
+            if (hasFi1 && hasFi2 && hasFi3) {
+              hasThreeConsecutiveFiRows = true;
+              threeFiRowsIndices = [i, i + 1, i + 2];
+              break; // Nur die ersten drei aufeinanderfolgenden FI-Reihen verwenden
+            }
+          }
+        }
+      }
+      
+      // Zähle FI-Bereiche in allen Reihen (außer den drei aufeinanderfolgenden, wenn 3xFI-Phasenschiene verwendet wird)
       for (let i = 1; i <= rowCounter; i++) {
         const rowContent = document.getElementById(`row${i}Content`);
         if (rowContent) {
+          // Überspringe die drei aufeinanderfolgenden FI-Reihen, wenn 3xFI-Phasenschiene verwendet wird
+          if (hasThreeConsecutiveFiRows && threeFiRowsIndices.includes(i)) {
+            continue;
+          }
+          
           const hasFiSchalter = Array.from(rowContent.getElementsByClassName('product-box')).some(box => {
             const productName = box.querySelector('img')?.alt;
             return productName === "FI-/Leitungsschutzschalter";
@@ -734,10 +767,48 @@ let rowCounter = 1;
         }
       }
       
-      // Füge für jeden FI-Bereich den Preis einer Phasenschiene hinzu
+      // Wenn drei aufeinanderfolgende FI-Reihen gefunden und Marke ist Hager, füge Preis der 3xFI-Phasenschiene hinzu
+      if (hasThreeConsecutiveFiRows && selectedMarke === 'Hager') {
+        const threeFiPhasenschienePrice = getVariantPrice('56371044450569');
+        sum += threeFiPhasenschienePrice;
+      }
+      
+      // Füge für jeden anderen FI-Bereich den Preis einer normalen Phasenschiene hinzu
       if (fiBereichCount > 0) {
         const phasenschienePrice = getVariantPrice('56361435824393');
         sum += phasenschienePrice * fiBereichCount;
+      }
+      
+      // Berührungsschutz für freie Einheiten in jedem FI-Bereich berechnen
+      let totalBeruehrungsschutzCount = 0;
+      // Berechne freie Einheiten für jeden FI-Bereich
+      for (let i = 1; i <= rowCounter; i++) {
+        const rowContent = document.getElementById(`row${i}Content`);
+        if (rowContent) {
+          const hasFiSchalter = Array.from(rowContent.getElementsByClassName('product-box')).some(box => {
+            const productName = box.querySelector('img')?.alt;
+            return productName === "FI-/Leitungsschutzschalter";
+          });
+          if (hasFiSchalter) {
+            // Berechne verwendete Einheiten in dieser FI-Bereich-Reihe (nur .product-box Elemente)
+            let usedUnitsInRow = 0;
+            Array.from(rowContent.querySelectorAll('.product-box')).forEach(productBox => {
+              const size = parseFloat(productBox.getAttribute('data-size')) || parseFloat(productBox.dataset.size) || 0;
+              usedUnitsInRow += size;
+            });
+            // Freie Einheiten in diesem FI-Bereich (12 - verwendete Einheiten)
+            const freeUnitsInFiBereich = 12 - usedUnitsInRow;
+            if (freeUnitsInFiBereich > 0) {
+              totalBeruehrungsschutzCount += freeUnitsInFiBereich;
+            }
+          }
+        }
+      }
+      
+      // Füge Preis der Berührungsschutz-Einheiten hinzu
+      if (totalBeruehrungsschutzCount > 0) {
+        const beruehrungsschutzPrice = getVariantPrice('56370805571849');
+        sum += beruehrungsschutzPrice * totalBeruehrungsschutzCount;
       }
       
       // Blindabdeckstreifen basierend auf verfügbaren Einheiten berechnen
@@ -813,6 +884,157 @@ let rowCounter = 1;
       return units;
     }
 
+    // Funktion zum Berechnen der automatischen Produkte (für Info-Box)
+    function calculateAutomaticProducts() {
+      const result = {
+        phasenschiene: { count: 0, price: 0, total: 0 },
+        threeFiPhasenschiene: { count: 0, price: 0, total: 0 },
+        beruehrungsschutz: { count: 0, price: 0, total: 0 },
+        blindabdeckstreifen: { count: 0, price: 0, total: 0 }
+      };
+      
+      // Prüfe auf drei aufeinanderfolgende FI-Reihen (nur für Hager)
+      let hasThreeConsecutiveFiRows = false;
+      let threeFiRowsIndices = [];
+      
+      if (selectedMarke === 'Hager') {
+        for (let i = 1; i <= rowCounter - 2; i++) {
+          const row1 = document.getElementById(`row${i}Content`);
+          const row2 = document.getElementById(`row${i + 1}Content`);
+          const row3 = document.getElementById(`row${i + 2}Content`);
+          
+          if (row1 && row2 && row3) {
+            const hasFi1 = Array.from(row1.getElementsByClassName('product-box')).some(box => {
+              return box.querySelector('img')?.alt === "FI-/Leitungsschutzschalter";
+            });
+            const hasFi2 = Array.from(row2.getElementsByClassName('product-box')).some(box => {
+              return box.querySelector('img')?.alt === "FI-/Leitungsschutzschalter";
+            });
+            const hasFi3 = Array.from(row3.getElementsByClassName('product-box')).some(box => {
+              return box.querySelector('img')?.alt === "FI-/Leitungsschutzschalter";
+            });
+            
+            if (hasFi1 && hasFi2 && hasFi3) {
+              hasThreeConsecutiveFiRows = true;
+              threeFiRowsIndices = [i, i + 1, i + 2];
+              break;
+            }
+          }
+        }
+      }
+      
+      // Zähle FI-Bereiche (außer den drei aufeinanderfolgenden, wenn 3xFI-Phasenschiene verwendet wird)
+      let fiBereichCount = 0;
+      for (let i = 1; i <= rowCounter; i++) {
+        const rowContent = document.getElementById(`row${i}Content`);
+        if (rowContent) {
+          if (hasThreeConsecutiveFiRows && threeFiRowsIndices.includes(i)) {
+            continue;
+          }
+          
+          const hasFiSchalter = Array.from(rowContent.getElementsByClassName('product-box')).some(box => {
+            return box.querySelector('img')?.alt === "FI-/Leitungsschutzschalter";
+          });
+          if (hasFiSchalter) {
+            fiBereichCount++;
+          }
+        }
+      }
+      
+      // Zusatzreihe row1Content_2 auch prüfen
+      const row1Content2 = document.getElementById('row1Content_2');
+      if (row1Content2) {
+        const hasFiSchalter = Array.from(row1Content2.getElementsByClassName('product-box')).some(box => {
+          return box.querySelector('img')?.alt === "FI-/Leitungsschutzschalter";
+        });
+        if (hasFiSchalter) {
+          fiBereichCount++;
+        }
+      }
+      
+      // 3xFI-Phasenschiene
+      if (hasThreeConsecutiveFiRows && selectedMarke === 'Hager') {
+        result.threeFiPhasenschiene.count = 1;
+        result.threeFiPhasenschiene.price = getVariantPrice('56371044450569');
+        result.threeFiPhasenschiene.total = result.threeFiPhasenschiene.price;
+      }
+      
+      // Normale Phasenschiene
+      if (fiBereichCount > 0) {
+        result.phasenschiene.count = fiBereichCount;
+        result.phasenschiene.price = getVariantPrice('56361435824393');
+        result.phasenschiene.total = result.phasenschiene.price * fiBereichCount;
+      }
+      
+      // Berührungsschutz
+      let totalBeruehrungsschutzCount = 0;
+      for (let i = 1; i <= rowCounter; i++) {
+        const rowContent = document.getElementById(`row${i}Content`);
+        if (rowContent) {
+          const hasFiSchalter = Array.from(rowContent.getElementsByClassName('product-box')).some(box => {
+            return box.querySelector('img')?.alt === "FI-/Leitungsschutzschalter";
+          });
+          if (hasFiSchalter) {
+            let usedUnitsInRow = 0;
+            Array.from(rowContent.querySelectorAll('.product-box')).forEach(productBox => {
+              const size = parseFloat(productBox.getAttribute('data-size')) || parseFloat(productBox.dataset.size) || 0;
+              usedUnitsInRow += size;
+            });
+            const freeUnitsInFiBereich = 12 - usedUnitsInRow;
+            if (freeUnitsInFiBereich > 0) {
+              totalBeruehrungsschutzCount += freeUnitsInFiBereich;
+            }
+          }
+        }
+      }
+      
+      if (totalBeruehrungsschutzCount > 0) {
+        result.beruehrungsschutz.count = totalBeruehrungsschutzCount;
+        result.beruehrungsschutz.price = getVariantPrice('56370805571849');
+        result.beruehrungsschutz.total = result.beruehrungsschutz.price * totalBeruehrungsschutzCount;
+      }
+      
+      // Blindabdeckstreifen
+      const usedUnits = getUsedUnits();
+      const rowCount = getActualRowCount();
+      const maxPossibleUnits = rowCount * maxUnitsPerRow;
+      
+      let hauptleitungsklemmeUnits = 0;
+      for (let i = 1; i <= rowCounter; i++) {
+        const rowContent = document.getElementById(`row${i}Content`);
+        if (rowContent) {
+          Array.from(rowContent.children).forEach(productBox => {
+            const productName = productBox.querySelector('img')?.alt;
+            if (productName === "Hauptleitungsklemme") {
+              const size = parseFloat(productBox.getAttribute('data-size')) || 0;
+              hauptleitungsklemmeUnits += size;
+            }
+          });
+        }
+      }
+      const row1Content2Hlk = document.getElementById('row1Content_2');
+      if (row1Content2Hlk) {
+        Array.from(row1Content2Hlk.children).forEach(productBox => {
+          const productName = productBox.querySelector('img')?.alt;
+          if (productName === "Hauptleitungsklemme") {
+            const size = parseFloat(productBox.getAttribute('data-size')) || 0;
+            hauptleitungsklemmeUnits += size;
+          }
+        });
+      }
+      
+      const availableUnits = maxPossibleUnits - usedUnits + hauptleitungsklemmeUnits;
+      const blindabdeckstreifenCount = Math.ceil(availableUnits / 12);
+      
+      if (blindabdeckstreifenCount > 0) {
+        result.blindabdeckstreifen.count = blindabdeckstreifenCount;
+        result.blindabdeckstreifen.price = getVariantPrice('56361435955465');
+        result.blindabdeckstreifen.total = result.blindabdeckstreifen.price * blindabdeckstreifenCount;
+      }
+      
+      return result;
+    }
+
     function updateInfoBox() {
       try {
         const rowCountElement = document.getElementById("rowCount");
@@ -828,7 +1050,7 @@ let rowCounter = 1;
         rowCountElement.textContent = reihen;
         usedUnitsElement.textContent = getUsedUnits();
 
-        // --- Einheitliche Preisberechnung ---
+        // --- Einheitliche Preisberechnung (inkl. automatischer Produkte) ---
         const sum = calculateBaseSum();
         // Menge berücksichtigen (wie im Warenkorb)
         let qty = 1;
@@ -1227,18 +1449,22 @@ let rowCounter = 1;
           // Bei Page 4 (Zusammenfassung): KEIN Scrollen
           // Der Benutzer bleibt an der aktuellen Position
         } else if (pageNumber === 2 || pageNumber === 3) {
-          // Bei Page 3 und 4: Section-Container in den Fokus bringen
+          // Bei Page 2 und 3: Section-Container in den Fokus bringen mit Offset
           const sectionContainer = document.querySelector('.page-konfigurator-section');
           if (sectionContainer) {
-            sectionContainer.scrollIntoView({
-              behavior: 'smooth',
-              block: 'start',
-              inline: 'nearest'
+            const rect = sectionContainer.getBoundingClientRect();
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const offset = 150; // Offset in Pixeln (unterhalb des Headers)
+            const targetPosition = rect.top + scrollTop - offset;
+            
+            window.scrollTo({
+              top: Math.max(0, targetPosition),
+              behavior: 'smooth'
             });
           } else {
-            // Fallback: Scroll nach oben
+            // Fallback: Scroll mit Offset nach oben
             window.scrollTo({
-              top: 0,
+              top: 150,
               behavior: 'smooth'
             });
           }
@@ -2342,7 +2568,7 @@ let rowCounter = 1;
         // Marke
         const summaryMarke = document.getElementById("summaryMarke");
         if (summaryMarke) {
-          summaryMarke.textContent = selectedMarke || 'Gewiss';
+          summaryMarke.textContent = selectedMarke || 'Hager';
         }
         
         // Sonstige Hinweise
@@ -2732,7 +2958,7 @@ let rowCounter = 1;
         const usedUnits = (document.getElementById('summaryUsedUnits')?.textContent || '').trim() || '—';
         const montageart = (document.getElementById('summaryMontageart')?.textContent || '').trim() || '—';
         const verdrahtung = (document.getElementById('summaryVerdrahtung')?.textContent || '').trim() || '—';
-        const marke = selectedMarke || 'Gewiss';
+        const marke = selectedMarke || 'Hager';
         const sonstigeHinweise = (document.getElementById('sonstigeHinweise')?.value || '').trim() || '—';
 
         const reihen = [];
@@ -3227,10 +3453,46 @@ let rowCounter = 1;
       
       // Phasenschiene für jeden FI-Bereich hinzufügen
       let fiBereichCount = 0;
-      // Zähle FI-Bereiche in allen Reihen
+      // Prüfe auf drei aufeinanderfolgende FI-Reihen (nur für Hager)
+      let hasThreeConsecutiveFiRows = false;
+      let threeFiRowsIndices = [];
+      
+      if (selectedMarke === 'Hager') {
+        // Prüfe auf drei aufeinanderfolgende FI-Reihen
+        for (let i = 1; i <= rowCounter - 2; i++) {
+          const row1 = document.getElementById(`row${i}Content`);
+          const row2 = document.getElementById(`row${i + 1}Content`);
+          const row3 = document.getElementById(`row${i + 2}Content`);
+          
+          if (row1 && row2 && row3) {
+            const hasFi1 = Array.from(row1.getElementsByClassName('product-box')).some(box => {
+              return box.querySelector('img')?.alt === "FI-/Leitungsschutzschalter";
+            });
+            const hasFi2 = Array.from(row2.getElementsByClassName('product-box')).some(box => {
+              return box.querySelector('img')?.alt === "FI-/Leitungsschutzschalter";
+            });
+            const hasFi3 = Array.from(row3.getElementsByClassName('product-box')).some(box => {
+              return box.querySelector('img')?.alt === "FI-/Leitungsschutzschalter";
+            });
+            
+            if (hasFi1 && hasFi2 && hasFi3) {
+              hasThreeConsecutiveFiRows = true;
+              threeFiRowsIndices = [i, i + 1, i + 2];
+              break; // Nur die ersten drei aufeinanderfolgenden FI-Reihen verwenden
+            }
+          }
+        }
+      }
+      
+      // Zähle FI-Bereiche in allen Reihen (außer den drei aufeinanderfolgenden, wenn 3xFI-Phasenschiene verwendet wird)
       for (let i = 1; i <= rowCounter; i++) {
         const rowContent = document.getElementById(`row${i}Content`);
         if (rowContent) {
+          // Überspringe die drei aufeinanderfolgenden FI-Reihen, wenn 3xFI-Phasenschiene verwendet wird
+          if (hasThreeConsecutiveFiRows && threeFiRowsIndices.includes(i)) {
+            continue;
+          }
+          
           const hasFiSchalter = Array.from(rowContent.getElementsByClassName('product-box')).some(box => {
             const productName = box.querySelector('img')?.alt;
             return productName === "FI-/Leitungsschutzschalter";
@@ -3252,13 +3514,47 @@ let rowCounter = 1;
         }
       }
       
-      // Füge für jeden FI-Bereich eine Phasenschiene hinzu
+      // Wenn drei aufeinanderfolgende FI-Reihen gefunden und Marke ist Hager, füge 3xFI-Phasenschiene hinzu
+      if (hasThreeConsecutiveFiRows && selectedMarke === 'Hager') {
+        selectedProducts.push({
+          id: parseInt('56371044450569'),
+          quantity: anzahl
+        });
+      }
+      
+      // Füge für jeden anderen FI-Bereich eine normale Phasenschiene hinzu
       if (fiBereichCount > 0) {
         for (let i = 0; i < fiBereichCount; i++) {
           selectedProducts.push({
             id: parseInt('56361435824393'),
             quantity: anzahl
           });
+        }
+      }
+      
+      // Berührungsschutz für freie Einheiten in jedem FI-Bereich berechnen
+      let totalBeruehrungsschutzCount = 0;
+      // Berechne freie Einheiten für jeden FI-Bereich
+      for (let i = 1; i <= rowCounter; i++) {
+        const rowContent = document.getElementById(`row${i}Content`);
+        if (rowContent) {
+          const hasFiSchalter = Array.from(rowContent.getElementsByClassName('product-box')).some(box => {
+            const productName = box.querySelector('img')?.alt;
+            return productName === "FI-/Leitungsschutzschalter";
+          });
+          if (hasFiSchalter) {
+            // Berechne verwendete Einheiten in dieser FI-Bereich-Reihe (nur .product-box Elemente)
+            let usedUnitsInRow = 0;
+            Array.from(rowContent.querySelectorAll('.product-box')).forEach(productBox => {
+              const size = parseFloat(productBox.getAttribute('data-size')) || parseFloat(productBox.dataset.size) || 0;
+              usedUnitsInRow += size;
+            });
+            // Freie Einheiten in diesem FI-Bereich (12 - verwendete Einheiten)
+            const freeUnitsInFiBereich = 12 - usedUnitsInRow;
+            if (freeUnitsInFiBereich > 0) {
+              totalBeruehrungsschutzCount += freeUnitsInFiBereich;
+            }
+          }
         }
       }
       
@@ -3300,6 +3596,15 @@ let rowCounter = 1;
       // Setze Menge für alle bisherigen Produkte
       selectedProducts.forEach(item => item.quantity = anzahl);
       
+      // Füge Berührungsschutz-Einheiten hinzu (nach dem Setzen der Mengen, damit die Menge nicht überschrieben wird)
+      if (totalBeruehrungsschutzCount > 0) {
+        const beruehrungsschutzQuantity = anzahl * totalBeruehrungsschutzCount;
+        selectedProducts.push({
+          id: parseInt('56370805571849'),
+          quantity: beruehrungsschutzQuantity
+        });
+      }
+      
       // Füge Blindabdeckstreifen hinzu (nach dem Setzen der Mengen, damit die Menge nicht überschrieben wird)
       if (blindabdeckstreifenCount > 0) {
         selectedProducts.push({
@@ -3325,7 +3630,7 @@ let rowCounter = 1;
         reihenInfo["Belegte Einheiten"] = (usedUnitsEl?.textContent || '').trim() || '0';
         reihenInfo["Montageart"] = selectedMontageart ? selectedMontageart : 'Nicht ausgewählt';
         reihenInfo["Verdrahtungsoption"] = selectedVerdrahtung ? selectedVerdrahtung : 'Nicht ausgewählt';
-      reihenInfo["Marke"] = selectedMarke ? selectedMarke : 'Gewiss';
+      reihenInfo["Marke"] = selectedMarke ? selectedMarke : 'Hager';
       
         // Sonstige Hinweise
       const sonstigeHinweiseEl = document.getElementById('sonstigeHinweise');
@@ -3367,7 +3672,10 @@ let rowCounter = 1;
         }
       }
 
-      // Durchlaufe alle Reihen und sammle die Elemente (exakt wie in updateSummary)
+      // Sammle alle Reihen mit ihren Daten (wie in updateSummary)
+      const reihenDaten = [];
+      const verarbeiteteReihen = new Set(); // Verhindert Duplikate
+      
       allRows.forEach(rowData => {
         const rowContent = rowData.content;
         const originalIndex = rowData.originalIndex;
@@ -3380,6 +3688,13 @@ let rowCounter = 1;
           return img && img.alt === 'FI-/Leitungsschutzschalter';
         });
         const bereichTyp = isFiBereich ? 'FI-Bereich' : 'Freier Bereich';
+        
+        // Prüfe auf Duplikate (gleiche displayIndex + bereichTyp)
+        const reihenKey = `${displayIndex}-${bereichTyp}`;
+        if (verarbeiteteReihen.has(reihenKey)) {
+          return; // Überspringe Duplikate
+        }
+        verarbeiteteReihen.add(reihenKey);
         
         const elements = [];
         
@@ -3411,10 +3726,22 @@ let rowCounter = 1;
           }
         });
 
-        const reihenKey = `Reihe ${displayIndex} - ${bereichTyp}`;
-        // Auch leere Reihen hinzufügen
+        // Sammle Daten für spätere Sortierung
         const reihenValue = elements.length > 0 ? elements.join(", ") : "Keine Elemente";
-            reihenInfo[reihenKey] = reihenValue;
+        reihenDaten.push({
+          displayIndex: displayIndex,
+          bereichTyp: bereichTyp,
+          key: `Reihe ${displayIndex} - ${bereichTyp}`,
+          value: reihenValue
+        });
+      });
+      
+      // Sortiere Reihen nach displayIndex (aufsteigend) - wie in der Zusammenfassung
+      reihenDaten.sort((a, b) => a.displayIndex - b.displayIndex);
+      
+      // Füge sortierte Reihen zum Objekt hinzu (JavaScript behält Einfügungsreihenfolge bei)
+      reihenDaten.forEach(reihe => {
+        reihenInfo[reihe.key] = reihe.value;
       });
       
       return reihenInfo;
@@ -3437,6 +3764,47 @@ let rowCounter = 1;
         // Sammle die Reiheninformationen
         const reihenInfo = buildOrderAttributes();
         
+        // Hole zuerst den aktuellen Cart, um alle bestehenden Attribute zu identifizieren
+        const cartResponse = await fetch('/cart.js');
+        const cartData = await cartResponse.json();
+        const existingAttributes = cartData.attributes || {};
+        
+        // Erstelle ein neues Attribut-Objekt, das alle Attribute zurücksetzt
+        // WICHTIG: Reihenfolge der Attribute muss korrekt sein (wie in buildOrderAttributes)
+        const resetAttributes = {};
+        
+        // Zuerst alle bestehenden Reihen-Attribute auf leeren String setzen (werden später überschrieben)
+        Object.keys(existingAttributes).forEach(key => {
+          if (key.startsWith('Reihe ')) {
+            resetAttributes[key] = '';
+          }
+        });
+        
+        // Dann setze die Attribute in der korrekten Reihenfolge (wie in buildOrderAttributes)
+        // 1. Basis-Informationen
+        resetAttributes["Anzahl"] = reihenInfo["Anzahl"] || '';
+        resetAttributes["Name/Referenz"] = reihenInfo["Name/Referenz"] || '';
+        resetAttributes["Position im Verteiler"] = reihenInfo["Position im Verteiler"] || '';
+        resetAttributes["Anzahl Reihen"] = reihenInfo["Anzahl Reihen"] || '';
+        resetAttributes["Belegte Einheiten"] = reihenInfo["Belegte Einheiten"] || '';
+        
+        // 2. Montage und Verdrahtung
+        resetAttributes["Montageart"] = reihenInfo["Montageart"] || '';
+        resetAttributes["Verdrahtungsoption"] = reihenInfo["Verdrahtungsoption"] || '';
+        
+        // 3. Marke
+        resetAttributes["Marke"] = reihenInfo["Marke"] || '';
+        
+        // 4. Sonstige Hinweise
+        resetAttributes["Sonstige Hinweise"] = reihenInfo["Sonstige Hinweise"] || '';
+        
+        // 5. Reihen-Attribute (am Ende, in sortierter Reihenfolge)
+        Object.keys(reihenInfo).forEach(key => {
+          if (key.startsWith('Reihe ')) {
+            resetAttributes[key] = reihenInfo[key];
+          }
+        });
+        
         // Füge die Produkte zum Warenkorb hinzu
         const response = await fetch('/cart/add.js', {
           method: 'POST',
@@ -3455,12 +3823,12 @@ let rowCounter = 1;
           throw new Error(`Fehler beim Hinzufügen zum Warenkorb: ${responseData.message || 'Unbekannter Fehler'}`);
         }
 
-        // Speichere die Reiheninformationen als Cart-Attribute
+        // Setze alle Attribute zurück (löscht alte, setzt neue)
         await fetch("/cart/update.js", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            attributes: reihenInfo
+            attributes: resetAttributes
           })
         });
 
@@ -3483,7 +3851,7 @@ let rowCounter = 1;
     }
 
     // Globale Variable für ausgewählte Marke
-    let selectedMarke = 'Gewiss';
+    let selectedMarke = 'Hager';
     
     // Funktion zur Ermittlung der Variant-ID für Hauptschalter basierend auf Marke
     function getHauptschalterVariantId() {
