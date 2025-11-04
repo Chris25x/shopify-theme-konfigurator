@@ -737,15 +737,10 @@ let rowCounter = 1;
         }
       }
       
-      // Zähle FI-Bereiche in allen Reihen (außer den drei aufeinanderfolgenden, wenn 3xFI-Phasenschiene verwendet wird)
+      // Zähle ALLE FI-Bereiche in allen Reihen (3xFI-Phasenschiene kommt zusätzlich, nicht stattdessen)
       for (let i = 1; i <= rowCounter; i++) {
         const rowContent = document.getElementById(`row${i}Content`);
         if (rowContent) {
-          // Überspringe die drei aufeinanderfolgenden FI-Reihen, wenn 3xFI-Phasenschiene verwendet wird
-          if (hasThreeConsecutiveFiRows && threeFiRowsIndices.includes(i)) {
-            continue;
-          }
-          
           const hasFiSchalter = Array.from(rowContent.getElementsByClassName('product-box')).some(box => {
             const productName = box.querySelector('img')?.alt;
             return productName === "FI-/Leitungsschutzschalter";
@@ -773,7 +768,7 @@ let rowCounter = 1;
         sum += threeFiPhasenschienePrice;
       }
       
-      // Füge für jeden anderen FI-Bereich den Preis einer normalen Phasenschiene hinzu
+      // Füge für jeden FI-Bereich den Preis einer normalen Phasenschiene hinzu
       if (fiBereichCount > 0) {
         const phasenschienePrice = getVariantPrice('56361435824393');
         sum += phasenschienePrice * fiBereichCount;
@@ -923,15 +918,11 @@ let rowCounter = 1;
         }
       }
       
-      // Zähle FI-Bereiche (außer den drei aufeinanderfolgenden, wenn 3xFI-Phasenschiene verwendet wird)
+      // Zähle ALLE FI-Bereiche (3xFI-Phasenschiene kommt zusätzlich, nicht stattdessen)
       let fiBereichCount = 0;
       for (let i = 1; i <= rowCounter; i++) {
         const rowContent = document.getElementById(`row${i}Content`);
         if (rowContent) {
-          if (hasThreeConsecutiveFiRows && threeFiRowsIndices.includes(i)) {
-            continue;
-          }
-          
           const hasFiSchalter = Array.from(rowContent.getElementsByClassName('product-box')).some(box => {
             return box.querySelector('img')?.alt === "FI-/Leitungsschutzschalter";
           });
@@ -3484,15 +3475,10 @@ let rowCounter = 1;
         }
       }
       
-      // Zähle FI-Bereiche in allen Reihen (außer den drei aufeinanderfolgenden, wenn 3xFI-Phasenschiene verwendet wird)
+      // Zähle ALLE FI-Bereiche in allen Reihen (3xFI-Phasenschiene kommt zusätzlich, nicht stattdessen)
       for (let i = 1; i <= rowCounter; i++) {
         const rowContent = document.getElementById(`row${i}Content`);
         if (rowContent) {
-          // Überspringe die drei aufeinanderfolgenden FI-Reihen, wenn 3xFI-Phasenschiene verwendet wird
-          if (hasThreeConsecutiveFiRows && threeFiRowsIndices.includes(i)) {
-            continue;
-          }
-          
           const hasFiSchalter = Array.from(rowContent.getElementsByClassName('product-box')).some(box => {
             const productName = box.querySelector('img')?.alt;
             return productName === "FI-/Leitungsschutzschalter";
@@ -3522,7 +3508,7 @@ let rowCounter = 1;
         });
       }
       
-      // Füge für jeden anderen FI-Bereich eine normale Phasenschiene hinzu
+      // Füge für jeden FI-Bereich eine normale Phasenschiene hinzu
       if (fiBereichCount > 0) {
         for (let i = 0; i < fiBereichCount; i++) {
           selectedProducts.push({
