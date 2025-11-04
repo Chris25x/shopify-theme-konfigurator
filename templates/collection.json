@@ -70,7 +70,7 @@
           "type": "tile",
           "settings": {
             "title": "Aufputz",
-            "link": "",
+            "link": "shopify://collections/all",
             "bg_style": "light"
           }
         },
