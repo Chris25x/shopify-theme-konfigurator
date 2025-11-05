@@ -3836,8 +3836,8 @@ let rowCounter = 1;
       }
     }
 
-    // Globale Variable für ausgewählte Marke
-    let selectedMarke = 'Hager';
+    // Globale Variable für ausgewählte Marke (wird aus Section-Settings initialisiert)
+    let selectedMarke = typeof DEFAULT_MARKE !== 'undefined' ? DEFAULT_MARKE : 'Hager';
     
     // Funktion zur Ermittlung der Variant-ID für Hauptschalter basierend auf Marke
     function getHauptschalterVariantId() {
@@ -3983,8 +3983,8 @@ let rowCounter = 1;
       }
     }
     
-    // Funktion für die Markenauswahl
-    function selectMarke(marke, logoUrl) {
+    // Funktion für die Markenauswahl (global verfügbar)
+    window.selectMarke = function selectMarke(marke, logoUrl) {
       const brandLogo = document.getElementById('brand-logo');
       const markenDropdown = document.getElementById('marken-dropdown');
       const markenBtn = document.getElementById('marken-btn');
@@ -4074,7 +4074,18 @@ let rowCounter = 1;
           updateGesamtpreis();
         }
       }
-    }
+    };
+    
+    // Initialisiere Standard-Marke aus Section-Settings, wenn verfügbar
+    // Wird nach DOMContentLoaded ausgeführt, damit alle Elemente vorhanden sind
+    document.addEventListener('DOMContentLoaded', function() {
+      if (typeof DEFAULT_MARKE !== 'undefined' && typeof DEFAULT_MARKE_LOGO_URL !== 'undefined' && typeof window.selectMarke === 'function') {
+        // Kurze Verzögerung, damit alle Initialisierungen abgeschlossen sind
+        setTimeout(() => {
+          window.selectMarke(DEFAULT_MARKE, DEFAULT_MARKE_LOGO_URL);
+        }, 200);
+      }
+    });
 
     // Event-Listener für Brand Info Icon Tooltip
     document.addEventListener('DOMContentLoaded', function() {
