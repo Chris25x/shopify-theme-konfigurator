@@ -1231,10 +1231,28 @@ body { overflow-x: auto; }
   background: #ffffff;
   box-shadow: 0 1px 2px rgba(0,0,0,0.04);
   padding: 10px 12px;
+  overflow: hidden;
+  min-width: 0;
 }
 
 .summary-row.fi { border-left: 3px solid #0ea5e9; }
 .summary-row.free { border-left: 3px solid #94a3b8; }
+
+.summary-info-label {
+  font-weight: 600;
+  color: #111827;
+}
+
+.summary-info-value {
+  color: #111827;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  white-space: normal;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
 
 .summary-label {
   font-weight: 600;
@@ -2669,8 +2687,11 @@ body { overflow-x: auto; }
       text-align: justify;
       word-wrap: break-word;
       overflow-wrap: break-word;
+      word-break: break-word;
       white-space: normal;
       max-width: 100%;
+      min-width: 0;
+      overflow: hidden;
     }
 
     /* Entferne das Styling für die Scrollbar */
@@ -3772,6 +3793,8 @@ body { overflow-x: auto; }
   overflow-y: auto;
   white-space: pre-wrap;
   word-wrap: break-word;
+  min-height: 80px;
+  height: 80px;
 }
 
 .sonstige-hinweise-textarea:focus {
