@@ -1249,7 +1249,7 @@ let rowCounter = 1;
 
       document.getElementById("nextButton").addEventListener("click", () => {
         if (currentPage < 4) {
-          // Pflichtauswahl auf Seite 2 (Verteilerschrank) bevor wir zu Seite 3 wechseln
+          // Pflichtauswahl auf Seite 2 (Verteilerkasten) bevor wir zu Seite 3 wechseln
           if (currentPage === 2) {
             if (!validatePage(currentPage)) {
               return; // Seitenwechsel verhindern, wenn die Validierung fehlschlägt
@@ -1306,8 +1306,8 @@ let rowCounter = 1;
             const montageartBtn = document.getElementById('montageart-btn');
             const montageartText = montageartBtn ? montageartBtn.textContent.trim() : '';
             trackingData = {
-              step_name: 'Verteilerschrank ausgewählt',
-              product: 'Verteilerschrank',
+              step_name: 'Verteilerkasten ausgewählt',
+              product: 'Verteilerkasten',
               montageart: montageartText,
               button_type: 'second_continue'
             };
@@ -2770,11 +2770,11 @@ let rowCounter = 1;
 
         
 
-        // --- NEU: Verteilerschrank Abschnitt ---
+        // --- NEU: Verteilerkasten Abschnitt ---
         checkNewPage(30);
         doc.setFontSize(12);
         doc.setTextColor(0, 90, 156);
-        doc.text('Verteilerschrank', margin, yPos);
+        doc.text('Verteilerkasten', margin, yPos);
         yPos += 10;
       doc.setFontSize(12);
       doc.setTextColor(0, 0, 0);
@@ -3040,7 +3040,7 @@ let rowCounter = 1;
           return yy;
         });
 
-        drawSectionCard('Verteilerschrank', (x, y, w) => drawKeyValue(x, y, 'Montageart', montageart, w));
+        drawSectionCard('Verteilerkasten', (x, y, w) => drawKeyValue(x, y, 'Montageart', montageart, w));
         drawSectionCard('Verdrahtung', (x, y, w) => drawKeyValue(x, y, 'Verdrahtungsoption', verdrahtung, w));
         drawSectionCard('Marke', (x, y, w) => drawKeyValue(x, y, 'Marke der Komponenten', marke, w));
         
@@ -3112,7 +3112,7 @@ let rowCounter = 1;
           });
         }
 
-        // Entfernt doppelte Ausgabe von Verteilerschrank/Verdrahtung am Ende
+        // Entfernt doppelte Ausgabe von Verteilerkasten/Verdrahtung am Ende
 
         // Seitenzahlen
         const pageCount = doc.getNumberOfPages();
@@ -5411,7 +5411,7 @@ let rowCounter = 1;
 
     // ... existing code ...
       function validatePage(currentPage) {
-        // Pflichtauswahl auf Seite 2 (Verteilerschrank)
+        // Pflichtauswahl auf Seite 2 (Verteilerkasten)
         if (currentPage === 2) {
           const btn = document.getElementById('montageart-btn');
           const btnText = btn ? btn.textContent.trim() : '';

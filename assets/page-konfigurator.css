@@ -2499,7 +2499,7 @@ body { overflow-x: auto; }
     .dropdown-option:last-child { border-bottom: none; }
     .dropdown-option:active { background-color: #f1f5f9; }
 
-    /* Stabil: Dropdown exakt unter dem Button andocken (nur Verteilerschrank/Verdrahtung) */
+    /* Stabil: Dropdown exakt unter dem Button andocken (nur Verteilerkasten/Verdrahtung) */
     #page3 .dropdown-container,
     #page4 .dropdown-container {
       position: relative;
@@ -2519,7 +2519,7 @@ body { overflow-x: auto; }
       pointer-events: auto;
     }
 
-    /* Verteilerschrank/Verdrahtung: Dropdowns zuverlässig über Content/Fußleisten zeigen */
+    /* Verteilerkasten/Verdrahtung: Dropdowns zuverlässig über Content/Fußleisten zeigen */
     /* Entfernt seiten-spezifische Dropdown-Overrides, Nutzung der Standard-Dropdown-Styles */
 
     .dropdown-option:hover {
