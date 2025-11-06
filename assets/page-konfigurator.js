@@ -3626,28 +3626,10 @@ let rowCounter = 1;
       // Sammle alle Reihen in der richtigen Reihenfolge (wie in updateSummary)
       const allRows = [];
       
-      // --- Reihe 1 ---
-      const row1Content = document.getElementById("row1Content");
-      if (row1Content) {
-        allRows.push({
-          content: row1Content,
-          originalIndex: 1,
-          isZusatz: false
-        });
-      }
-      
-      // --- Reihe 1 Zusatz, falls vorhanden ---
-      const row1Content2 = document.getElementById('row1Content_2');
-      if (row1Content2) {
-        allRows.push({
-          content: row1Content2,
-          originalIndex: 1,
-          isZusatz: true
-        });
-      }
-      
-      // --- Reihen 2-5 ---
-      for (let i = 2; i <= rowCounter; i++) {
+      // Sammle alle Reihen-Container aus dem DOM in der richtigen Reihenfolge
+      // Gehe durch alle möglichen Reihen-Nummern (1-5) und sammle existierende
+      for (let i = 1; i <= 5; i++) {
+        // Normale Reihe i
         const rowContent = document.getElementById("row" + i + "Content");
           if (rowContent) {
           allRows.push({
@@ -3655,6 +3637,18 @@ let rowCounter = 1;
             originalIndex: i,
             isZusatz: false
           });
+        }
+        
+        // Zusatzreihe für Reihe 1 (nur wenn i === 1)
+        if (i === 1) {
+          const row1Content2 = document.getElementById('row1Content_2');
+          if (row1Content2) {
+            allRows.push({
+              content: row1Content2,
+              originalIndex: 1,
+              isZusatz: true
+            });
+          }
         }
       }
 
@@ -3716,6 +3710,8 @@ let rowCounter = 1;
         const reihenValue = elements.length > 0 ? elements.join(", ") : "Keine Elemente";
         reihenDaten.push({
           displayIndex: displayIndex,
+          originalIndex: originalIndex,
+          isZusatz: isZusatz,
           bereichTyp: bereichTyp,
           key: `Reihe ${displayIndex} - ${bereichTyp}`,
           value: reihenValue
@@ -3723,7 +3719,14 @@ let rowCounter = 1;
       });
       
       // Sortiere Reihen nach displayIndex (aufsteigend) - wie in der Zusammenfassung
-      reihenDaten.sort((a, b) => a.displayIndex - b.displayIndex);
+      // Bei gleichem displayIndex sortiere nach originalIndex und isZusatz für Stabilität
+      reihenDaten.sort((a, b) => {
+        if (a.displayIndex !== b.displayIndex) {
+          return a.displayIndex - b.displayIndex;
+        }
+        // Falls displayIndex gleich (sollte nicht passieren), sortiere nach originalIndex
+        return a.originalIndex - b.originalIndex;
+      });
       
       // Füge sortierte Reihen zum Objekt hinzu (JavaScript behält Einfügungsreihenfolge bei)
       reihenDaten.forEach(reihe => {
