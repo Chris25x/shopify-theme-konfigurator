@@ -430,7 +430,7 @@
           <div>Anzahl der Reihen: <span id="rowCount">1</span></div>
           <div>Verbrauchte Einheiten: <span id="usedUnits">0</span></div>
           <div>Gesamtpreis: <span id="totalPrice" aria-live="polite">0 €</span></div>
-          <div class="price-disclaimer">Gesamtpreis der Verteilung inkl. 19% MwSt., zzgl. Versand</div>
+          <div class="price-disclaimer">Gesamtpreis der Verteilung inkl. MwSt. • kostenloser Versand • Lieferzeit 2–5 Werktage</div>
         </div>
 
     <!-- Statusleiste -->
@@ -635,25 +635,30 @@
             </div>
           </div>
 
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px;">
-            <div style="display: flex; align-items: center; gap: 20px;">
-              <div style="display: flex; align-items: center;">
-                <strong style="margin-right: 10px;">Gesamtpreis:</strong>
-                <span id="summaryTotalPrice" aria-live="polite">0 €</span>
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-top: 30px; gap: 20px; flex-wrap: wrap;">
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+                <div style="display: flex; align-items: center;">
+                  <strong style="margin-right: 10px;">Gesamtpreis:</strong>
+                  <span id="summaryTotalPrice" aria-live="polite">0 €</span>
+                </div>
+                <div style="display: flex; align-items: center; margin-left: auto;">
+                  <strong id="labelAnzahl" style="margin-right: 10px;">Anzahl:</strong>
+                  <input type="number" id="verteilerAnzahl" aria-labelledby="labelAnzahl" min="0" max="10" value="1" style="
+                    width: 60px;
+                    padding: 5px;
+                    border: 1px solid #dddddd;
+                    border-radius: 4px;
+                    margin-left: 4px;
+                  " onchange="updateGesamtpreis()">
+                </div>
               </div>
-              <div style="display: flex; align-items: center;">
-                <strong id="labelAnzahl" style="margin-right: 10px;">Anzahl:</strong>
-                <input type="number" id="verteilerAnzahl" aria-labelledby="labelAnzahl" min="0" max="10" value="1" style="
-                  width: 60px;
-                  padding: 5px;
-                  border: 1px solid #dddddd;
-                  border-radius: 4px;
-                  margin-left: 4px;
-                " onchange="updateGesamtpreis()">
+              <div style="font-size: 0.9em; color: #4b5563;">
+                inkl. MwSt. • kostenloser Versand • Lieferzeit 2–5 Werktage
               </div>
             </div>
             <button id="downloadPdf" class="button button--outline" type="button">
-              <i class="fas fa-file-pdf"></i> PDF herunterladen
+              <i class="fas fa-file-pdf"></i> Konfiguration herunterladen
             </button>
           </div> 
         </div>
@@ -663,7 +668,7 @@
       <div class="disclaimer-checkbox-container">
         <label class="disclaimer-checkbox-label">
           <input type="checkbox" id="disclaimerCheckbox" class="disclaimer-checkbox" required>
-          <span class="disclaimer-checkbox-text">Ich habe die <a href="/pages/technische-hinweise-haftungsausschluss" target="_blank" class="disclaimer-link">technischen Hinweise</a> gelesen und den <a href="/pages/technische-hinweise-haftungsausschluss" target="_blank" class="disclaimer-link">Haftungsausschluss</a> akzeptiert.</span>
+          <span class="disclaimer-checkbox-text">Ich bestätige die <a href="/pages/technische-hinweise-haftungsausschluss" target="_blank" class="disclaimer-link">technischen Hinweise</a> und den <a href="/pages/technische-hinweise-haftungsausschluss" target="_blank" class="disclaimer-link">Haftungsausschluss</a>.</span>
         </label>
       </div>
     </div>

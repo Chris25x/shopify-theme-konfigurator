@@ -35,7 +35,9 @@ let trackingSession = {
   step1Tracked: false,
   step2Tracked: false,
   step3Tracked: false,
-  cartTracked: false
+  cartTracked: false,
+  pageViewTracked: false,
+  disclaimerAcceptedTracked: false
 };
 
 function trackKonfiguratorStep(stepNumber, stepName, additionalData = {}) {
@@ -62,6 +64,48 @@ function trackKonfiguratorStep(stepNumber, stepName, additionalData = {}) {
     
     // Als getrackt markieren
     trackingSession[stepKey] = true;
+  }
+}
+
+function trackKonfiguratorPageView(additionalData = {}) {
+  if (typeof gtag !== 'undefined') {
+    if (trackingSession.pageViewTracked) {
+      return;
+    }
+
+    gtag('event', 'konfigurator_page_view', {
+      'event_category': 'konfigurator',
+      'event_label': 'Seite 1 geöffnet',
+      'value': additionalData.price || 0,
+      'currency': 'EUR',
+      'custom_parameters': {
+        'step_name': 'Seite 1 geöffnet',
+        'page': 1,
+        ...additionalData
+      }
+    });
+
+    trackingSession.pageViewTracked = true;
+  }
+}
+
+function trackKonfiguratorDisclaimerAccepted(additionalData = {}) {
+  if (typeof gtag !== 'undefined') {
+    if (trackingSession.disclaimerAcceptedTracked) {
+      return;
+    }
+
+    gtag('event', 'konfigurator_disclaimer_accepted', {
+      'event_category': 'konfigurator',
+      'event_label': 'Disclaimer akzeptiert',
+      'custom_parameters': {
+        'step_name': 'Disclaimer akzeptiert',
+        'page': 4,
+        ...additionalData
+      }
+    });
+
+    trackingSession.disclaimerAcceptedTracked = true;
   }
 }
 
@@ -1335,6 +1379,8 @@ let rowCounter = 1;
           addToCart();
         }
         showPage(currentPage);
+    // GA4: Page View tracken
+    trackKonfiguratorPageView();
       });
 
       document.getElementById("prevButton").addEventListener("click", () => {
@@ -1425,6 +1471,31 @@ let rowCounter = 1;
       }
     });
 
+    function smoothScrollTo(targetPosition, duration = 800) {
+      const startPosition = window.pageYOffset || document.documentElement.scrollTop;
+      const distance = targetPosition - startPosition;
+      if (distance === 0) return;
+      const startTime = performance.now();
+
+      const easeInOutQuad = (t) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
+
+      function animationStep(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const easedProgress = easeInOutQuad(progress);
+        const currentPosition = startPosition + distance * easedProgress;
+        window.scrollTo(0, currentPosition);
+
+        if (elapsed < duration) {
+          requestAnimationFrame(animationStep);
+        } else {
+          window.scrollTo(0, targetPosition);
+        }
+      }
+
+      requestAnimationFrame(animationStep);
+    }
+
     function showPage(pageNumber) {
       // Alle Seiten ausblenden
       document.querySelectorAll('.page').forEach(page => {
@@ -1437,27 +1508,48 @@ let rowCounter = 1;
       // Scroll-Verhalten beim Seitenwechsel
       if (pageNumber > 1) {
         if (pageNumber === 4) {
-          // Bei Page 4 (Zusammenfassung): KEIN Scrollen
-          // Der Benutzer bleibt an der aktuellen Position
+          // Bei Page 4 (Zusammenfassung): automatisch zum Button scrollen
+          const nextButtonElement = document.getElementById('nextButton');
+          if (nextButtonElement) {
+            setTimeout(() => {
+              const rect = nextButtonElement.getBoundingClientRect();
+              const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+              const target = Math.max(0, rect.bottom + currentScroll - window.innerHeight + 70);
+              smoothScrollTo(target, 900);
+            }, 200);
+          }
         } else if (pageNumber === 2 || pageNumber === 3) {
-          // Bei Page 2 und 3: Section-Container in den Fokus bringen mit Offset
+          const nextButtonElement = document.getElementById('nextButton');
+          if (nextButtonElement) {
+            setTimeout(() => {
+              const rect = nextButtonElement.getBoundingClientRect();
+              const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+              const target = Math.max(0, rect.bottom + currentScroll - window.innerHeight + 70);
+              window.scrollTo({
+                top: target,
+                behavior: 'smooth'
+              });
+            }, 200);
+          } else {
+            // Bei Page 2 und 3: Section-Container in den Fokus bringen mit Offset
           const sectionContainer = document.querySelector('.page-konfigurator-section');
           if (sectionContainer) {
-            const rect = sectionContainer.getBoundingClientRect();
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            const offset = 150; // Offset in Pixeln (unterhalb des Headers)
-            const targetPosition = rect.top + scrollTop - offset;
-            
-            window.scrollTo({
-              top: Math.max(0, targetPosition),
-              behavior: 'smooth'
+              const rect = sectionContainer.getBoundingClientRect();
+              const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+              const offset = 150; // Offset in Pixeln (unterhalb des Headers)
+              const targetPosition = rect.top + scrollTop - offset;
+              
+              window.scrollTo({
+                top: Math.max(0, targetPosition),
+                behavior: 'smooth'
             });
           } else {
-            // Fallback: Scroll mit Offset nach oben
+              // Fallback: Scroll mit Offset nach oben
             window.scrollTo({
-              top: 150,
+                top: 150,
               behavior: 'smooth'
             });
+            }
           }
         } else {
           // Bei anderen Seiten: Normal nach oben scrollen
@@ -1576,6 +1668,10 @@ let rowCounter = 1;
           // Nur Button-Status ändern, wenn Button "In den Warenkorb" ist
           if (nextButton.textContent.includes('Warenkorb')) {
             nextButton.disabled = !this.checked;
+          }
+          
+          if (this.checked) {
+            trackKonfiguratorDisclaimerAccepted();
           }
         });
       }
@@ -3626,10 +3722,28 @@ let rowCounter = 1;
       // Sammle alle Reihen in der richtigen Reihenfolge (wie in updateSummary)
       const allRows = [];
       
-      // Sammle alle Reihen-Container aus dem DOM in der richtigen Reihenfolge
-      // Gehe durch alle möglichen Reihen-Nummern (1-5) und sammle existierende
-      for (let i = 1; i <= 5; i++) {
-        // Normale Reihe i
+      // --- Reihe 1 ---
+      const row1Content = document.getElementById("row1Content");
+      if (row1Content) {
+        allRows.push({
+          content: row1Content,
+          originalIndex: 1,
+          isZusatz: false
+        });
+      }
+      
+      // --- Reihe 1 Zusatz, falls vorhanden ---
+      const row1Content2 = document.getElementById('row1Content_2');
+      if (row1Content2) {
+        allRows.push({
+          content: row1Content2,
+          originalIndex: 1,
+          isZusatz: true
+        });
+      }
+      
+      // --- Reihen 2-5 ---
+      for (let i = 2; i <= rowCounter; i++) {
         const rowContent = document.getElementById("row" + i + "Content");
           if (rowContent) {
           allRows.push({
@@ -3637,18 +3751,6 @@ let rowCounter = 1;
             originalIndex: i,
             isZusatz: false
           });
-        }
-        
-        // Zusatzreihe für Reihe 1 (nur wenn i === 1)
-        if (i === 1) {
-          const row1Content2 = document.getElementById('row1Content_2');
-          if (row1Content2) {
-            allRows.push({
-              content: row1Content2,
-              originalIndex: 1,
-              isZusatz: true
-            });
-          }
         }
       }
 
@@ -3710,8 +3812,6 @@ let rowCounter = 1;
         const reihenValue = elements.length > 0 ? elements.join(", ") : "Keine Elemente";
         reihenDaten.push({
           displayIndex: displayIndex,
-          originalIndex: originalIndex,
-          isZusatz: isZusatz,
           bereichTyp: bereichTyp,
           key: `Reihe ${displayIndex} - ${bereichTyp}`,
           value: reihenValue
@@ -3719,14 +3819,7 @@ let rowCounter = 1;
       });
       
       // Sortiere Reihen nach displayIndex (aufsteigend) - wie in der Zusammenfassung
-      // Bei gleichem displayIndex sortiere nach originalIndex und isZusatz für Stabilität
-      reihenDaten.sort((a, b) => {
-        if (a.displayIndex !== b.displayIndex) {
-          return a.displayIndex - b.displayIndex;
-        }
-        // Falls displayIndex gleich (sollte nicht passieren), sortiere nach originalIndex
-        return a.originalIndex - b.originalIndex;
-      });
+      reihenDaten.sort((a, b) => a.displayIndex - b.displayIndex);
       
       // Füge sortierte Reihen zum Objekt hinzu (JavaScript behält Einfügungsreihenfolge bei)
       reihenDaten.forEach(reihe => {
