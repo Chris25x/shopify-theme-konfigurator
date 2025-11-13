@@ -88,20 +88,9 @@
         position: static !important;
       }
       
-      /* Konfigurator-Disclaimer weißen Hintergrund auf Mobile */
-      .konfigurator-page .konfigurator-disclaimer,
-      .konfigurator-page .konfigurator-disclaimer__toggle,
-      .konfigurator-page .konfigurator-disclaimer__content {
+      /* Konfigurator-Disclaimer auf Mobile */
+      .konfigurator-page .konfigurator-disclaimer {
         background: #ffffff !important;
-      }
-      
-      /* Disclaimer auf Mobile standardmäßig eingeklappt */
-      .konfigurator-page .konfigurator-disclaimer__content {
-        display: none !important;
-      }
-      
-      .konfigurator-page .konfigurator-disclaimer__toggle-icon {
-        transform: rotate(0deg) !important;
       }
       
       /* Touch-Scroll für normale Seiten-Scroll optimieren */
@@ -112,9 +101,7 @@
     }
     
     /* Konfigurator-Disclaimer weißen Hintergrund auf Desktop */
-    .konfigurator-page .konfigurator-disclaimer,
-    .konfigurator-page .konfigurator-disclaimer__toggle,
-    .konfigurator-page .konfigurator-disclaimer__content {
+    .konfigurator-page .konfigurator-disclaimer {
       background: #ffffff !important;
     }
     
@@ -225,29 +212,6 @@
     const DEFAULT_MARKE = '{{ default_marke }}';
     const DEFAULT_MARKE_LOGO_URL = {% if default_marke == 'Gewiss' %}'https://cdn.shopify.com/s/files/1/0944/8711/8089/files/Gewiss-Logo.png?v=1761993681'{% else %}'https://cdn.shopify.com/s/files/1/0944/8711/8089/files/hager.png?v=1746554364'{% endif %};
     
-    // Toggle Disclaimer
-    function toggleDisclaimer() {
-      const content = document.getElementById('disclaimer-content');
-      const button = document.querySelector('.konfigurator-disclaimer__toggle');
-      const icon = document.querySelector('.konfigurator-disclaimer__toggle-icon');
-      const isExpanded = button.getAttribute('aria-expanded') === 'true';
-      
-      if (isExpanded) {
-        content.style.display = 'none';
-        button.setAttribute('aria-expanded', 'false');
-        icon.classList.remove('fa-chevron-up');
-        icon.classList.add('fa-chevron-down');
-      } else {
-        content.style.display = 'block';
-        button.setAttribute('aria-expanded', 'true');
-        icon.classList.remove('fa-chevron-down');
-        icon.classList.add('fa-chevron-up');
-      }
-      
-      // Flag setzen, dass User den Disclaimer manuell geändert hat
-      window.disclaimerInitialized = true;
-    }
-
     // Zusätzliche JavaScript-Sicherheit für Konfigurator-Seite
     document.addEventListener('DOMContentLoaded', function() {
       if (window.location.pathname.includes('/pages/konfigurator')) {
@@ -322,29 +286,10 @@
             });
             
             // Konfigurator-Disclaimer weißen Hintergrund geben
-            const disclaimerElements = document.querySelectorAll('.konfigurator-disclaimer, .konfigurator-disclaimer__toggle, .konfigurator-disclaimer__content');
+            const disclaimerElements = document.querySelectorAll('.konfigurator-disclaimer');
             disclaimerElements.forEach(disclaimer => {
               disclaimer.style.background = '#ffffff';
             });
-            
-            // Disclaimer auf Mobile standardmäßig eingeklappt - NUR beim ersten Laden
-            if (!window.disclaimerInitialized) {
-              const disclaimerContent = document.getElementById('disclaimer-content');
-              const disclaimerToggle = document.querySelector('.konfigurator-disclaimer__toggle');
-              const disclaimerIcon = document.querySelector('.konfigurator-disclaimer__toggle-icon');
-              
-              if (disclaimerContent) {
-                disclaimerContent.style.display = 'none';
-              }
-              if (disclaimerToggle) {
-                disclaimerToggle.setAttribute('aria-expanded', 'false');
-              }
-              if (disclaimerIcon) {
-                disclaimerIcon.className = 'fas fa-chevron-down konfigurator-disclaimer__toggle-icon';
-                disclaimerIcon.style.transform = 'rotate(0deg)';
-              }
-              window.disclaimerInitialized = true;
-            }
           }
         }
         
@@ -425,14 +370,6 @@
   <div class="section-{{ section.id }}-padding">
   <main class="container konfigurator" role="main" aria-label="Sicherungskasten Konfigurator">
     <div class="konfigurator-top-gap"></div>
-    <!-- Dashboard für alle Seiten -->
-        <div class="info-box" id="infoBox">
-          <div>Anzahl der Reihen: <span id="rowCount">1</span></div>
-          <div>Verbrauchte Einheiten: <span id="usedUnits">0</span></div>
-          <div>Gesamtpreis: <span id="totalPrice" aria-live="polite">0 €</span></div>
-          <div class="price-disclaimer">Gesamtpreis der Verteilung inkl. MwSt. • kostenloser Versand • Lieferzeit 2–5 Werktage</div>
-        </div>
-
     <!-- Statusleiste -->
     <div class="status-bar">
       <div class="status-step active" id="step1">
@@ -451,45 +388,71 @@
 
     <!-- Neuer Container für Seiten und Button -->
     <div id="page1" class="page active">
-      <!-- Disclaimer unter Statusleiste -->
+      <!-- Hinweise zur Verteilung -->
       <div class="konfigurator-disclaimer">
-        <button class="konfigurator-disclaimer__toggle" onclick="toggleDisclaimer()" aria-expanded="false" aria-controls="disclaimer-content">
-          <span class="konfigurator-disclaimer__toggle-text">Hinweise zur Verteilung</span>
-          <i class="fas fa-chevron-down konfigurator-disclaimer__toggle-icon"></i>
-        </button>
-        <div class="konfigurator-disclaimer__content" id="disclaimer-content" style="display: none;">
-          <ul>
-            <li>Die Hauptanschlussklemme ist fester Bestandteil jeder Verteilung und ermöglicht den direkten Anschluss der Hauptzuleitung ohne zusätzlichen Aufwand.</li>
-            <li>Die Position kann oben oder unten gewählt werden – abhängig davon, von wo die Zuleitung eingeführt wird.</li>
-            <li>Die Verdrahtung erfolgt standardmäßig mit 10 mm² Kupferleitung gemäß Herstellervorgaben.</li>
-            <li>Für das übliche Installationsmaterial wie FI- und Leitungsschutzschalter setzen wir auf HAGER und GEWISS. Bei Sonderkomponenten, etwa Stromstoßschaltern, verwenden wir gleichwertige Marken wie Eltako.</li>
-            <li>Wenn Sie auf eine Hauptanschlussklemme verzichten möchten, kontaktieren Sie uns bitte vorab.</li>
-          </ul>
+        <div class="konfigurator-disclaimer__header">
+          <i class="fas fa-clipboard-check"></i>
+          <div>
+            <h3 class="konfigurator-disclaimer__title">Hinweise zur Verteilung</h3>
+            <p class="konfigurator-disclaimer__subtitle">Die wichtigsten Informationen im Überblick.</p>
+          </div>
+        </div>
+        <div class="konfigurator-disclaimer__cards">
+          <div class="konfigurator-disclaimer__card">
+            <i class="fas fa-bolt konfigurator-disclaimer__icon" aria-hidden="true"></i>
+            <div class="konfigurator-disclaimer__card-content">
+              <div class="konfigurator-disclaimer__card-title">Hauptanschlussklemme</div>
+              <p class="konfigurator-disclaimer__card-text">Serienmäßig enthalten – ermöglicht den Direktanschluss der Hauptzuleitung ohne Mehraufwand.</p>
+            </div>
+          </div>
+          <div class="konfigurator-disclaimer__card">
+            <i class="fas fa-tools konfigurator-disclaimer__icon" aria-hidden="true"></i>
+            <div class="konfigurator-disclaimer__card-content">
+              <div class="konfigurator-disclaimer__card-title">Verdrahtung</div>
+              <p class="konfigurator-disclaimer__card-text">Standardmäßig mit 10&nbsp;mm² Kupferleitung nach Herstellervorgaben ausgeführt.</p>
+            </div>
+          </div>
+          <div class="konfigurator-disclaimer__card">
+            <i class="fas fa-industry konfigurator-disclaimer__icon" aria-hidden="true"></i>
+            <div class="konfigurator-disclaimer__card-content">
+              <div class="konfigurator-disclaimer__card-title">Markenqualität</div>
+              <p class="konfigurator-disclaimer__card-text">Hauptkomponenten von HAGER oder GEWISS, Spezialteile z.&nbsp;B. von Eltako.</p>
+            </div>
+          </div>
+          <div class="konfigurator-disclaimer__card">
+            <i class="fas fa-headset konfigurator-disclaimer__icon" aria-hidden="true"></i>
+            <div class="konfigurator-disclaimer__card-content">
+              <div class="konfigurator-disclaimer__card-title">Sonderwünsche</div>
+              <p class="konfigurator-disclaimer__card-text">Besondere Wünsche? Hinterlasse sie im Feld „Sonstige Hinweise“ oder <a href="/#contact" class="konfigurator-disclaimer__link">kontaktiere</a> uns direkt.</p>
+            </div>
+          </div>
         </div>
       </div>
 
       <!-- Marken-Info -->
       <div class="konfigurator-brand-info">
         <span class="brand-label">Marke der Komponenten wählen (Fi/Sicherungsmaterial):</span>
+        {%- assign default_marke = section.settings.default_marke | default: 'Gewiss' -%}
         <div class="brand-selector-container">
-          <button id="marken-btn" class="button brand-selector-btn" type="button" aria-haspopup="menu" aria-expanded="false">
-            {%- assign default_marke = section.settings.default_marke | default: 'Hager' -%}
-            {%- if default_marke == 'Gewiss' -%}
-              <img id="brand-logo" src="https://cdn.shopify.com/s/files/1/0944/8711/8089/files/Gewiss-Logo.png?v=1761993681" alt="Gewiss Logo" class="brand-logo" loading="lazy">
-            {%- else -%}
-              <img id="brand-logo" src="https://cdn.shopify.com/s/files/1/0944/8711/8089/files/hager.png?v=1746554364" alt="Hager Logo" class="brand-logo" loading="lazy">
-            {%- endif -%}
-            <i class="fas fa-chevron-down brand-selector-icon"></i>
-          </button>
-          <div id="marken-dropdown" class="dropdown" aria-hidden="true" style="display: none;">
-            <div class="dropdown-option" onclick="selectMarke('Hager', 'https://cdn.shopify.com/s/files/1/0944/8711/8089/files/hager.png?v=1746554364')">
-              <img src="https://cdn.shopify.com/s/files/1/0944/8711/8089/files/hager.png?v=1746554364" alt="Hager Logo" class="brand-logo-option" loading="lazy">
-              <span>Hager</span>
-            </div>
-            <div class="dropdown-option" onclick="selectMarke('Gewiss', 'https://cdn.shopify.com/s/files/1/0944/8711/8089/files/Gewiss-Logo.png?v=1761993681')">
-              <img src="https://cdn.shopify.com/s/files/1/0944/8711/8089/files/Gewiss-Logo.png?v=1761993681" alt="Gewiss Logo" class="brand-logo-option" loading="lazy">
-              <span>Gewiss</span>
-            </div>
+          <div class="brand-radio-group" role="radiogroup" aria-label="Marke der Komponenten">
+            <label class="brand-radio-option{% if default_marke == 'Hager' %} is-selected{% endif %}">
+              <input type="radio"
+                     name="brandSelection"
+                     value="Hager"
+                     aria-label="Hager"
+                     data-logo-url="https://cdn.shopify.com/s/files/1/0944/8711/8089/files/hager.png?v=1746554364"
+                     {% if default_marke == 'Hager' %}checked{% endif %}>
+              <img src="https://cdn.shopify.com/s/files/1/0944/8711/8089/files/hager.png?v=1746554364" alt="Hager Logo" class="brand-radio-image" loading="lazy">
+            </label>
+            <label class="brand-radio-option{% if default_marke != 'Hager' %} is-selected{% endif %}">
+              <input type="radio"
+                     name="brandSelection"
+                     value="Gewiss"
+                     aria-label="Gewiss"
+                     data-logo-url="https://cdn.shopify.com/s/files/1/0944/8711/8089/files/Gewiss-Logo.png?v=1761993681"
+                     {% if default_marke != 'Hager' %}checked{% endif %}>
+              <img src="https://cdn.shopify.com/s/files/1/0944/8711/8089/files/Gewiss-Logo.png?v=1761993681" alt="Gewiss Logo" class="brand-radio-image" loading="lazy">
+            </label>
           </div>
         </div>
         <div class="brand-info-tooltip-container">
@@ -639,7 +602,7 @@
             <div style="display: flex; flex-direction: column; gap: 8px;">
               <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
                 <div style="display: flex; align-items: center;">
-                  <strong style="margin-right: 10px;">Gesamtpreis:</strong>
+                  <strong style="margin-right: 10px;">Gesamtpreis inkl. MwSt.:</strong>
                   <span id="summaryTotalPrice" aria-live="polite">0 €</span>
                 </div>
                 <div style="display: flex; align-items: center; margin-left: auto;">

@@ -962,6 +962,17 @@
       </a>
     </div>
   </header>
+  {% if template.name == 'page' and template.suffix == 'konfigurator' %}
+    <div class="header-info-bar">
+      <div class="info-box" id="infoBox">
+        <div class="info-box__row">
+          <div>Anzahl der Reihen: <span id="rowCount">1</span></div>
+          <div>Verbrauchte Einheiten: <span id="usedUnits">0</span></div>
+          <div>Gesamtpreis inkl. MwSt.: <span id="totalPrice" aria-live="polite">0 €</span></div>
+        </div>
+      </div>
+    </div>
+  {% endif %}
 </{{ header_tag }}>
 
 {%- if settings.cart_type == 'notification' -%}
@@ -1077,8 +1088,10 @@
     }
 
     closeSearchModal() {
-      this.searchModal = this.searchModal || this.header.querySelector('details-modal');
-      if (this.searchModal) {
+      if (!this.searchModal) {
+        this.searchModal = this.header ? this.header.querySelector('details-modal') : null;
+      }
+      if (this.searchModal && typeof this.searchModal.close === 'function') {
         this.searchModal.close(false);
       }
     }

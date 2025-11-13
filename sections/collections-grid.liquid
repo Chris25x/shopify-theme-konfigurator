@@ -21,6 +21,16 @@
     <div class="grid">
       {% for block in section.blocks %}
         {% assign link = block.settings.link | default: '#' %}
+        {% assign tile_collection = block.settings.collection %}
+        {% assign min_price = blank %}
+        {% if tile_collection %}
+          {% for product in tile_collection.products %}
+            {% assign current_price = product.price %}
+            {% if min_price == blank or current_price < min_price %}
+              {% assign min_price = current_price %}
+            {% endif %}
+          {% endfor %}
+        {% endif %}
         <a
           {{ block.shopify_attributes }}
           href="{{ link }}"
@@ -49,6 +59,9 @@
                 <span class="tile__title">{{ block.settings.title }}</span>
                 {% if block.settings.subtitle != blank and block.settings.subtitle != '' %}
                   <span class="tile__subtitle">{{ block.settings.subtitle | strip }}</span>
+                {% endif %}
+                {% if min_price %}
+                  <span class="tile__price">Ab {{ min_price | money_with_currency }}</span>
                 {% endif %}
               </div>
               <span class="tile__arrow" aria-hidden>→</span>
@@ -216,6 +229,12 @@
     #section-{{ section.id }} .tile__subtitle:empty { 
       display: none; 
     }
+    #section-{{ section.id }} .tile__price {
+      font-size: 13px;
+      font-weight: 500;
+      color: #0f172a;
+      display: block;
+    }
     #section-{{ section.id }} .tile:hover .tile__label .tile__arrow { transform: translateX(2px); }
     #section-{{ section.id }} .tile__arrow { 
       transition: transform .15s ease; 
@@ -253,6 +272,7 @@
         { "type": "text", "id": "title", "label": "Title", "default": "Konfigurator" },
         { "type": "text", "id": "subtitle", "label": "Subtitel" },
         { "type": "url",  "id": "link",  "label": "Link" },
+        { "type": "collection", "id": "collection", "label": "Kollektion für Preis" },
         { "type": "image_picker", "id": "image", "label": "Image (optional)" },
         { "type": "select", "id": "bg_style", "label": "Tile background", "default": "light", "options": [
           { "value": "light", "label": "Light (slate-100)" },

@@ -27,6 +27,7 @@
           "type": "tile",
           "settings": {
             "title": "Aufputz",
+            "subtitle": "Für Garage, Keller & Werkstatt.",
             "link": "shopify://pages/aufputz",
             "image": "shopify://shop_images/aufputz_leer.png",
             "bg_style": "white"
@@ -36,6 +37,7 @@
           "type": "tile",
           "settings": {
             "title": "Unterputz",
+            "subtitle": "Für Neubau & Wohnbereiche.",
             "link": "shopify://pages/unterputz",
             "image": "shopify://shop_images/Unterputz_leer.png",
             "bg_style": "white"
@@ -45,6 +47,7 @@
           "type": "tile",
           "settings": {
             "title": "Hohlwand",
+            "subtitle": "Für Trockenbau ohne Stemmen.",
             "link": "shopify://pages/hohlwand",
             "image": "shopify://shop_images/Hohlwand_leer.png",
             "bg_style": "white"
@@ -59,6 +62,8 @@
       "name": "Collections Grid (4 tiles)",
       "settings": {
         "heading": "Sicherungskästen fertig verdrahtet",
+        "subtitle": "Wähle eine Kategorie – alle Sicherungskästen werden mit Hager Marken-Komponenten aufgebaut und sauber verdrahtet.",
+        "text_alignment": "left",
         "padding_top": 100,
         "padding_bottom": 100
       }

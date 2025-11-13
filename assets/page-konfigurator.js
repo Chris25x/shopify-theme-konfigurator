@@ -1154,22 +1154,17 @@ let rowCounter = 1;
       
       // Keyboard-Support für Dropdown-Trigger hinzufügen
       addTriggerKeyboardSupport();
-      
-      // Marken-Dropdown Event-Listener
-      const markenBtn = document.getElementById('marken-btn');
-      const markenDropdown = document.getElementById('marken-dropdown');
-      if (markenBtn && markenDropdown) {
-        markenBtn.addEventListener('click', function(event) {
-          event.stopPropagation();
-          const willOpen = markenDropdown.style.display !== 'block';
-          markenDropdown.style.display = willOpen ? 'block' : 'none';
-          markenBtn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
-          markenDropdown.setAttribute('aria-hidden', willOpen ? 'false' : 'true');
-        });
-        
-        // Verhindere das Schließen beim Klicken auf eine Option
-        markenDropdown.addEventListener('click', function(event) {
-          event.stopPropagation();
+
+      // Marken-Radio Event-Listener
+      const brandRadios = document.querySelectorAll('input[name="brandSelection"]');
+      if (brandRadios.length) {
+        brandRadios.forEach(radio => {
+          radio.addEventListener('change', function() {
+            if (this.checked) {
+              const logoUrl = this.dataset.logoUrl || '';
+              window.selectMarke(this.value, logoUrl);
+            }
+          });
         });
       }
 
@@ -2447,8 +2442,7 @@ let rowCounter = 1;
     document.addEventListener('pointerdown', function(event) {
       const portal = document.getElementById('portal-dropdown');
       const toggleBtn = event.target.closest('.dropdown-btn');
-      const markenBtn = event.target.closest('#marken-btn');
-      if (toggleBtn || markenBtn) return; // Button selbst öffnet
+      if (toggleBtn) return; // Button selbst öffnet
       // Klick innerhalb eines beliebigen Reihen-Dropdowns nicht schließen
       const insideRowDropdown = event.target.closest('.dropdown');
       if (insideRowDropdown) return;
@@ -2457,17 +2451,6 @@ let rowCounter = 1;
 
       // Portal schließen
       if (portal) portal.style.display = 'none';
-
-      // Marken-Dropdown schließen
-      const markenDropdown = document.getElementById('marken-dropdown');
-      if (markenDropdown) {
-        markenDropdown.style.display = 'none';
-        markenDropdown.setAttribute('aria-hidden', 'true');
-        const markenButton = document.getElementById('marken-btn');
-        if (markenButton) {
-          markenButton.setAttribute('aria-expanded', 'false');
-        }
-      }
 
       // Brand Info Tooltip schließen
       const brandInfoContainer = document.querySelector('.brand-info-tooltip-container');
@@ -3933,7 +3916,7 @@ let rowCounter = 1;
     }
 
     // Globale Variable für ausgewählte Marke (wird aus Section-Settings initialisiert)
-    let selectedMarke = typeof DEFAULT_MARKE !== 'undefined' ? DEFAULT_MARKE : 'Hager';
+    let selectedMarke = typeof DEFAULT_MARKE !== 'undefined' ? DEFAULT_MARKE : 'Gewiss';
     
     // Funktion zur Ermittlung der Variant-ID für Hauptschalter basierend auf Marke
     function getHauptschalterVariantId() {
@@ -4081,94 +4064,91 @@ let rowCounter = 1;
     
     // Funktion für die Markenauswahl (global verfügbar)
     window.selectMarke = function selectMarke(marke, logoUrl) {
+      selectedMarke = marke;
+
+      // Radio-States aktualisieren
+      const brandOptions = document.querySelectorAll('.brand-radio-option');
+      brandOptions.forEach(option => {
+        const input = option.querySelector('input[name="brandSelection"]');
+        if (!input) return;
+        const isSelected = input.value === marke;
+        input.checked = isSelected;
+        option.classList.toggle('is-selected', isSelected);
+      });
+
+      // Optionales Logo-Element aktualisieren (falls vorhanden)
       const brandLogo = document.getElementById('brand-logo');
-      const markenDropdown = document.getElementById('marken-dropdown');
-      const markenBtn = document.getElementById('marken-btn');
-      
-      if (brandLogo && markenDropdown && markenBtn) {
-        // Logo aktualisieren
+      if (brandLogo && logoUrl) {
         brandLogo.src = logoUrl;
-        brandLogo.alt = marke + ' Logo';
-        
-        // Dropdown schließen
-        markenDropdown.style.display = 'none';
-        markenBtn.setAttribute('aria-expanded', 'false');
-        markenDropdown.setAttribute('aria-hidden', 'true');
-        
-        // Speichere die ausgewählte Marke
-        selectedMarke = marke;
-        
-        // Aktualisiere alle Hauptschalter- und FI-/Leitungsschutzschalter-Produktboxen mit der neuen Variant-ID
-        const allRows = [];
-        for (let i = 1; i <= rowCounter; i++) {
-          const rowContent = document.getElementById(`row${i}Content`);
-          if (rowContent) allRows.push(rowContent);
-          const rowContent2 = document.getElementById(`row${i}Content_2`);
-          if (rowContent2) allRows.push(rowContent2);
-        }
-        
-        allRows.forEach(rowContent => {
-          const productBoxes = rowContent.getElementsByClassName('product-box');
-          Array.from(productBoxes).forEach(box => {
-            const productName = box.querySelector('img')?.alt;
-            if (productName === "Hauptschalter") {
-              const newVariantId = getHauptschalterVariantId();
-              box.setAttribute('data-variant-id', newVariantId);
-            } else if (productName === "FI-/Leitungsschutzschalter") {
-              // Aktualisiere FI-/Leitungsschutzschalter Variant-ID basierend auf aktueller Dropdown-Auswahl
-              const nennstromSelect = box.querySelector('select[id^="nennstrom-"]');
-              const charakteristikSelect = box.querySelector('select[id^="charakteristik-"]');
-              if (nennstromSelect && charakteristikSelect) {
-                const nennstrom = nennstromSelect.value.trim();
-                const charakteristik = charakteristikSelect.value.trim();
-                const newVariantId = getFiSchalterVariantId(nennstrom, charakteristik);
-                if (newVariantId) {
-                  box.setAttribute('data-variant-id', newVariantId);
-                }
-              }
-            } else if (productName === "Leitungsschutzschalter 1 polig") {
-              // Aktualisiere Leitungsschutzschalter 1 polig Variant-ID basierend auf aktueller Dropdown-Auswahl
-              const nennstromSelect = box.querySelector('select[id^="nennstrom-"]');
-              const charakteristikSelect = box.querySelector('select[id^="charakteristik-"]');
-              if (nennstromSelect && charakteristikSelect) {
-                const nennstrom = nennstromSelect.value.trim();
-                const charakteristik = charakteristikSelect.value.trim();
-                const newVariantId = getLss1pVariantId(nennstrom, charakteristik);
-                if (newVariantId) {
-                  box.setAttribute('data-variant-id', newVariantId);
-                }
-              }
-            } else if (productName === "Leitungsschutzschalter 3 polig") {
-              // Aktualisiere Leitungsschutzschalter 3 polig Variant-ID basierend auf aktueller Dropdown-Auswahl
-              const nennstromSelect = box.querySelector('select[id^="nennstrom-"]');
-              const charakteristikSelect = box.querySelector('select[id^="charakteristik-"]');
-              if (nennstromSelect && charakteristikSelect) {
-                const nennstrom = nennstromSelect.value.trim();
-                const charakteristik = charakteristikSelect.value.trim();
-                const newVariantId = getLss3pVariantId(nennstrom, charakteristik);
-                if (newVariantId) {
-                  box.setAttribute('data-variant-id', newVariantId);
-                }
+        brandLogo.alt = `${marke} Logo`;
+      }
+
+      // Aktualisiere alle relevanten Produktboxen mit der neuen Variant-ID
+      const allRows = [];
+      for (let i = 1; i <= rowCounter; i++) {
+        const rowContent = document.getElementById(`row${i}Content`);
+        if (rowContent) allRows.push(rowContent);
+        const rowContent2 = document.getElementById(`row${i}Content_2`);
+        if (rowContent2) allRows.push(rowContent2);
+      }
+
+      allRows.forEach(rowContent => {
+        const productBoxes = rowContent.getElementsByClassName('product-box');
+        Array.from(productBoxes).forEach(box => {
+          const productName = box.querySelector('img')?.alt;
+          if (productName === "Hauptschalter") {
+            const newVariantId = getHauptschalterVariantId();
+            box.setAttribute('data-variant-id', newVariantId);
+          } else if (productName === "FI-/Leitungsschutzschalter") {
+            const nennstromSelect = box.querySelector('select[id^="nennstrom-"]');
+            const charakteristikSelect = box.querySelector('select[id^="charakteristik-"]');
+            if (nennstromSelect && charakteristikSelect) {
+              const nennstrom = nennstromSelect.value.trim();
+              const charakteristik = charakteristikSelect.value.trim();
+              const newVariantId = getFiSchalterVariantId(nennstrom, charakteristik);
+              if (newVariantId) {
+                box.setAttribute('data-variant-id', newVariantId);
               }
             }
-          });
+          } else if (productName === "Leitungsschutzschalter 1 polig") {
+            const nennstromSelect = box.querySelector('select[id^="nennstrom-"]');
+            const charakteristikSelect = box.querySelector('select[id^="charakteristik-"]');
+            if (nennstromSelect && charakteristikSelect) {
+              const nennstrom = nennstromSelect.value.trim();
+              const charakteristik = charakteristikSelect.value.trim();
+              const newVariantId = getLss1pVariantId(nennstrom, charakteristik);
+              if (newVariantId) {
+                box.setAttribute('data-variant-id', newVariantId);
+              }
+            }
+          } else if (productName === "Leitungsschutzschalter 3 polig") {
+            const nennstromSelect = box.querySelector('select[id^="nennstrom-"]');
+            const charakteristikSelect = box.querySelector('select[id^="charakteristik-"]');
+            if (nennstromSelect && charakteristikSelect) {
+              const nennstrom = nennstromSelect.value.trim();
+              const charakteristik = charakteristikSelect.value.trim();
+              const newVariantId = getLss3pVariantId(nennstrom, charakteristik);
+              if (newVariantId) {
+                box.setAttribute('data-variant-id', newVariantId);
+              }
+            }
+          }
         });
-      
-      // Aktualisiere die Zusammenfassung, falls wir auf der Zusammenfassungsseite sind
+      });
+
+      // Zusammenfassung aktualisieren, falls nötig
       if (currentPage === 4) {
         updateSummary();
       }
-        
-        // Aktualisiere die Produktkarten-Preise (für Hauptschalter)
-        if (typeof updateStaticProductCardPrices === 'function') {
-          updateStaticProductCardPrices();
-        }
-        
-        // Aktualisiere die Info-Box und Gesamtpreis
-        updateInfoBox();
-        if (currentPage === 4) {
-          updateGesamtpreis();
-        }
+
+      // Produktkarten-Preise und Info-Box aktualisieren
+      if (typeof updateStaticProductCardPrices === 'function') {
+        updateStaticProductCardPrices();
+      }
+
+      updateInfoBox();
+      if (currentPage === 4) {
+        updateGesamtpreis();
       }
     };
     

@@ -15,6 +15,8 @@
         "slide_i7EmK3": {
           "type": "slide",
           "settings": {
+            "image": "shopify://shop_images/Kasten.png",
+            "image_mobile": "shopify://shop_images/Mobil-Kasten.png",
             "image_overlay_opacity": 10,
             "heading": "Stellen Sie Ihren perfekten Sicherungskasten in wenigen Klicks zusammen.",
             "heading_size": "h1",
@@ -35,7 +37,7 @@
             "show_text_box": true,
             "box_align": "top-left",
             "text_alignment": "left",
-            "text_alignment_mobile": "left",
+            "text_alignment_mobile": "center",
             "color_scheme": "scheme-1"
           }
         }
@@ -119,6 +121,7 @@
       ],
       "name": "Bild mit Text (3 Minuten)",
       "settings": {
+        "image": "shopify://shop_images/Vorher_Nacher.png",
         "height": "small",
         "desktop_image_width": "medium",
         "layout": "image_first",
@@ -139,6 +142,7 @@
         "step_XrDxAd": {
           "type": "step",
           "settings": {
+            "image": "shopify://shop_images/Bildschirmfoto_2025-08-31_um_20.16.40.png",
             "image_alt": "",
             "title": "Komponenten auswählen",
             "description": "Bestimmen Sie Sicherungen, FI-Schalter und weitere Elemente individuell."
@@ -147,6 +151,7 @@
         "step_AFwKc9": {
           "type": "step",
           "settings": {
+            "image": "shopify://shop_images/Bildschirmfoto_2025-08-31_um_20.16.31.png",
             "image_alt": "",
             "title": "Größe wählen",
             "description": "Wählen Sie die passende Größe und Ausführung Ihres Sicherungskastens."
@@ -155,6 +160,7 @@
         "step_dPqH3P": {
           "type": "step",
           "settings": {
+            "image": "shopify://shop_images/Bildschirmfoto_2025-08-31_um_20.16.48.png",
             "image_alt": "",
             "title": "Bestellen & erhalten",
             "description": "Ihr vorkonfigurierter Sicherungskasten wird schnell und sicher geliefert."
@@ -220,6 +226,7 @@
       ],
       "name": "Mockup Sticky",
       "settings": {
+        "image": "shopify://shop_images/ChatGPT_Image_15._Sept._2025_13_26_39_clipped_rev_1.png",
         "title": "Konfigurieren – live im Blick",
         "title_font_size": 32,
         "title_font_weight": "800",
@@ -475,21 +482,6 @@
         "padding_top": 100,
         "padding_bottom": 100
       }
-    },
-    "176226827902ff620b": {
-      "type": "apps",
-      "blocks": {
-        "judge_me_reviews_medals_fT6YxB": {
-          "type": "shopify://apps/judge-me-reviews/blocks/medals/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
-          "settings": {}
-        }
-      },
-      "block_order": [
-        "judge_me_reviews_medals_fT6YxB"
-      ],
-      "settings": {
-        "include_margins": true
-      }
     }
   },
   "order": [
@@ -502,7 +494,6 @@
     "use_cases_wW7JJz",
     "technical_details_eRPkNX",
     "faq_custom_gyxdhM",
-    "contact_form_custom_nhxCkf",
-    "176226827902ff620b"
+    "contact_form_custom_nhxCkf"
   ]
 }
