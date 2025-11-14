@@ -1503,15 +1503,18 @@ let rowCounter = 1;
       // Scroll-Verhalten beim Seitenwechsel
       if (pageNumber > 1) {
         if (pageNumber === 4) {
-          // Bei Page 4 (Zusammenfassung): automatisch zum Button scrollen
-          const nextButtonElement = document.getElementById('nextButton');
-          if (nextButtonElement) {
-            setTimeout(() => {
-              const rect = nextButtonElement.getBoundingClientRect();
-              const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
-              const target = Math.max(0, rect.bottom + currentScroll - window.innerHeight + 70);
-              smoothScrollTo(target, 900);
-            }, 200);
+          // Bei Page 4 (Zusammenfassung): automatisch zum Button scrollen (nur auf Desktop)
+          const isMobile = window.innerWidth <= 768 || ('ontouchstart' in window || navigator.maxTouchPoints > 0);
+          if (!isMobile) {
+            const nextButtonElement = document.getElementById('nextButton');
+            if (nextButtonElement) {
+              setTimeout(() => {
+                const rect = nextButtonElement.getBoundingClientRect();
+                const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+                const target = Math.max(0, rect.bottom + currentScroll - window.innerHeight + 70);
+                smoothScrollTo(target, 900);
+              }, 200);
+            }
           }
         } else if (pageNumber === 2 || pageNumber === 3) {
           const nextButtonElement = document.getElementById('nextButton');
