@@ -383,5 +383,62 @@
     {%- if settings.cart_type == 'drawer' -%}
       <script src="{{ 'cart-drawer.js' | asset_url }}" defer="defer"></script>
     {%- endif -%}
+
+    {%- comment -%} GA4 Scroll Tracking mit Scroll-Tiefe {%- endcomment -%}
+    <script>
+      (function() {
+        if (typeof gtag === 'undefined') return;
+        
+        let scrollDepthTracked = {
+          25: false,
+          50: false,
+          75: false,
+          100: false
+        };
+        
+        function trackScrollDepth() {
+          const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+          const documentHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+          const scrollPercentage = documentHeight > 0 ? Math.round((scrollTop / documentHeight) * 100) : 0;
+          
+          // Tracke Scroll-Tiefe in 25% Schritten
+          const milestones = [25, 50, 75, 100];
+          milestones.forEach(milestone => {
+            if (scrollPercentage >= milestone && !scrollDepthTracked[milestone]) {
+              scrollDepthTracked[milestone] = true;
+              
+              gtag('event', 'scroll', {
+                'event_category': 'engagement',
+                'event_label': `${milestone}% gescrollt`,
+                'scroll_depth': milestone,
+                'scroll_percentage': scrollPercentage,
+                'scroll_position_px': scrollTop,
+                'document_height_px': documentHeight,
+                'page_location': window.location.href
+              });
+            }
+          });
+        }
+        
+        // Throttle Scroll-Events (max. alle 100ms)
+        let ticking = false;
+        window.addEventListener('scroll', function() {
+          if (!ticking) {
+            window.requestAnimationFrame(function() {
+              trackScrollDepth();
+              ticking = false;
+            });
+            ticking = true;
+          }
+        }, { passive: true });
+        
+        // Tracke initiale Scroll-Position beim Laden
+        if (document.readyState === 'complete') {
+          trackScrollDepth();
+        } else {
+          window.addEventListener('load', trackScrollDepth);
+        }
+      })();
+    </script>
   </body>
 </html>

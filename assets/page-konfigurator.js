@@ -48,18 +48,16 @@ function trackKonfiguratorStep(stepNumber, stepName, additionalData = {}) {
       return; // Bereits getrackt, nichts senden
     }
     
-    // Event senden
+    // Event senden (GA4 Format)
     gtag('event', `konfigurator_step${stepNumber}`, {
       'event_category': 'konfigurator',
       'event_label': stepName,
       'value': additionalData.price || 0,
       'currency': 'EUR',
-      'custom_parameters': {
         'step_number': stepNumber,
         'step_name': stepName,
         'page': stepNumber,
         ...additionalData
-      }
     });
     
     // Als getrackt markieren
@@ -78,11 +76,9 @@ function trackKonfiguratorPageView(additionalData = {}) {
       'event_label': 'Seite 1 geöffnet',
       'value': additionalData.price || 0,
       'currency': 'EUR',
-      'custom_parameters': {
-        'step_name': 'Seite 1 geöffnet',
-        'page': 1,
-        ...additionalData
-      }
+      'step_name': 'Seite 1 geöffnet',
+      'page': 1,
+      ...additionalData
     });
 
     trackingSession.pageViewTracked = true;
@@ -98,11 +94,9 @@ function trackKonfiguratorDisclaimerAccepted(additionalData = {}) {
     gtag('event', 'konfigurator_disclaimer_accepted', {
       'event_category': 'konfigurator',
       'event_label': 'Disclaimer akzeptiert',
-      'custom_parameters': {
-        'step_name': 'Disclaimer akzeptiert',
-        'page': 4,
-        ...additionalData
-      }
+      'step_name': 'Disclaimer akzeptiert',
+      'page': 4,
+      ...additionalData
     });
 
     trackingSession.disclaimerAcceptedTracked = true;
@@ -116,18 +110,16 @@ function trackKonfiguratorCart(additionalData = {}) {
       return; // Bereits getrackt, nichts senden
     }
     
-    // Event senden
+    // Event senden (GA4 Format)
     gtag('event', 'konfigurator_cart', {
       'event_category': 'konfigurator',
       'event_label': 'Konfiguration abgeschlossen - In den Warenkorb',
       'value': additionalData.price || 0,
       'currency': 'EUR',
-      'custom_parameters': {
         'step_name': 'Konfiguration abgeschlossen - In den Warenkorb',
         'configuration_complete': true,
         'final_step': true,
         ...additionalData
-      }
     });
     
     // Als getrackt markieren
@@ -135,6 +127,35 @@ function trackKonfiguratorCart(additionalData = {}) {
     
     // Shopify add_to_cart Events für diese Sitzung unterdrücken
     suppressShopifyCartEvents();
+  }
+}
+
+function trackKonfiguratorBrandChanged(newBrand, oldBrand, additionalData = {}) {
+  if (typeof gtag !== 'undefined') {
+    // Event senden (GA4 Format)
+    gtag('event', 'konfigurator_brand_changed', {
+      'event_category': 'konfigurator',
+      'event_label': `Marke geändert: ${oldBrand} → ${newBrand}`,
+      'step_name': 'Marke der Komponenten geändert',
+      'old_brand': oldBrand,
+      'new_brand': newBrand,
+      ...additionalData
+    });
+  }
+}
+
+// Flag für Warenkorb-Navigation (verhindert "page_exit" Event)
+let isNavigatingToCart = false;
+
+// GA4 Event: Konfigurator verlassen (außer bei Warenkorb-Navigation)
+function trackKonfiguratorExit() {
+  if (typeof gtag !== 'undefined' && !isNavigatingToCart) {
+    gtag('event', 'konfigurator_exit', {
+      'event_category': 'konfigurator',
+      'event_label': 'Konfigurator verlassen',
+      'page_location': window.location.href,
+      'exit_method': 'navigation'
+    });
   }
 }
 
@@ -1374,8 +1395,6 @@ let rowCounter = 1;
           addToCart();
         }
         showPage(currentPage);
-    // GA4: Page View tracken
-    trackKonfiguratorPageView();
       });
 
       document.getElementById("prevButton").addEventListener("click", () => {
@@ -1457,6 +1476,57 @@ let rowCounter = 1;
       // Konfigurator Tracking initialisieren
       initializeKonfiguratorTracking();
       
+      // Flag zurücksetzen beim Laden der Seite
+      isNavigatingToCart = false;
+      
+      // GA4 Event: Konfigurator verlassen tracken
+      if (window.location.pathname.includes('konfigurator')) {
+        // visibilitychange Event (wird ausgelöst, wenn Tab/Window versteckt wird)
+        document.addEventListener('visibilitychange', function() {
+          if (document.hidden && !isNavigatingToCart) {
+            trackKonfiguratorExit();
+          }
+        });
+        
+        // Tracke Navigation zu anderen Seiten (außer /cart)
+        const originalPushState = history.pushState;
+        const originalReplaceState = history.replaceState;
+        
+        history.pushState = function() {
+          const newPath = arguments[2] || window.location.pathname;
+          if (!isNavigatingToCart && !newPath.includes('/cart') && !newPath.includes('konfigurator')) {
+            trackKonfiguratorExit();
+          }
+          return originalPushState.apply(history, arguments);
+        };
+        
+        history.replaceState = function() {
+          const newPath = arguments[2] || window.location.pathname;
+          if (!isNavigatingToCart && !newPath.includes('/cart') && !newPath.includes('konfigurator')) {
+            trackKonfiguratorExit();
+          }
+          return originalReplaceState.apply(history, arguments);
+        };
+        
+        // Tracke normale Link-Klicks (außer /cart)
+        document.addEventListener('click', function(e) {
+          const link = e.target.closest('a');
+          if (link && link.href && !link.href.includes('/cart') && !isNavigatingToCart) {
+            try {
+              const linkUrl = new URL(link.href, window.location.origin);
+              const currentUrl = new URL(window.location.href);
+              
+              // Prüfe ob es Navigation zu anderer Seite ist (nicht Konfigurator)
+              if (linkUrl.pathname !== currentUrl.pathname && !linkUrl.pathname.includes('konfigurator')) {
+                trackKonfiguratorExit();
+              }
+            } catch (err) {
+              // Ignoriere Fehler bei URL-Parsing
+            }
+          }
+        }, true);
+      }
+      
       showPage(currentPage);
       // Zusätzliche Sicherheit: Verstecke den Zurück-Button auf Page 1
       const prevButton = document.getElementById("prevButton");
@@ -1499,6 +1569,11 @@ let rowCounter = 1;
 
       // Aktuelle Seite anzeigen
       document.getElementById('page' + pageNumber).classList.add('active');
+      
+      // GA4: Page View tracken beim initialen Laden von Seite 1
+      if (pageNumber === 1) {
+        trackKonfiguratorPageView();
+      }
       
       // Scroll-Verhalten beim Seitenwechsel
       if (pageNumber > 1) {
@@ -3900,9 +3975,14 @@ let rowCounter = 1;
           })
         });
 
+        // Flag setzen, um "page_exit" Event zu verhindern
+        isNavigatingToCart = true;
+        
         // Weiterleitung zum Warenkorb
         window.location.href = '/cart';
       } catch (error) {
+        // Flag zurücksetzen, falls Fehler aufgetreten ist
+        isNavigatingToCart = false;
         console.error('Fehler beim Hinzufügen zum Warenkorb:', error);
         showError('Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.');
       }
@@ -4067,7 +4147,18 @@ let rowCounter = 1;
     
     // Funktion für die Markenauswahl (global verfügbar)
     window.selectMarke = function selectMarke(marke, logoUrl) {
+      // Prüfe ob Marke tatsächlich geändert wurde (nicht beim initialen Laden)
+      const oldMarke = selectedMarke;
+      const isBrandChange = oldMarke && oldMarke !== marke;
+      
       selectedMarke = marke;
+      
+      // GA4 Event: Marke geändert (nur bei aktiver Änderung durch Benutzer)
+      if (isBrandChange) {
+        trackKonfiguratorBrandChanged(marke, oldMarke, {
+          'page': currentPage || 1
+        });
+      }
 
       // Radio-States aktualisieren
       const brandOptions = document.querySelectorAll('.brand-radio-option');

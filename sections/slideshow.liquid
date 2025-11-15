@@ -1033,3 +1033,43 @@
   ]
 }
 {% endschema %}
+
+{% javascript %}
+  // GA4 Hero Button Tracking
+  document.addEventListener('DOMContentLoaded', function() {
+    // Hero Buttons im Slideshow-Bereich finden
+    const heroButtons = document.querySelectorAll('.slideshow .banner__buttons a.button');
+    
+    heroButtons.forEach(button => {
+      const buttonText = button.textContent.trim();
+      const buttonHref = button.getAttribute('href');
+      
+      // Prüfe auf spezifische Buttons
+      if (buttonText === 'Jetzt konfigurieren' || buttonText.includes('konfigurieren')) {
+        button.addEventListener('click', function(e) {
+          if (typeof gtag !== 'undefined') {
+            gtag('event', 'hero_jetzt_konfigurieren_click', {
+              'event_category': 'hero',
+              'event_label': 'Jetzt konfigurieren',
+              'button_text': buttonText,
+              'button_url': buttonHref || '',
+              'page_location': window.location.href
+            });
+          }
+        });
+      } else if (buttonText === 'Zu den fertigen Kästen' || buttonText.includes('fertigen Kästen') || buttonText.includes('fertige Kästen')) {
+        button.addEventListener('click', function(e) {
+          if (typeof gtag !== 'undefined') {
+            gtag('event', 'hero_zu_den_fertigen_kaesten_click', {
+              'event_category': 'hero',
+              'event_label': 'Zu den fertigen Kästen',
+              'button_text': buttonText,
+              'button_url': buttonHref || '',
+              'page_location': window.location.href
+            });
+          }
+        });
+      }
+    });
+  });
+{% endjavascript %}
