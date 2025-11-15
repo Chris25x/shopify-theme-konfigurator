@@ -144,20 +144,6 @@ function trackKonfiguratorBrandChanged(newBrand, oldBrand, additionalData = {}) 
   }
 }
 
-// Flag für Warenkorb-Navigation (verhindert "page_exit" Event)
-let isNavigatingToCart = false;
-
-// GA4 Event: Konfigurator verlassen (außer bei Warenkorb-Navigation)
-function trackKonfiguratorExit() {
-  if (typeof gtag !== 'undefined' && !isNavigatingToCart) {
-    gtag('event', 'konfigurator_exit', {
-      'event_category': 'konfigurator',
-      'event_label': 'Konfigurator verlassen',
-      'page_location': window.location.href,
-      'exit_method': 'navigation'
-    });
-  }
-}
 
 // Globale Shopify Event Unterdrückung für Konfigurator-Seiten
 function initializeKonfiguratorTracking() {
@@ -1476,56 +1462,6 @@ let rowCounter = 1;
       // Konfigurator Tracking initialisieren
       initializeKonfiguratorTracking();
       
-      // Flag zurücksetzen beim Laden der Seite
-      isNavigatingToCart = false;
-      
-      // GA4 Event: Konfigurator verlassen tracken
-      if (window.location.pathname.includes('konfigurator')) {
-        // visibilitychange Event (wird ausgelöst, wenn Tab/Window versteckt wird)
-        document.addEventListener('visibilitychange', function() {
-          if (document.hidden && !isNavigatingToCart) {
-            trackKonfiguratorExit();
-          }
-        });
-        
-        // Tracke Navigation zu anderen Seiten (außer /cart)
-        const originalPushState = history.pushState;
-        const originalReplaceState = history.replaceState;
-        
-        history.pushState = function() {
-          const newPath = arguments[2] || window.location.pathname;
-          if (!isNavigatingToCart && !newPath.includes('/cart') && !newPath.includes('konfigurator')) {
-            trackKonfiguratorExit();
-          }
-          return originalPushState.apply(history, arguments);
-        };
-        
-        history.replaceState = function() {
-          const newPath = arguments[2] || window.location.pathname;
-          if (!isNavigatingToCart && !newPath.includes('/cart') && !newPath.includes('konfigurator')) {
-            trackKonfiguratorExit();
-          }
-          return originalReplaceState.apply(history, arguments);
-        };
-        
-        // Tracke normale Link-Klicks (außer /cart)
-        document.addEventListener('click', function(e) {
-          const link = e.target.closest('a');
-          if (link && link.href && !link.href.includes('/cart') && !isNavigatingToCart) {
-            try {
-              const linkUrl = new URL(link.href, window.location.origin);
-              const currentUrl = new URL(window.location.href);
-              
-              // Prüfe ob es Navigation zu anderer Seite ist (nicht Konfigurator)
-              if (linkUrl.pathname !== currentUrl.pathname && !linkUrl.pathname.includes('konfigurator')) {
-                trackKonfiguratorExit();
-              }
-            } catch (err) {
-              // Ignoriere Fehler bei URL-Parsing
-            }
-          }
-        }, true);
-      }
       
       showPage(currentPage);
       // Zusätzliche Sicherheit: Verstecke den Zurück-Button auf Page 1
@@ -3975,14 +3911,9 @@ let rowCounter = 1;
           })
         });
 
-        // Flag setzen, um "page_exit" Event zu verhindern
-        isNavigatingToCart = true;
-        
         // Weiterleitung zum Warenkorb
         window.location.href = '/cart';
       } catch (error) {
-        // Flag zurücksetzen, falls Fehler aufgetreten ist
-        isNavigatingToCart = false;
         console.error('Fehler beim Hinzufügen zum Warenkorb:', error);
         showError('Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.');
       }
