@@ -1462,6 +1462,16 @@ let rowCounter = 1;
       // Konfigurator Tracking initialisieren
       initializeKonfiguratorTracking();
       
+      // Info-Bar sichtbar machen, sobald DOM geladen ist
+      const infoBar = document.querySelector('.header-info-bar');
+      if (infoBar) {
+        // Kurze Verzögerung, um sicherzustellen, dass Layout berechnet ist
+        requestAnimationFrame(function() {
+          requestAnimationFrame(function() {
+            infoBar.style.display = 'block';
+          });
+        });
+      }
       
       showPage(currentPage);
       // Zusätzliche Sicherheit: Verstecke den Zurück-Button auf Page 1
