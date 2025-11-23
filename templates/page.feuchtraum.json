@@ -1,0 +1,61 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "disabled": true,
+      "settings": {
+        "padding_top": 28,
+        "padding_bottom": 28
+      }
+    },
+    "technical_disclaimer_j9LwEx": {
+      "type": "technical-disclaimer",
+      "disabled": true,
+      "name": "Technical Disclaimer",
+      "settings": {
+        "title": "Technische Hinweise & Haftungsausschluss",
+        "title_font_size": 28,
+        "title_font_weight": "700",
+        "padding_top": 60,
+        "padding_bottom": 60
+      }
+    },
+    "product_grid_tiles_NeXV9W": {
+      "type": "product-grid-tiles",
+      "name": "Product Grid Tiles",
+      "settings": {
+        "heading": "Unsere Aufputz Feuchtraum Verteilungen",
+        "subheading": "Wähle die Bestückungsvariante – der Hager Sicherungskasten ist bereits enthalten.",
+        "collection": "feuchtraum",
+        "products_to_show": 50,
+        "show_view_all": false,
+        "max_width": 1400,
+        "section_bg": "#f8fafc",
+        "columns_mobile": "2",
+        "columns_tablet": "3",
+        "columns_desktop": "4",
+        "aspect_ratio": "4-3",
+        "tile_radius": "m",
+        "tile_bg_style": "white",
+        "gap": 20,
+        "image_padding": 16,
+        "show_price": true,
+        "image_fit": "contain"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "technical_disclaimer_j9LwEx",
+    "product_grid_tiles_NeXV9W"
+  ]
+}

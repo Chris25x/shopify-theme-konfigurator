@@ -226,15 +226,15 @@
       ],
       "name": "Mockup Sticky",
       "settings": {
-        "image": "shopify://shop_images/ChatGPT_Image_15._Sept._2025_13_26_39_clipped_rev_1.png",
+        "image": "shopify://shop_images/Laptop_Konfigurator.png",
         "title": "Konfigurieren – live im Blick",
         "title_font_size": 32,
         "title_font_weight": "800",
-        "subtitle_font_size": 17,
+        "subtitle_font_size": 18,
         "subtitle_font_weight": "400",
-        "subtitle": "Laptop bleibt sichtbar, während du die Vorteile überfliegst. Klar, fokussiert, überzeugend.",
+        "subtitle": "Alle Vorteile deiner Konfiguration auf einen Blick. Klar strukturiert, verständlich und direkt relevant für dein Projekt.",
         "cta_text": "Jetzt konfigurieren",
-        "cta_url": "",
+        "cta_url": "shopify://pages/konfigurator",
         "padding_top": 100,
         "padding_bottom": 52
       }

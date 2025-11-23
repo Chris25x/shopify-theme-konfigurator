@@ -27,8 +27,9 @@
           "type": "tile",
           "settings": {
             "title": "Aufputz",
-            "subtitle": "Für Garage, Keller & Werkstatt.",
+            "subtitle": "",
             "link": "shopify://pages/aufputz",
+            "collection": "aufputz",
             "image": "shopify://shop_images/aufputz_leer.png",
             "bg_style": "white"
           }
@@ -37,8 +38,9 @@
           "type": "tile",
           "settings": {
             "title": "Unterputz",
-            "subtitle": "Für Neubau & Wohnbereiche.",
+            "subtitle": "",
             "link": "shopify://pages/unterputz",
+            "collection": "unterputz",
             "image": "shopify://shop_images/Unterputz_leer.png",
             "bg_style": "white"
           }
@@ -47,9 +49,21 @@
           "type": "tile",
           "settings": {
             "title": "Hohlwand",
-            "subtitle": "Für Trockenbau ohne Stemmen.",
+            "subtitle": "",
             "link": "shopify://pages/hohlwand",
+            "collection": "hohlwand",
             "image": "shopify://shop_images/Hohlwand_leer.png",
+            "bg_style": "white"
+          }
+        },
+        "tile_QThU6M": {
+          "type": "tile",
+          "settings": {
+            "title": "Aufputz Feuchtraum",
+            "subtitle": "",
+            "link": "shopify://pages/aufputz-feuchtraum",
+            "collection": "feuchtraum",
+            "image": "shopify://shop_images/Aufputz_Feuchtraum_Collection.png",
             "bg_style": "white"
           }
         }
@@ -57,7 +71,8 @@
       "block_order": [
         "tile_8zNixk",
         "tile_gyf3zk",
-        "tile_phWD6f"
+        "tile_phWD6f",
+        "tile_QThU6M"
       ],
       "name": "Collections Grid (4 tiles)",
       "settings": {
