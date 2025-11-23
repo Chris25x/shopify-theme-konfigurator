@@ -48,16 +48,48 @@ function trackKonfiguratorStep(stepNumber, stepName, additionalData = {}) {
       return; // Bereits getrackt, nichts senden
     }
     
+    // Für Step 1, 2 und 3: Gesamtpreis berechnen und hinzufügen
+    let totalPrice = additionalData.price || 0;
+    if (stepNumber >= 1 && stepNumber <= 3) {
+      // Versuche den Preis aus der Info-Box zu lesen (wird von updateInfoBox() aktualisiert)
+      const totalPriceElement = document.getElementById("totalPrice");
+      if (totalPriceElement) {
+        const priceText = totalPriceElement.textContent.trim();
+        // Extrahiere Zahl aus Text wie "123.45 €" oder "1.234,56 €"
+        const priceMatch = priceText.match(/[\d.,]+/);
+        if (priceMatch) {
+          // Ersetze Komma durch Punkt für deutsche Zahlenformate
+          const priceStr = priceMatch[0].replace(/\./g, '').replace(',', '.');
+          totalPrice = parseFloat(priceStr) || 0;
+        }
+      }
+      
+      // Fallback: Versuche den Preis aus der Summary zu lesen (für Step 3)
+      if (totalPrice === 0 || isNaN(totalPrice)) {
+        const summaryPriceElement = document.getElementById("summaryTotalPrice");
+        if (summaryPriceElement) {
+          const priceText = summaryPriceElement.textContent.trim();
+          const priceMatch = priceText.match(/[\d.,]+/);
+          if (priceMatch) {
+            const priceStr = priceMatch[0].replace(/\./g, '').replace(',', '.');
+            totalPrice = parseFloat(priceStr) || 0;
+          }
+        }
+      }
+    }
+    
     // Event senden (GA4 Format)
     gtag('event', `konfigurator_step${stepNumber}`, {
       'event_category': 'konfigurator',
       'event_label': stepName,
-      'value': additionalData.price || 0,
+      'value': totalPrice,
       'currency': 'EUR',
-        'step_number': stepNumber,
-        'step_name': stepName,
-        'page': stepNumber,
-        ...additionalData
+      'step_number': stepNumber,
+      'step_name': stepName,
+      'page': stepNumber,
+      'total_price': totalPrice,
+      'gesamtpreis': totalPrice,
+      ...additionalData
     });
     
     // Als getrackt markieren
@@ -1404,6 +1436,11 @@ let rowCounter = 1;
           }
           
           // Google Pixel Tracking nach erfolgreichem Seitenwechsel
+          // Stelle sicher, dass Info-Box aktualisiert ist, damit der Preis korrekt ist
+          if (typeof updateInfoBox === 'function') {
+            updateInfoBox();
+          }
+          
           let trackingData = {};
           if (currentPage === 2) {
             // Erster "Weiter"-Button: Page1 → Page2
