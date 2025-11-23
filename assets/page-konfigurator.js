@@ -757,66 +757,96 @@ let rowCounter = 1;
       
       // Phasenschiene für jeden FI-Bereich hinzufügen
       let fiBereichCount = 0;
-      // Prüfe auf drei aufeinanderfolgende FI-Reihen (nur für Hager)
+      
+      // Hilfsfunktion: Prüft ob eine Reihe einen FI-Schalter hat
+      function hasFiSchalter(rowContent) {
+        if (!rowContent) return false;
+        return Array.from(rowContent.getElementsByClassName('product-box')).some(box => {
+          return box.querySelector('img')?.alt === "FI-/Leitungsschutzschalter";
+        });
+      }
+      
+      // Finde alle zusammenhängenden Sequenzen von FI-Reihen und bestimme optimale Aufteilung
+      let usedRows = new Set(); // Reihen, die bereits verarbeitet wurden
+      let twoFiRowsPairs = [];
       let hasThreeConsecutiveFiRows = false;
       let threeFiRowsIndices = [];
       
-      if (selectedMarke === 'Hager') {
-        // Prüfe auf drei aufeinanderfolgende FI-Reihen
-        for (let i = 1; i <= rowCounter - 2; i++) {
-          const row1 = document.getElementById(`row${i}Content`);
-          const row2 = document.getElementById(`row${i + 1}Content`);
-          const row3 = document.getElementById(`row${i + 2}Content`);
-          
-          if (row1 && row2 && row3) {
-            const hasFi1 = Array.from(row1.getElementsByClassName('product-box')).some(box => {
-              return box.querySelector('img')?.alt === "FI-/Leitungsschutzschalter";
-            });
-            const hasFi2 = Array.from(row2.getElementsByClassName('product-box')).some(box => {
-              return box.querySelector('img')?.alt === "FI-/Leitungsschutzschalter";
-            });
-            const hasFi3 = Array.from(row3.getElementsByClassName('product-box')).some(box => {
-              return box.querySelector('img')?.alt === "FI-/Leitungsschutzschalter";
-            });
-            
-            if (hasFi1 && hasFi2 && hasFi3) {
-              hasThreeConsecutiveFiRows = true;
-              threeFiRowsIndices = [i, i + 1, i + 2];
-              break; // Nur die ersten drei aufeinanderfolgenden FI-Reihen verwenden
+      // Finde alle zusammenhängenden Sequenzen von FI-Reihen
+      for (let i = 1; i <= rowCounter; i++) {
+        // Überspringe, wenn bereits verarbeitet
+        if (usedRows.has(i)) continue;
+        
+        const rowContent = document.getElementById(`row${i}Content`);
+        if (!rowContent || !hasFiSchalter(rowContent)) continue;
+        
+        // Finde die Länge der zusammenhängenden Sequenz ab dieser Reihe
+        let sequenceLength = 1;
+        let currentRow = i;
+        
+        while (currentRow < rowCounter) {
+          const nextRowContent = document.getElementById(`row${currentRow + 1}Content`);
+          if (nextRowContent && hasFiSchalter(nextRowContent)) {
+            sequenceLength++;
+            currentRow++;
+          } else {
+            break;
+          }
+        }
+        
+        // Bestimme optimale Aufteilung für diese Sequenz
+        if (sequenceLength === 2) {
+          // 2 FI-Reihen → 1x "2xFI-Phasenschiene"
+          twoFiRowsPairs.push([i, i + 1]);
+          usedRows.add(i);
+          usedRows.add(i + 1);
+        } else if (sequenceLength === 3) {
+          // 3 FI-Reihen → 1x "3xFI-Phasenschiene"
+          hasThreeConsecutiveFiRows = true;
+          threeFiRowsIndices = [i, i + 1, i + 2];
+          usedRows.add(i);
+          usedRows.add(i + 1);
+          usedRows.add(i + 2);
+        } else if (sequenceLength >= 4) {
+          // 4+ FI-Reihen → teile in 2er-Paare auf
+          for (let j = i; j < i + sequenceLength - 1; j += 2) {
+            if (j + 1 <= i + sequenceLength - 1) {
+              twoFiRowsPairs.push([j, j + 1]);
+              usedRows.add(j);
+              usedRows.add(j + 1);
             }
           }
+          // Wenn ungerade Anzahl, bleibt die letzte Reihe übrig (wird später mit normaler Phasenschiene behandelt)
+        } else if (sequenceLength === 1) {
+          // Einzelne FI-Reihe → wird später mit normaler Phasenschiene behandelt
+          usedRows.add(i);
         }
       }
       
-      // Zähle ALLE FI-Bereiche in allen Reihen (3xFI-Phasenschiene kommt zusätzlich, nicht stattdessen)
+      // Zähle ALLE FI-Bereiche in allen Reihen (Phasenschienen kommen zusätzlich, nicht stattdessen)
       for (let i = 1; i <= rowCounter; i++) {
         const rowContent = document.getElementById(`row${i}Content`);
-        if (rowContent) {
-          const hasFiSchalter = Array.from(rowContent.getElementsByClassName('product-box')).some(box => {
-            const productName = box.querySelector('img')?.alt;
-            return productName === "FI-/Leitungsschutzschalter";
-          });
-          if (hasFiSchalter) {
-            fiBereichCount++;
-          }
+        if (rowContent && hasFiSchalter(rowContent)) {
+          fiBereichCount++;
         }
       }
       // Zusatzreihe row1Content_2 auch prüfen
       const row1Content2Calc = document.getElementById('row1Content_2');
-      if (row1Content2Calc) {
-        const hasFiSchalter = Array.from(row1Content2Calc.getElementsByClassName('product-box')).some(box => {
-          const productName = box.querySelector('img')?.alt;
-          return productName === "FI-/Leitungsschutzschalter";
-        });
-        if (hasFiSchalter) {
-          fiBereichCount++;
-        }
+      if (row1Content2Calc && hasFiSchalter(row1Content2Calc)) {
+        fiBereichCount++;
       }
       
-      // Wenn drei aufeinanderfolgende FI-Reihen gefunden und Marke ist Hager, füge Preis der 3xFI-Phasenschiene hinzu
-      if (hasThreeConsecutiveFiRows && selectedMarke === 'Hager') {
+      // Wenn drei aufeinanderfolgende FI-Reihen gefunden, füge Preis der 3xFI-Phasenschiene hinzu
+      if (hasThreeConsecutiveFiRows) {
         const threeFiPhasenschienePrice = getVariantPrice('56371044450569');
         sum += threeFiPhasenschienePrice;
+      }
+      
+      // Wenn zwei aufeinanderfolgende FI-Reihen gefunden, füge Preis der 2xFI-Phasenschiene hinzu
+      // Jedes Paar wird einzeln berechnet (wenn 2 mal 2 FI-Reihen, dann 2x)
+      if (twoFiRowsPairs.length > 0) {
+        const twoFiPhasenschienePrice = getVariantPrice('56545562296585');
+        sum += twoFiPhasenschienePrice * twoFiRowsPairs.length;
       }
       
       // Füge für jeden FI-Bereich den Preis einer normalen Phasenschiene hinzu
@@ -935,70 +965,106 @@ let rowCounter = 1;
       const result = {
         phasenschiene: { count: 0, price: 0, total: 0 },
         threeFiPhasenschiene: { count: 0, price: 0, total: 0 },
+        twoFiPhasenschiene: { count: 0, price: 0, total: 0 },
         beruehrungsschutz: { count: 0, price: 0, total: 0 },
         blindabdeckstreifen: { count: 0, price: 0, total: 0 }
       };
       
-      // Prüfe auf drei aufeinanderfolgende FI-Reihen (nur für Hager)
+      // Hilfsfunktion: Prüft ob eine Reihe einen FI-Schalter hat
+      function hasFiSchalter(rowContent) {
+        if (!rowContent) return false;
+        return Array.from(rowContent.getElementsByClassName('product-box')).some(box => {
+          return box.querySelector('img')?.alt === "FI-/Leitungsschutzschalter";
+        });
+      }
+      
+      // Finde alle zusammenhängenden Sequenzen von FI-Reihen und bestimme optimale Aufteilung
+      let usedRows = new Set(); // Reihen, die bereits verarbeitet wurden
+      let twoFiRowsPairs = [];
       let hasThreeConsecutiveFiRows = false;
       let threeFiRowsIndices = [];
       
-      if (selectedMarke === 'Hager') {
-        for (let i = 1; i <= rowCounter - 2; i++) {
-          const row1 = document.getElementById(`row${i}Content`);
-          const row2 = document.getElementById(`row${i + 1}Content`);
-          const row3 = document.getElementById(`row${i + 2}Content`);
-          
-          if (row1 && row2 && row3) {
-            const hasFi1 = Array.from(row1.getElementsByClassName('product-box')).some(box => {
-              return box.querySelector('img')?.alt === "FI-/Leitungsschutzschalter";
-            });
-            const hasFi2 = Array.from(row2.getElementsByClassName('product-box')).some(box => {
-              return box.querySelector('img')?.alt === "FI-/Leitungsschutzschalter";
-            });
-            const hasFi3 = Array.from(row3.getElementsByClassName('product-box')).some(box => {
-              return box.querySelector('img')?.alt === "FI-/Leitungsschutzschalter";
-            });
-            
-            if (hasFi1 && hasFi2 && hasFi3) {
-              hasThreeConsecutiveFiRows = true;
-              threeFiRowsIndices = [i, i + 1, i + 2];
-              break;
+      // Finde alle zusammenhängenden Sequenzen von FI-Reihen
+      for (let i = 1; i <= rowCounter; i++) {
+        // Überspringe, wenn bereits verarbeitet
+        if (usedRows.has(i)) continue;
+        
+        const rowContent = document.getElementById(`row${i}Content`);
+        if (!rowContent || !hasFiSchalter(rowContent)) continue;
+        
+        // Finde die Länge der zusammenhängenden Sequenz ab dieser Reihe
+        let sequenceLength = 1;
+        let currentRow = i;
+        
+        while (currentRow < rowCounter) {
+          const nextRowContent = document.getElementById(`row${currentRow + 1}Content`);
+          if (nextRowContent && hasFiSchalter(nextRowContent)) {
+            sequenceLength++;
+            currentRow++;
+          } else {
+            break;
+          }
+        }
+        
+        // Bestimme optimale Aufteilung für diese Sequenz
+        if (sequenceLength === 2) {
+          // 2 FI-Reihen → 1x "2xFI-Phasenschiene"
+          twoFiRowsPairs.push([i, i + 1]);
+          usedRows.add(i);
+          usedRows.add(i + 1);
+        } else if (sequenceLength === 3) {
+          // 3 FI-Reihen → 1x "3xFI-Phasenschiene"
+          hasThreeConsecutiveFiRows = true;
+          threeFiRowsIndices = [i, i + 1, i + 2];
+          usedRows.add(i);
+          usedRows.add(i + 1);
+          usedRows.add(i + 2);
+        } else if (sequenceLength >= 4) {
+          // 4+ FI-Reihen → teile in 2er-Paare auf
+          for (let j = i; j < i + sequenceLength - 1; j += 2) {
+            if (j + 1 <= i + sequenceLength - 1) {
+              twoFiRowsPairs.push([j, j + 1]);
+              usedRows.add(j);
+              usedRows.add(j + 1);
             }
           }
+          // Wenn ungerade Anzahl, bleibt die letzte Reihe übrig (wird später mit normaler Phasenschiene behandelt)
+        } else if (sequenceLength === 1) {
+          // Einzelne FI-Reihe → wird später mit normaler Phasenschiene behandelt
+          usedRows.add(i);
         }
       }
       
-      // Zähle ALLE FI-Bereiche (3xFI-Phasenschiene kommt zusätzlich, nicht stattdessen)
+      // Zähle ALLE FI-Bereiche (Phasenschienen kommen zusätzlich, nicht stattdessen)
       let fiBereichCount = 0;
       for (let i = 1; i <= rowCounter; i++) {
         const rowContent = document.getElementById(`row${i}Content`);
-        if (rowContent) {
-          const hasFiSchalter = Array.from(rowContent.getElementsByClassName('product-box')).some(box => {
-            return box.querySelector('img')?.alt === "FI-/Leitungsschutzschalter";
-          });
-          if (hasFiSchalter) {
-            fiBereichCount++;
-          }
+        if (rowContent && hasFiSchalter(rowContent)) {
+          fiBereichCount++;
         }
       }
       
       // Zusatzreihe row1Content_2 auch prüfen
       const row1Content2 = document.getElementById('row1Content_2');
-      if (row1Content2) {
-        const hasFiSchalter = Array.from(row1Content2.getElementsByClassName('product-box')).some(box => {
-          return box.querySelector('img')?.alt === "FI-/Leitungsschutzschalter";
-        });
-        if (hasFiSchalter) {
-          fiBereichCount++;
-        }
+      if (row1Content2 && hasFiSchalter(row1Content2)) {
+        fiBereichCount++;
       }
       
-      // 3xFI-Phasenschiene
-      if (hasThreeConsecutiveFiRows && selectedMarke === 'Hager') {
+      // 3xFI-Phasenschiene (für beide Marken)
+      if (hasThreeConsecutiveFiRows) {
         result.threeFiPhasenschiene.count = 1;
         result.threeFiPhasenschiene.price = getVariantPrice('56371044450569');
         result.threeFiPhasenschiene.total = result.threeFiPhasenschiene.price;
+      }
+      
+      // 2xFI-Phasenschiene (für beide Marken) - jedes Paar wird einzeln berechnet
+      if (twoFiRowsPairs.length > 0) {
+        const twoFiPhasenschienePrice = getVariantPrice('56545562296585');
+        result.twoFiPhasenschiene = {
+          count: twoFiRowsPairs.length,
+          price: twoFiPhasenschienePrice,
+          total: twoFiPhasenschienePrice * twoFiRowsPairs.length
+        };
       }
       
       // Normale Phasenschiene
@@ -3547,68 +3613,102 @@ let rowCounter = 1;
       
       // Phasenschiene für jeden FI-Bereich hinzufügen
       let fiBereichCount = 0;
-      // Prüfe auf drei aufeinanderfolgende FI-Reihen (nur für Hager)
+      
+      // Hilfsfunktion: Prüft ob eine Reihe einen FI-Schalter hat
+      function hasFiSchalter(rowContent) {
+        if (!rowContent) return false;
+        return Array.from(rowContent.getElementsByClassName('product-box')).some(box => {
+          return box.querySelector('img')?.alt === "FI-/Leitungsschutzschalter";
+        });
+      }
+      
+      // Finde alle zusammenhängenden Sequenzen von FI-Reihen und bestimme optimale Aufteilung
+      let usedRows = new Set(); // Reihen, die bereits verarbeitet wurden
+      let twoFiRowsPairs = [];
       let hasThreeConsecutiveFiRows = false;
       let threeFiRowsIndices = [];
       
-      if (selectedMarke === 'Hager') {
-        // Prüfe auf drei aufeinanderfolgende FI-Reihen
-        for (let i = 1; i <= rowCounter - 2; i++) {
-          const row1 = document.getElementById(`row${i}Content`);
-          const row2 = document.getElementById(`row${i + 1}Content`);
-          const row3 = document.getElementById(`row${i + 2}Content`);
-          
-          if (row1 && row2 && row3) {
-            const hasFi1 = Array.from(row1.getElementsByClassName('product-box')).some(box => {
-              return box.querySelector('img')?.alt === "FI-/Leitungsschutzschalter";
-            });
-            const hasFi2 = Array.from(row2.getElementsByClassName('product-box')).some(box => {
-              return box.querySelector('img')?.alt === "FI-/Leitungsschutzschalter";
-            });
-            const hasFi3 = Array.from(row3.getElementsByClassName('product-box')).some(box => {
-              return box.querySelector('img')?.alt === "FI-/Leitungsschutzschalter";
-            });
-            
-            if (hasFi1 && hasFi2 && hasFi3) {
-              hasThreeConsecutiveFiRows = true;
-              threeFiRowsIndices = [i, i + 1, i + 2];
-              break; // Nur die ersten drei aufeinanderfolgenden FI-Reihen verwenden
+      // Finde alle zusammenhängenden Sequenzen von FI-Reihen
+      for (let i = 1; i <= rowCounter; i++) {
+        // Überspringe, wenn bereits verarbeitet
+        if (usedRows.has(i)) continue;
+        
+        const rowContent = document.getElementById(`row${i}Content`);
+        if (!rowContent || !hasFiSchalter(rowContent)) continue;
+        
+        // Finde die Länge der zusammenhängenden Sequenz ab dieser Reihe
+        let sequenceLength = 1;
+        let currentRow = i;
+        
+        while (currentRow < rowCounter) {
+          const nextRowContent = document.getElementById(`row${currentRow + 1}Content`);
+          if (nextRowContent && hasFiSchalter(nextRowContent)) {
+            sequenceLength++;
+            currentRow++;
+          } else {
+            break;
+          }
+        }
+        
+        // Bestimme optimale Aufteilung für diese Sequenz
+        if (sequenceLength === 2) {
+          // 2 FI-Reihen → 1x "2xFI-Phasenschiene"
+          twoFiRowsPairs.push([i, i + 1]);
+          usedRows.add(i);
+          usedRows.add(i + 1);
+        } else if (sequenceLength === 3) {
+          // 3 FI-Reihen → 1x "3xFI-Phasenschiene"
+          hasThreeConsecutiveFiRows = true;
+          threeFiRowsIndices = [i, i + 1, i + 2];
+          usedRows.add(i);
+          usedRows.add(i + 1);
+          usedRows.add(i + 2);
+        } else if (sequenceLength >= 4) {
+          // 4+ FI-Reihen → teile in 2er-Paare auf
+          for (let j = i; j < i + sequenceLength - 1; j += 2) {
+            if (j + 1 <= i + sequenceLength - 1) {
+              twoFiRowsPairs.push([j, j + 1]);
+              usedRows.add(j);
+              usedRows.add(j + 1);
             }
           }
+          // Wenn ungerade Anzahl, bleibt die letzte Reihe übrig (wird später mit normaler Phasenschiene behandelt)
+        } else if (sequenceLength === 1) {
+          // Einzelne FI-Reihe → wird später mit normaler Phasenschiene behandelt
+          usedRows.add(i);
         }
       }
       
-      // Zähle ALLE FI-Bereiche in allen Reihen (3xFI-Phasenschiene kommt zusätzlich, nicht stattdessen)
+      // Zähle ALLE FI-Bereiche in allen Reihen (Phasenschienen kommen zusätzlich, nicht stattdessen)
       for (let i = 1; i <= rowCounter; i++) {
         const rowContent = document.getElementById(`row${i}Content`);
-        if (rowContent) {
-          const hasFiSchalter = Array.from(rowContent.getElementsByClassName('product-box')).some(box => {
-            const productName = box.querySelector('img')?.alt;
-            return productName === "FI-/Leitungsschutzschalter";
-          });
-          if (hasFiSchalter) {
-            fiBereichCount++;
-          }
+        if (rowContent && hasFiSchalter(rowContent)) {
+          fiBereichCount++;
         }
       }
       // Zusatzreihe row1Content_2 auch prüfen
       const row1Content2GetPhasen = document.getElementById('row1Content_2');
-      if (row1Content2GetPhasen) {
-        const hasFiSchalter = Array.from(row1Content2GetPhasen.getElementsByClassName('product-box')).some(box => {
-          const productName = box.querySelector('img')?.alt;
-          return productName === "FI-/Leitungsschutzschalter";
-        });
-        if (hasFiSchalter) {
-          fiBereichCount++;
-        }
+      if (row1Content2GetPhasen && hasFiSchalter(row1Content2GetPhasen)) {
+        fiBereichCount++;
       }
       
-      // Wenn drei aufeinanderfolgende FI-Reihen gefunden und Marke ist Hager, füge 3xFI-Phasenschiene hinzu
-      if (hasThreeConsecutiveFiRows && selectedMarke === 'Hager') {
+      // Wenn drei aufeinanderfolgende FI-Reihen gefunden, füge 3xFI-Phasenschiene hinzu
+      if (hasThreeConsecutiveFiRows) {
         selectedProducts.push({
           id: parseInt('56371044450569'),
           quantity: anzahl
         });
+      }
+      
+      // Wenn zwei aufeinanderfolgende FI-Reihen gefunden, füge 2xFI-Phasenschiene hinzu
+      // Jedes Paar wird einzeln berechnet (wenn 2 mal 2 FI-Reihen, dann 2x)
+      if (twoFiRowsPairs.length > 0) {
+        for (let i = 0; i < twoFiRowsPairs.length; i++) {
+          selectedProducts.push({
+            id: parseInt('56545562296585'),
+            quantity: anzahl
+          });
+        }
       }
       
       // Füge für jeden FI-Bereich eine normale Phasenschiene hinzu
