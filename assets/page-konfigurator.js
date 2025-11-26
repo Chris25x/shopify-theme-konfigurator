@@ -58,8 +58,15 @@ function trackKonfiguratorStep(stepNumber, stepName, additionalData = {}) {
         // Extrahiere Zahl aus Text wie "123.45 €" oder "1.234,56 €"
         const priceMatch = priceText.match(/[\d.,]+/);
         if (priceMatch) {
-          // Ersetze Komma durch Punkt für deutsche Zahlenformate
-          const priceStr = priceMatch[0].replace(/\./g, '').replace(',', '.');
+          let priceStr = priceMatch[0];
+          // Prüfe ob es deutsches Format ist (enthält Komma als Dezimaltrennzeichen)
+          if (priceStr.includes(',')) {
+            // Deutsches Format: "1.234,56" -> "1234.56"
+            priceStr = priceStr.replace(/\./g, '').replace(',', '.');
+          } else {
+            // Englisches Format: "123.45" -> bleibt "123.45"
+            // Keine Änderung nötig
+          }
           totalPrice = parseFloat(priceStr) || 0;
         }
       }
@@ -71,7 +78,15 @@ function trackKonfiguratorStep(stepNumber, stepName, additionalData = {}) {
           const priceText = summaryPriceElement.textContent.trim();
           const priceMatch = priceText.match(/[\d.,]+/);
           if (priceMatch) {
-            const priceStr = priceMatch[0].replace(/\./g, '').replace(',', '.');
+            let priceStr = priceMatch[0];
+            // Prüfe ob es deutsches Format ist (enthält Komma als Dezimaltrennzeichen)
+            if (priceStr.includes(',')) {
+              // Deutsches Format: "1.234,56" -> "1234.56"
+              priceStr = priceStr.replace(/\./g, '').replace(',', '.');
+            } else {
+              // Englisches Format: "123.45" -> bleibt "123.45"
+              // Keine Änderung nötig
+            }
             totalPrice = parseFloat(priceStr) || 0;
           }
         }
@@ -2794,7 +2809,7 @@ let rowCounter = 1;
 
     function generatePdf() {
       // Logo in Originalgröße hinzufügen
-      const logoUrl = 'https://cdn.shopify.com/s/files/1/0944/8711/8089/files/ChatGPT_Image_26._Juni_2025_21_21_38.png?v=1750966699';
+      const logoUrl = 'https://cdn.shopify.com/s/files/1/0944/8711/8089/files/Logo.png?v=1763670321';
       const img = new Image();
       img.src = logoUrl;
       
@@ -3024,7 +3039,7 @@ let rowCounter = 1;
       const pageWidth = 210;
       const pageHeight = 297;
 
-      const logoUrl = 'https://cdn.shopify.com/s/files/1/0944/8711/8089/files/ChatGPT_Image_26._Juni_2025_21_21_38.png?v=1750966699';
+      const logoUrl = 'https://cdn.shopify.com/s/files/1/0944/8711/8089/files/Logo.png?v=1763670321';
       const img = new Image();
       img.crossOrigin = 'anonymous';
       img.src = logoUrl;
