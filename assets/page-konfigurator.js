@@ -3346,8 +3346,70 @@ let rowCounter = 1;
       };
     }
 
-    // Event-Listener für den PDF-Download-Button
-    document.getElementById("downloadPdf").addEventListener("click", generatePdfStyled);
+    // Lazy Loading für jsPDF
+    let jsPDFLoaded = false;
+    let jsPDFLoading = false;
+    
+    function loadJsPDF() {
+      return new Promise((resolve, reject) => {
+        // Wenn bereits geladen, sofort auflösen
+        if (jsPDFLoaded && window.jspdf) {
+          resolve();
+          return;
+        }
+        
+        // Wenn bereits am Laden, warte auf das bestehende Promise
+        if (jsPDFLoading) {
+          const checkInterval = setInterval(() => {
+            if (jsPDFLoaded && window.jspdf) {
+              clearInterval(checkInterval);
+              resolve();
+            }
+          }, 50);
+          return;
+        }
+        
+        // Starte das Laden
+        jsPDFLoading = true;
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+        script.async = true;
+        script.onload = () => {
+          jsPDFLoaded = true;
+          jsPDFLoading = false;
+          resolve();
+        };
+        script.onerror = () => {
+          jsPDFLoading = false;
+          reject(new Error('Fehler beim Laden von jsPDF'));
+        };
+        document.head.appendChild(script);
+      });
+    }
+    
+    // Event-Listener für den PDF-Download-Button mit Lazy Loading
+    document.getElementById("downloadPdf").addEventListener("click", async function() {
+      const button = this;
+      const originalText = button.innerHTML;
+      
+      // Button deaktivieren und Loading-State anzeigen
+      button.disabled = true;
+      button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> PDF wird vorbereitet...';
+      
+      try {
+        // Lade jsPDF lazy
+        await loadJsPDF();
+        // Rufe die PDF-Generierungsfunktion auf
+        generatePdfStyled();
+      } catch (error) {
+        console.error('Fehler beim Laden von jsPDF:', error);
+        alert('Fehler beim Laden der PDF-Bibliothek. Bitte versuchen Sie es erneut.');
+      } finally {
+        // Button wieder aktivieren
+        button.disabled = false;
+        button.innerHTML = originalText;
+      }
+    });
 
     // Funktion zum Hinzufügen des festen Elements
     function addFixedProductToRow(rowNumber, product) {
