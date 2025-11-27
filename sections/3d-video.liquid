@@ -120,6 +120,30 @@
   }
   #{{ sk_id }} .sk-3dvideo__toggle svg{ width:18px; height:18px; display:block; fill:currentColor; }
 
+  /* Mobil: Container größer machen */
+  @media screen and (max-width: 749px) {
+    #{{ sk_id }} {
+      max-width: 100% !important;
+      margin: 24px 16px 0 !important;
+    }
+    
+    #{{ sk_id }} .sk-3dvideo__card {
+      aspect-ratio: 4/3 !important; /* Höherer Container auf mobil */
+    }
+    
+    /* Pause-Button größer auf mobil */
+    #{{ sk_id }} .sk-3dvideo__toggle {
+      right: 16px !important;
+      bottom: 16px !important;
+      padding: 12px 14px !important;
+    }
+    
+    #{{ sk_id }} .sk-3dvideo__toggle svg {
+      width: 24px !important;
+      height: 24px !important;
+    }
+  }
+
   @media (prefers-reduced-motion:reduce){
     #{{ sk_id }} .sk-3dvideo__halo{ display:none; }
   }
