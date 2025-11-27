@@ -649,29 +649,29 @@
   <script src="{{ 'page-konfigurator.js' | asset_url }}" defer></script>
   <!-- Konfigurator Produktdaten -->
   <script id="konfigurator-products" type="application/json">
+{%- if collections.konfigurator.products.size > 0 -%}
 [
-  {% for product in collections.konfigurator.products %}
+  {%- for product in collections.konfigurator.products -%}
     {
       "id": {{ product.id }},
       "title": {{ product.title | json }},
       "variants": [
-        {% for variant in product.variants %}
+        {%- for variant in product.variants -%}
           {
             "id": {{ variant.id }},
             "title": {{ variant.title | json }},
             "price": {{ variant.price | divided_by: 100.0 }},
             "sku": {{ variant.sku | json }},
             "image": {{ variant.featured_image | img_url: '400x' | json }}
-          }{% unless forloop.last %},{% endunless %}
-        {% endfor %}
+          }{%- unless forloop.last -%},{%- endunless -%}
+        {%- endfor -%}
       ]
-    }{% unless forloop.last %},{% endunless %}
-  {% endfor %}
+    }{%- unless forloop.last -%},{%- endunless -%}
+  {%- endfor -%}
 ]
-</script>
-  <script>
-      }
-    }
+{%- else -%}
+[]
+{%- endif -%}
 </script>
 <script>
   // Funktion zum Laden der Bilder
@@ -693,8 +693,6 @@
       }
     });
   });
-
- 
 </script>
 </div>
 
