@@ -12,12 +12,10 @@ Disallow: /admin/
 Disallow: /cart/
 Disallow: /checkout/
 Disallow: /account/
-Disallow: /search?*
-Disallow: /collections/*?*
-Disallow: /products/*?*
+Disallow: /search?
 
 # Sitemap
-Sitemap: {{ shop.url }}/sitemap.xml
+Sitemap: {{ shop.secure_url }}/sitemap.xml
 
 # Crawl-Delay für bessere Performance
 Crawl-delay: 1
