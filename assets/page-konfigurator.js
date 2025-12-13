@@ -1718,13 +1718,7 @@ let rowCounter = 1;
       const nextButton = document.getElementById("nextButton");
       if (pageNumber === 4) {
         nextButton.innerHTML = '<i class="fas fa-shopping-cart"></i> In den Warenkorb legen';
-        // Button auf page4 deaktivieren, bis Checkbox aktiviert ist
-        const disclaimerCheckbox = document.getElementById('disclaimerCheckbox');
-        if (disclaimerCheckbox) {
-          nextButton.disabled = !disclaimerCheckbox.checked;
-        } else {
-          nextButton.disabled = true;
-        }
+        nextButton.disabled = false;
       } else {
         nextButton.textContent = "Weiter";
         // Button nur aktivieren, wenn er nicht "In den Warenkorb" ist
@@ -1789,30 +1783,6 @@ let rowCounter = 1;
       showPage(currentPage);
     });
 
-    // Event-Listener für Disclaimer-Checkbox
-    document.addEventListener('DOMContentLoaded', function() {
-      const disclaimerCheckbox = document.getElementById('disclaimerCheckbox');
-      const nextButton = document.getElementById('nextButton');
-      
-      if (disclaimerCheckbox && nextButton) {
-        // Initial: Button deaktiviert, wenn auf page4
-        if (nextButton.textContent.includes('Warenkorb')) {
-          nextButton.disabled = true;
-        }
-        
-        // Event-Listener für Checkbox-Änderungen
-        disclaimerCheckbox.addEventListener('change', function() {
-          // Nur Button-Status ändern, wenn Button "In den Warenkorb" ist
-          if (nextButton.textContent.includes('Warenkorb')) {
-            nextButton.disabled = !this.checked;
-          }
-          
-          if (this.checked) {
-            trackKonfiguratorDisclaimerAccepted();
-          }
-        });
-      }
-    });
 
     function setupRow(rowNumber) {
       const dropdown = createDropdown(rowNumber);
@@ -4053,6 +4023,99 @@ let rowCounter = 1;
     // Funktion zum Hinzufügen zum Shopify-Warenkorb
     async function addToShopifyCart(items) {
       try {
+        // Prüfe ZUERST, ob auf mobil und auf page4 - dann direkt zur Cart-Seite navigieren
+        // Da der Viewport für mobil auf Desktop gestellt ist, verwenden wir Touch-Erkennung
+        const isMobile = ('ontouchstart' in window) || 
+                        (navigator.maxTouchPoints > 0) || 
+                        (navigator.msMaxTouchPoints > 0) ||
+                        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        const isKonfiguratorPage = window.location.pathname.includes('/pages/konfigurator') || 
+                                   document.body.classList.contains('konfigurator-page');
+        const nextButton = document.getElementById('nextButton');
+        const isPage4Button = nextButton && (nextButton.innerHTML.includes('Warenkorb') || nextButton.textContent.includes('Warenkorb'));
+        const isPage4 = (typeof currentPage !== 'undefined' && currentPage === 4) || isPage4Button;
+        
+        if (isMobile && isPage4 && isKonfiguratorPage) {
+          // Auf mobilen Geräten auf page4 direkt zur Cart-Seite navigieren
+          // Zuerst Produkte zum Warenkorb hinzufügen, dann navigieren
+          const validItems = items.filter(item => item.id && !isNaN(item.id))
+            .map(item => ({
+              ...item,
+              quantity: Math.max(1, item.quantity || 1)
+            }));
+          
+          if (validItems.length === 0) {
+            throw new Error('Keine gültigen Produkte zum Hinzufügen gefunden');
+          }
+          
+          // Sammle die Reiheninformationen
+          const reihenInfo = buildOrderAttributes();
+          
+          // Hole zuerst den aktuellen Cart, um alle bestehenden Attribute zu identifizieren
+          const cartResponse = await fetch('/cart.js');
+          const cartData = await cartResponse.json();
+          const existingAttributes = cartData.attributes || {};
+          
+          // Erstelle ein neues Attribut-Objekt, das alle Attribute zurücksetzt
+          const resetAttributes = {};
+          
+          // Zuerst alle bestehenden Reihen-Attribute auf leeren String setzen
+          Object.keys(existingAttributes).forEach(key => {
+            if (key.startsWith('Reihe ')) {
+              resetAttributes[key] = '';
+            }
+          });
+          
+          // Dann setze die Attribute in der korrekten Reihenfolge
+          resetAttributes["Anzahl"] = reihenInfo["Anzahl"] || '';
+          resetAttributes["Name/Referenz"] = reihenInfo["Name/Referenz"] || '';
+          resetAttributes["Position im Verteiler"] = reihenInfo["Position im Verteiler"] || '';
+          resetAttributes["Anzahl Reihen"] = reihenInfo["Anzahl Reihen"] || '';
+          resetAttributes["Belegte Einheiten"] = reihenInfo["Belegte Einheiten"] || '';
+          resetAttributes["Montageart"] = reihenInfo["Montageart"] || '';
+          resetAttributes["Verdrahtungsoption"] = reihenInfo["Verdrahtungsoption"] || '';
+          resetAttributes["Marke"] = reihenInfo["Marke"] || '';
+          resetAttributes["Sonstige Hinweise"] = reihenInfo["Sonstige Hinweise"] || '';
+          
+          // Reihen-Attribute
+          Object.keys(reihenInfo).forEach(key => {
+            if (key.startsWith('Reihe ')) {
+              resetAttributes[key] = reihenInfo[key];
+            }
+          });
+          
+          // Füge die Produkte zum Warenkorb hinzu
+          const response = await fetch('/cart/add.js', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+              items: validItems
+            }),
+          });
+
+          const responseData = await response.json();
+
+          if (!response.ok) {
+            throw new Error(`Fehler beim Hinzufügen zum Warenkorb: ${responseData.message || 'Unbekannter Fehler'}`);
+          }
+
+          // Setze alle Attribute zurück
+          await fetch("/cart/update.js", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              attributes: resetAttributes
+            })
+          });
+          
+          // Direkt zur Cart-Seite navigieren
+          window.location.href = '/cart';
+          return;
+        }
+        
         // Filtere ungültige Items heraus und stelle sicher, dass die Menge mindestens 1 ist
         const validItems = items.filter(item => item.id && !isNaN(item.id))
           .map(item => ({
@@ -4135,8 +4198,31 @@ let rowCounter = 1;
           })
         });
 
-        // Weiterleitung zum Warenkorb
+        // Prüfe, ob Cart Drawer existiert
+        const cartDrawer = document.querySelector('cart-drawer');
+        const cartNotification = document.querySelector('cart-notification');
+        const cart = cartDrawer || cartNotification;
+        
+        if (cart) {
+          // Hole die Cart-Daten und Sections für den Drawer
+          const cartResponse = await fetch('/cart.js');
+          const cartData = await cartResponse.json();
+          
+          // Hole die Sections für den Cart Drawer
+          const sectionsToRender = cart.getSectionsToRender ? cart.getSectionsToRender().map((section) => section.id).join(',') : 'cart-drawer,cart-icon-bubble';
+          const sectionsResponse = await fetch(`/?sections=${sectionsToRender}`);
+          const sectionsHtml = await sectionsResponse.text();
+          const parsedSections = JSON.parse(sectionsHtml);
+          
+          // Öffne den Cart Drawer mit den aktualisierten Daten
+          cart.renderContents({
+            items: cartData.items,
+            sections: parsedSections
+          });
+        } else {
+          // Kein Cart Drawer vorhanden, weiterleiten zur Cart-Seite
         window.location.href = '/cart';
+        }
       } catch (error) {
         console.error('Fehler beim Hinzufügen zum Warenkorb:', error);
         showError('Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.');

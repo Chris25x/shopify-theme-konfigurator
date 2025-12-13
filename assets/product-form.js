@@ -23,6 +23,11 @@ if (!customElements.get('product-form')) {
 
         this.handleErrorMessage();
 
+        // Finde den Cart Drawer/Notification zur Laufzeit (falls noch nicht gesetzt)
+        if (!this.cart) {
+          this.cart = document.querySelector('cart-notification') || document.querySelector('cart-drawer');
+        }
+
         this.submitButton.setAttribute('aria-disabled', true);
         this.submitButton.classList.add('loading');
         this.querySelector('.loading__spinner').classList.remove('hidden');
@@ -38,7 +43,9 @@ if (!customElements.get('product-form')) {
             this.cart.getSectionsToRender().map((section) => section.id)
           );
           formData.append('sections_url', window.location.pathname);
-          this.cart.setActiveElement(document.activeElement);
+          if (this.cart.setActiveElement) {
+            this.cart.setActiveElement(document.activeElement);
+          }
         }
         config.body = formData;
 
@@ -61,40 +68,38 @@ if (!customElements.get('product-form')) {
               soldOutMessage.classList.remove('hidden');
               this.error = true;
               return;
-            } else if (!this.cart) {
+            }
+            
+            // Prüfe erneut zur Laufzeit, ob Cart Drawer existiert (könnte jetzt geladen sein)
+            if (!this.cart) {
+              this.cart = document.querySelector('cart-notification') || document.querySelector('cart-drawer');
+            }
+            
+            // Wenn kein Cart Drawer/Notification gefunden wurde, zur Cart-Seite weiterleiten
+            if (!this.cart) {
               window.location = window.routes.cart_url;
               return;
             }
-
-            const startMarker = CartPerformance.createStartingMarker('add:wait-for-subscribers');
-            if (!this.error)
-              publish(PUB_SUB_EVENTS.cartUpdate, {
-                source: 'product-form',
-                productVariantId: formData.get('id'),
-                cartData: response,
-              }).then(() => {
-                CartPerformance.measureFromMarker('add:wait-for-subscribers', startMarker);
-              });
-            this.error = false;
-            const quickAddModal = this.closest('quick-add-modal');
-            if (quickAddModal) {
-              document.body.addEventListener(
-                'modalClosed',
-                () => {
-                  setTimeout(() => {
-                    CartPerformance.measure("add:paint-updated-sections", () => {
-                      this.cart.renderContents(response);
-                    });
-                  });
-                },
-                { once: true }
-              );
-              quickAddModal.hide(true);
-            } else {
-              CartPerformance.measure("add:paint-updated-sections", () => {
-                this.cart.renderContents(response);
-              });
+            
+            // Prüfe, ob die Response Sections enthält (notwendig für renderContents)
+            if (!response.sections && this.cart) {
+              // Falls keine Sections in Response, lade sie nach
+              const sectionsToRender = this.cart.getSectionsToRender().map((section) => section.id).join(',');
+              fetch(`/?sections=${sectionsToRender}`)
+                .then((res) => res.text())
+                .then((sectionsHtml) => {
+                  const parsedSections = JSON.parse(sectionsHtml);
+                  response.sections = parsedSections;
+                  this.handleCartUpdate(response);
+                })
+                .catch(() => {
+                  // Fallback: Weiterleitung zur Cart-Seite
+                  window.location = window.routes.cart_url;
+                });
+              return;
             }
+
+            this.handleCartUpdate(response);
           })
           .catch((e) => {
             console.error(e);
@@ -107,6 +112,40 @@ if (!customElements.get('product-form')) {
 
             CartPerformance.measureFromEvent("add:user-action", evt);
           });
+      }
+
+      handleCartUpdate(response) {
+        if (!this.cart) return;
+        
+        const startMarker = CartPerformance.createStartingMarker('add:wait-for-subscribers');
+        if (!this.error)
+          publish(PUB_SUB_EVENTS.cartUpdate, {
+            source: 'product-form',
+            productVariantId: this.form.querySelector('[name="id"]').value,
+            cartData: response,
+          }).then(() => {
+            CartPerformance.measureFromMarker('add:wait-for-subscribers', startMarker);
+          });
+        this.error = false;
+        const quickAddModal = this.closest('quick-add-modal');
+        if (quickAddModal) {
+          document.body.addEventListener(
+            'modalClosed',
+            () => {
+              setTimeout(() => {
+                CartPerformance.measure("add:paint-updated-sections", () => {
+                  this.cart.renderContents(response);
+                });
+              });
+            },
+            { once: true }
+          );
+          quickAddModal.hide(true);
+        } else {
+          CartPerformance.measure("add:paint-updated-sections", () => {
+            this.cart.renderContents(response);
+          });
+        }
       }
 
       handleErrorMessage(errorMessage = false) {

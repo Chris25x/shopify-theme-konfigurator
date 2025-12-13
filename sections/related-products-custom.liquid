@@ -67,6 +67,13 @@
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+  }
+  
+  .related-product-card__image-container:hover {
+    opacity: 0.9;
   }
 
   .related-product-card__image {
@@ -184,7 +191,12 @@
         {% for recommendation in recommendations.products limit: section.settings.products_to_show %}
           <article class="related-product-card" data-product-id="{{ recommendation.id }}">
             <!-- Product Image -->
-            <div class="related-product-card__image-container">
+            <a 
+              href="{{ recommendation.url }}" 
+              class="related-product-card__image-container"
+              aria-label="{{ recommendation.title | escape }}"
+              title="{{ recommendation.title | escape }}"
+            >
               {% if recommendation.featured_media %}
                 <img
                   src="{{ recommendation.featured_media | image_url: width: 400 }}"
@@ -197,7 +209,7 @@
               {% else %}
                 <span class="related-product-card__placeholder">Bild</span>
               {% endif %}
-            </div>
+            </a>
 
             <!-- Product Content -->
             <div class="related-product-card__content">
@@ -267,16 +279,25 @@
     button.className = 'related-product-card__button related-product-card__button--loading';
     button.disabled = true;
 
-    // Add to cart
+    // Check if cart drawer exists
+    const cartDrawer = document.querySelector('cart-drawer');
+    const cartNotification = document.querySelector('cart-notification');
+    const cart = cartDrawer || cartNotification;
+    
+    // Add to cart with sections if cart drawer/notification exists
+    const formData = new FormData();
+    formData.append('id', variantId);
+    formData.append('quantity', '1');
+    
+    if (cart && cart.getSectionsToRender) {
+      const sectionsToRender = cart.getSectionsToRender().map((section) => section.id);
+      formData.append('sections', sectionsToRender.join(','));
+      formData.append('sections_url', window.location.pathname);
+    }
+    
     fetch('/cart/add.js', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        id: variantId,
-        quantity: 1
-      })
+      body: formData
     })
     .then(response => response.json())
     .then(data => {
@@ -288,11 +309,42 @@
       button.textContent = 'Hinzugefügt!';
       button.className = 'related-product-card__button related-product-card__button--success';
       
+      // Open cart drawer/notification if it exists
+      if (cart) {
+        // Wenn Sections in der Response sind, verwende sie direkt
+        if (data.sections) {
+          cart.renderContents(data);
+        } else {
+          // Falls keine Sections in Response, lade sie nach
+          const sectionsToRender = cart.getSectionsToRender ? cart.getSectionsToRender().map((section) => section.id).join(',') : 'cart-drawer,cart-icon-bubble';
+          fetch(`/?sections=${sectionsToRender}`)
+            .then((res) => res.text())
+            .then((sectionsHtml) => {
+              const parsedSections = JSON.parse(sectionsHtml);
+              // Hole auch die Cart-Daten
+              return fetch('/cart.js')
+                .then((cartRes) => cartRes.json())
+                .then((cartData) => {
+                  cart.renderContents({
+                    items: cartData.items,
+                    sections: parsedSections
+                  });
+                });
+            })
+            .catch((err) => {
+              console.error('Error loading cart sections:', err);
+              // Fallback: Weiterleitung zur Cart-Seite
+              window.location.href = '/cart';
+            });
+        }
+      } else {
+        // No cart drawer/notification, redirect to cart page
+        window.location.href = '/cart';
+        return;
+      }
+      
       // Trigger cart update event
       document.dispatchEvent(new CustomEvent('cart:refresh'));
-      
-      // Show success message
-      showNotification('Produkt wurde zum Warenkorb hinzugefügt!', 'success');
       
       // Reset button after delay
       setTimeout(() => {

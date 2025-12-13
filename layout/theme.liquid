@@ -267,6 +267,7 @@
     {{ 'inter-fonts.css' | asset_url | stylesheet_tag }}
     {{ 'base.css' | asset_url | stylesheet_tag }}
     {{ 'button-styles.css' | asset_url | stylesheet_tag }}
+    {{ 'component-cookie-banner.css' | asset_url | stylesheet_tag }}
     <link rel="stylesheet" href="{{ 'component-cart-items.css' | asset_url }}" media="print" onload="this.media='all'">
 
     {%- if settings.cart_type == 'drawer' -%}
@@ -437,6 +438,285 @@
           trackScrollDepth();
         } else {
           window.addEventListener('load', trackScrollDepth);
+        }
+      })();
+    </script>
+
+    {%- comment -%} Cookie Banner: Struktur-Angleichung + ARIA/Body-Scroll {%- endcomment -%}
+    <script>
+      (function() {
+        function wrapCookieBanner() {
+          const banner = document.getElementById('shopify-pc__banner');
+          if (!banner) return null;
+
+          // Bereits verpackt?
+          const existingContainer = banner.closest('#shopify-pc__prefs');
+          if (existingContainer) return banner;
+
+          // Container + Overlay anlegen (nur für das Banner)
+          const container = document.createElement('div');
+          container.id = 'shopify-pc__prefs';
+          container.className = 'shopify-pc__prefs';
+
+          const overlay = document.createElement('div');
+          overlay.id = 'shopify-pc__prefs__overlay';
+          overlay.className = 'shopify-pc__prefs__overlay';
+          container.appendChild(overlay);
+
+          // Banner in Container verschieben
+          const parent = banner.parentNode;
+          if (parent) {
+            parent.insertBefore(container, banner);
+            container.appendChild(banner);
+          }
+          return banner;
+        }
+
+        function setupAriaScrollAndOverlay(banner) {
+          if (!banner) return;
+          const overlay = document.getElementById('shopify-pc__prefs__overlay');
+          const dialog = document.getElementById('shopify-pc__prefs__dialog');
+
+          const updateState = () => {
+            const cs = window.getComputedStyle(banner);
+            const isBannerVisible = !banner.hasAttribute('hidden') &&
+              cs.display !== 'none' &&
+              cs.visibility !== 'hidden' &&
+              cs.opacity !== '0';
+            
+            // Prüfe ob Dialog geöffnet ist
+            const dialog = document.getElementById('shopify-pc__prefs__dialog');
+            const isDialogOpen = dialog && 
+              dialog.hasAttribute('aria-modal') && 
+              dialog.getAttribute('aria-modal') === 'true' &&
+              window.getComputedStyle(dialog).display !== 'none';
+            
+            // Overlay anzeigen, wenn Banner ODER Dialog sichtbar ist
+            if (isBannerVisible || isDialogOpen) {
+              if (isBannerVisible) {
+                banner.setAttribute('aria-modal', 'true');
+              } else {
+                banner.setAttribute('aria-modal', 'false');
+              }
+              overlay && overlay.classList.add('is-visible');
+            } else {
+              banner.setAttribute('aria-modal', 'false');
+              overlay && overlay.classList.remove('is-visible');
+            }
+          };
+
+          // Überwache Dialog-Status und verstecke Banner wenn Dialog geöffnet
+          function setupDialogObserver() {
+            if (!dialog) return;
+
+            const checkDialogState = () => {
+              const dialogIsOpen = dialog.hasAttribute('aria-modal') && 
+                                   dialog.getAttribute('aria-modal') === 'true' &&
+                                   dialog.style.display !== 'none' &&
+                                   window.getComputedStyle(dialog).display !== 'none';
+              
+              if (dialogIsOpen) {
+                banner.setAttribute('hidden', '');
+                banner.style.display = 'none';
+                // Overlay sichtbar halten, wenn Dialog geöffnet ist
+                overlay && overlay.classList.add('is-visible');
+              } else {
+                // Prüfe ob Banner wieder angezeigt werden soll
+                const cs = window.getComputedStyle(banner);
+                const shouldShowBanner = !banner.hasAttribute('hidden') ||
+                  (cs.display !== 'none' && cs.visibility !== 'hidden' && cs.opacity !== '0');
+                
+                if (shouldShowBanner) {
+                  banner.removeAttribute('hidden');
+                  banner.style.display = '';
+                  overlay && overlay.classList.add('is-visible');
+                } else {
+                  overlay && overlay.classList.remove('is-visible');
+                }
+              }
+              
+              // updateState aufrufen, um Overlay-Status zu synchronisieren
+              updateState();
+            };
+
+            // Initialer Check
+            checkDialogState();
+
+            // MutationObserver für Dialog-Änderungen
+            const dialogObserver = new MutationObserver(checkDialogState);
+            dialogObserver.observe(dialog, {
+              attributes: true,
+              attributeFilter: ['aria-modal', 'style', 'hidden', 'class'],
+              childList: false,
+              subtree: false
+            });
+
+            // Auch Style-Änderungen überwachen
+            const styleObserver = new MutationObserver(() => {
+              setTimeout(checkDialogState, 0);
+            });
+            styleObserver.observe(dialog, {
+              attributes: true,
+              attributeFilter: ['style'],
+              childList: false,
+              subtree: false
+            });
+          }
+
+          const observer = new MutationObserver(() => {
+            updateState();
+            // Prüfe nach Dialog, falls er später geladen wird
+            if (!dialog || !document.getElementById('shopify-pc__prefs__dialog')) {
+              const newDialog = document.getElementById('shopify-pc__prefs__dialog');
+              if (newDialog) {
+                setupDialogObserver();
+              }
+            }
+          });
+          observer.observe(banner, {
+            attributes: true,
+            attributeFilter: ['hidden', 'style', 'class'],
+            childList: false,
+            subtree: false
+          });
+
+          // Setup Dialog Observer
+          if (dialog) {
+            setupDialogObserver();
+          } else {
+            // Warte auf Dialog
+            const dialogWatcher = new MutationObserver(() => {
+              const newDialog = document.getElementById('shopify-pc__prefs__dialog');
+              if (newDialog) {
+                setupDialogObserver();
+                dialogWatcher.disconnect();
+              }
+            });
+            dialogWatcher.observe(document.body, { childList: true, subtree: true });
+          }
+
+          updateState();
+        }
+
+        function setupManagePrefsButton() {
+          const manageButton = document.getElementById('shopify-pc__banner__btn-manage-prefs');
+          const banner = document.getElementById('shopify-pc__banner');
+          
+          if (manageButton && banner) {
+            // Text ändern
+            changeManagePrefsButtonText();
+            
+            manageButton.addEventListener('click', function() {
+              // Banner sofort verstecken, wenn Dialog-Button geklickt wird
+              setTimeout(() => {
+                banner.setAttribute('hidden', '');
+                banner.style.display = 'none';
+              }, 50); // Kleine Verzögerung, damit Dialog zuerst öffnet
+            });
+          }
+        }
+
+        function addCookieEmojiToTitle() {
+          const title = document.getElementById('shopify-pc__banner__body-title');
+          if (title && !title.dataset.emojiAdded) {
+            // Prüfe ob Emoji bereits vorhanden ist
+            if (!title.textContent.includes('🍪')) {
+              title.textContent = title.textContent + ' 🍪';
+              title.dataset.emojiAdded = 'true';
+            }
+          }
+        }
+
+        function changeManagePrefsButtonText() {
+          const manageButton = document.getElementById('shopify-pc__banner__btn-manage-prefs');
+          if (manageButton && !manageButton.dataset.textChanged) {
+            // Ändere "Einstellungen verwalten" zu "Einstellungen"
+            if (manageButton.textContent.includes('Einstellungen verwalten')) {
+              manageButton.textContent = manageButton.textContent.replace('Einstellungen verwalten', 'Einstellungen');
+              manageButton.dataset.textChanged = 'true';
+            }
+            // Falls der Text in einem Span ist
+            const span = manageButton.querySelector('span');
+            if (span && span.textContent.includes('Einstellungen verwalten')) {
+              span.textContent = span.textContent.replace('Einstellungen verwalten', 'Einstellungen');
+            }
+          }
+        }
+
+        function ensureBannerWrappedAndReady() {
+          const banner = wrapCookieBanner();
+          if (banner) {
+            setupAriaScrollAndOverlay(banner);
+            setupManagePrefsButton();
+            // Cookie-Emoji zum Titel hinzufügen
+            addCookieEmojiToTitle();
+            // Button-Text ändern
+            changeManagePrefsButtonText();
+            return true;
+          }
+          return false;
+        }
+
+        function init() {
+          // Versuch sofort
+          let wrapped = ensureBannerWrappedAndReady();
+
+          // Falls das Banner später in den DOM kommt: Beobachten
+          const watcher = new MutationObserver(() => {
+            if (!wrapped) {
+              wrapped = ensureBannerWrappedAndReady();
+              if (wrapped) {
+                watcher.disconnect();
+              }
+            }
+            // Prüfe auch kontinuierlich auf Titel, falls er später geladen wird
+            addCookieEmojiToTitle();
+          });
+
+          watcher.observe(document.body, { childList: true, subtree: true });
+          
+          // Zusätzlicher Observer speziell für Titel-Änderungen
+          const titleWatcher = new MutationObserver(() => {
+            addCookieEmojiToTitle();
+            changeManagePrefsButtonText();
+          });
+          
+          // Warte auf Titel und Button, und beobachte dann deren Änderungen
+          const checkElements = setInterval(() => {
+            const title = document.getElementById('shopify-pc__banner__body-title');
+            const manageButton = document.getElementById('shopify-pc__banner__btn-manage-prefs');
+            
+            if (title) {
+              addCookieEmojiToTitle();
+              titleWatcher.observe(title, { 
+                childList: true, 
+                subtree: true, 
+                characterData: true 
+              });
+            }
+            
+            if (manageButton) {
+              changeManagePrefsButtonText();
+              titleWatcher.observe(manageButton, { 
+                childList: true, 
+                subtree: true, 
+                characterData: true 
+              });
+            }
+            
+            if (title && manageButton) {
+              clearInterval(checkElements);
+            }
+          }, 100);
+          
+          // Nach 5 Sekunden stoppen, falls Elemente nicht erscheinen
+          setTimeout(() => clearInterval(checkElements), 5000);
+        }
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', init);
+        } else {
+          init();
         }
       })();
     </script>

@@ -1,7 +1,7 @@
 <section id="section-{{ section.id }}" class="product-grid-tiles">
   <div class="container">
     {% if section.settings.heading != blank %}
-      <h2 class="heading">{{ section.settings.heading }}</h2>
+      <h1 class="heading">{{ section.settings.heading }}</h1>
     {% endif %}
     {% if section.settings.subheading != blank %}
       <p class="subheading">{{ section.settings.subheading }}</p>
@@ -10,22 +10,22 @@
     <!-- Filter and Sort Bar -->
     <div class="filter-sort-bar">
       <div class="filter-section">
-        <span class="filter-label">Filter:</span>
-        <select class="filter-dropdown" id="availability-filter">
-          <option value="">Verfügbarkeit</option>
-          <option value="available">Verfügbar</option>
-          <option value="unavailable">Nicht verfügbar</option>
-        </select>
-        <select class="filter-dropdown" id="price-filter">
+        <label for="price-filter" class="filter-label">Filter: Preis</label>
+        <select class="filter-dropdown" id="price-filter" aria-label="Nach Preis filtern">
           <option value="">Preis</option>
           <option value="low-high">Niedrig zu Hoch</option>
           <option value="high-low">Hoch zu Niedrig</option>
         </select>
+        {% if section.settings.show_reihen_filter %}
+          <select class="filter-dropdown" id="reihen-filter" aria-label="Nach Reihen filtern">
+            <option value="">Alle Reihen</option>
+          </select>
+        {% endif %}
       </div>
       
       <div class="sort-section">
-        <span class="sort-label">Sortieren nach:</span>
-        <select class="sort-dropdown" id="sort-dropdown">
+        <label for="sort-dropdown" class="sort-label">Sortieren nach:</label>
+        <select class="sort-dropdown" id="sort-dropdown" aria-label="Sortierung">
           <option value="title-asc">Alphabetisch, A-Z</option>
           <option value="title-desc">Alphabetisch, Z-A</option>
           <option value="price-asc">Preis aufsteigend</option>
@@ -60,27 +60,131 @@
       {% assign product_limit = section.settings.products_to_show %}
       
       {% for product in products_source %}
+        {% comment %} Extrahiere Reihen-Wert für dieses Produkt {% endcomment %}
+        {% assign product_reihen = '' %}
+        {% if section.settings.show_reihen_filter %}
+          {% comment %} 1. Suche nach Reihen in Varianten-Optionen {% endcomment %}
+          {% for option in product.options_with_values %}
+            {% assign option_name_lower = option.name | downcase %}
+            {% if option_name_lower == 'reihen' or option_name_lower contains 'reihe' %}
+              {% if option.values.size > 0 %}
+                {% assign product_reihen = option.values.first %}
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+          
+          {% comment %} 2. Falls nicht in Optionen gefunden, prüfe Metafields {% endcomment %}
+          {% if product_reihen == '' and product.metafields.custom.reihen %}
+            {% assign product_reihen = product.metafields.custom.reihen %}
+          {% endif %}
+          
+          {% comment %} 3. Suche nach "X-reihig" im Produkttitel {% endcomment %}
+          {% if product_reihen == '' %}
+            {% assign title_lower = product.title | downcase %}
+            {% if title_lower contains '-reihig' or title_lower contains 'reihig' %}
+              {% comment %} Extrahiere Zahl vor "-reihig" oder "reihig" {% endcomment %}
+              {% assign title_parts = title_lower | split: '-reihig' %}
+              {% if title_parts.size > 1 %}
+                {% assign before_reihig = title_parts.first | split: ' ' | last %}
+              {% else %}
+                {% assign title_parts2 = title_lower | split: 'reihig' %}
+                {% if title_parts2.size > 1 %}
+                  {% assign before_reihig = title_parts2.first | split: ' ' | last %}
+                {% endif %}
+              {% endif %}
+              {% if before_reihig contains '10' %}
+                {% assign product_reihen = '10-reihig' %}
+              {% elsif before_reihig contains '9' %}
+                {% assign product_reihen = '9-reihig' %}
+              {% elsif before_reihig contains '8' %}
+                {% assign product_reihen = '8-reihig' %}
+              {% elsif before_reihig contains '7' %}
+                {% assign product_reihen = '7-reihig' %}
+              {% elsif before_reihig contains '6' %}
+                {% assign product_reihen = '6-reihig' %}
+              {% elsif before_reihig contains '5' %}
+                {% assign product_reihen = '5-reihig' %}
+              {% elsif before_reihig contains '4' %}
+                {% assign product_reihen = '4-reihig' %}
+              {% elsif before_reihig contains '3' %}
+                {% assign product_reihen = '3-reihig' %}
+              {% elsif before_reihig contains '2' %}
+                {% assign product_reihen = '2-reihig' %}
+              {% elsif before_reihig contains '1' %}
+                {% assign product_reihen = '1-reihig' %}
+              {% endif %}
+            {% endif %}
+          {% endif %}
+          
+          {% comment %} 4. Suche nach "X-reihig" in Produktbeschreibung {% endcomment %}
+          {% if product_reihen == '' and product.description != blank %}
+            {% assign desc_lower = product.description | downcase %}
+            {% if desc_lower contains '-reihig' %}
+              {% assign desc_parts = desc_lower | split: '-reihig' %}
+              {% if desc_parts.size > 0 %}
+                {% assign before_reihig = desc_parts.first | split: ' ' | last %}
+                {% if before_reihig contains '1' %}{% assign product_reihen = '1-reihig' %}
+                {% elsif before_reihig contains '2' %}{% assign product_reihen = '2-reihig' %}
+                {% elsif before_reihig contains '3' %}{% assign product_reihen = '3-reihig' %}
+                {% elsif before_reihig contains '4' %}{% assign product_reihen = '4-reihig' %}
+                {% elsif before_reihig contains '5' %}{% assign product_reihen = '5-reihig' %}
+                {% elsif before_reihig contains '6' %}{% assign product_reihen = '6-reihig' %}
+                {% elsif before_reihig contains '7' %}{% assign product_reihen = '7-reihig' %}
+                {% elsif before_reihig contains '8' %}{% assign product_reihen = '8-reihig' %}
+                {% elsif before_reihig contains '9' %}{% assign product_reihen = '9-reihig' %}
+                {% elsif before_reihig contains '10' %}{% assign product_reihen = '10-reihig' %}
+                {% endif %}
+              {% endif %}
+            {% endif %}
+          {% endif %}
+          
+          {% comment %} 5. Suche nach "X-reihig" in Tags {% endcomment %}
+          {% if product_reihen == '' and product.tags.size > 0 %}
+            {% for tag in product.tags %}
+              {% assign tag_lower = tag | downcase %}
+              {% if tag_lower contains '-reihig' %}
+                {% assign product_reihen = tag %}
+                {% break %}
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+        {% endif %}
+        
         <a
           href="{{ product.url }}"
           class="product-card"
           aria-label="{{ product.title | escape }}"
           data-product-title="{{ product.title | escape }}"
           data-product-price="{{ product.price }}"
-          data-product-available="{{ product.available }}"
           data-product-id="{{ product.id }}"
+          {% if section.settings.show_reihen_filter and product_reihen != blank %}data-product-reihen="{{ product_reihen }}"{% endif %}
         >
           <div class="product-card__image-container">
             {% if product.featured_image %}
+              {% liquid
+                assign gap_size = section.settings.gap | default: 20
+                assign columns_mobile = section.settings.columns_mobile | default: 2 | plus: 0
+                assign columns_tablet = section.settings.columns_tablet | default: 3 | plus: 0
+                assign columns_desktop = section.settings.columns_desktop | default: 4 | plus: 0
+                
+                assign mobile_percent = 100 | divided_by: columns_mobile
+                assign tablet_percent = 100 | divided_by: columns_tablet
+                assign desktop_percent = 100 | divided_by: columns_desktop
+              %}
               <img
-                src="{{ product.featured_image | image_url: width: 600 }}"
+                src="{{ product.featured_image | image_url: width: 400 }}"
                 srcset="
-                  {{ product.featured_image | image_url: width: 300 }} 300w,
-                  {{ product.featured_image | image_url: width: 450 }} 450w,
+                  {{ product.featured_image | image_url: width: 250 }} 250w,
+                  {{ product.featured_image | image_url: width: 350 }} 350w,
+                  {{ product.featured_image | image_url: width: 400 }} 400w,
+                  {{ product.featured_image | image_url: width: 500 }} 500w,
                   {{ product.featured_image | image_url: width: 600 }} 600w
                 "
-                sizes="(min-width: 1280px) 25vw, (min-width: 768px) 33vw, 50vw"
+                sizes="(min-width: 1280px) calc({{ desktop_percent }}vw - {{ gap_size }}px), (min-width: 768px) calc({{ tablet_percent }}vw - {{ gap_size }}px), calc({{ mobile_percent }}vw - {{ gap_size }}px)"
                 alt="{{ product.featured_image.alt | default: product.title | escape }}"
                 loading="lazy"
+                width="{{ product.featured_image.width | default: 400 }}"
+                height="{{ product.featured_image.height | default: 400 }}"
                 class="product-card__image"
               />
             {% else %}
@@ -93,20 +197,6 @@
           <div class="product-card__content">
             <div class="product-card__header">
               <h3 class="product-card__title">{{ product.title }}</h3>
-              <div class="product-card__availability">
-                {% if product.available %}
-                  <svg class="availability-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z" fill="#10b981"/>
-                  </svg>
-                  <span class="availability-text">Verfügbar</span>
-                {% else %}
-                  <svg class="availability-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" fill="#dc2626"/>
-                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" fill="#dc2626"/>
-                  </svg>
-                  <span class="availability-text">Nicht verfügbar</span>
-                {% endif %}
-              </div>
             </div>
             
             {% if section.settings.show_price %}
@@ -311,19 +401,8 @@
       hyphens: auto;
     }
     
-    #section-{{ section.id }} .product-card__availability{ 
-      display: flex; 
-      align-items: center; 
-      gap: 4px; 
-      white-space: nowrap; 
-    }
     
-    #section-{{ section.id }} .availability-text{ 
-      font-size: 14px; 
-      font-weight: 500; 
-    }
     
-    /* Verfügbarkeits-Status über JavaScript gesetzt */
     
     #section-{{ section.id }} .product-card__price{ 
       font-size: 16px; 
@@ -417,16 +496,64 @@
       #section-{{ section.id }} .filter-sort-bar{ 
         flex-direction: column; 
         align-items: stretch; 
-        gap: 16px; 
+        gap: 10px; 
+        padding: 8px 0;
       }
       
-      #section-{{ section.id }} .filter-section, 
+      #section-{{ section.id }} .filter-section{ 
+        display: flex;
+        flex-direction: row;
+        align-items: flex-end;
+        gap: 8px;
+        width: 100%;
+        flex-wrap: wrap;
+      }
+      
+      #section-{{ section.id }} .filter-section .filter-label {
+        display: none; /* Label ausblenden, da visuell verborgen */
+      }
+      
+      #section-{{ section.id }} .filter-dropdown {
+        flex: 1;
+        min-width: 0 !important;
+        width: auto;
+        max-width: none;
+        box-sizing: border-box;
+        font-size: 12px;
+        padding: 6px 10px;
+      }
+      
+      /* Wenn nur ein Filter, volle Breite */
+      #section-{{ section.id }} .filter-section .filter-dropdown:only-of-type {
+        flex: 1 1 100%;
+      }
+      
       #section-{{ section.id }} .sort-section{ 
-        justify-content: space-between; 
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+        width: 100%;
+      }
+      
+      #section-{{ section.id }} .sort-label {
+        font-size: 11px;
+        margin-bottom: 2px;
+      }
+      
+      #section-{{ section.id }} .sort-dropdown {
+        min-width: 100% !important;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        font-size: 12px;
+        padding: 6px 10px;
       }
       
       #section-{{ section.id }} .product-count{ 
         text-align: center; 
+        font-size: 11px;
+        padding-top: 6px;
+        border-top: 1px solid #e2e8f0;
       }
       
       /* Mobile-spezifische Verbesserungen für Produktkarten */
@@ -444,10 +571,6 @@
         margin-bottom: 4px; 
       }
       
-      #section-{{ section.id }} .product-card__availability{ 
-        align-self: flex-end; 
-        margin-top: auto; 
-      }
       
       #section-{{ section.id }} .product-card__content{ 
         padding: 12px; 
@@ -464,7 +587,7 @@
     document.addEventListener('DOMContentLoaded', function() {
       const sectionId = 'section-{{ section.id }}';
       const productCards = document.querySelectorAll(`#${sectionId} .product-card`);
-      const availabilityFilter = document.getElementById('availability-filter');
+      const reihenFilter = document.getElementById('reihen-filter');
       const priceFilter = document.getElementById('price-filter');
       const sortDropdown = document.getElementById('sort-dropdown');
       const productCount = document.getElementById('product-count');
@@ -480,23 +603,33 @@
       let filteredAndSortedProducts = Array.from(productCards);
       let totalPages = 1;
 
-      // Verfügbarkeits-Farben setzen
-      function setAvailabilityColors() {
+      // Sammle verfügbare Reihen-Werte für den Filter
+      {% if section.settings.show_reihen_filter %}
+      if (reihenFilter) {
+        const reihenValues = new Set();
         productCards.forEach(card => {
-          const isAvailable = card.dataset.productAvailable === 'true';
-          const availabilityText = card.querySelector('.availability-text');
-          if (availabilityText) {
-            if (isAvailable) {
-              availabilityText.style.color = '#10b981'; // Grün für verfügbar
-            } else {
-              availabilityText.style.color = '#dc2626'; // Rot für nicht verfügbar
-            }
+          const reihen = card.dataset.productReihen;
+          if (reihen && reihen.trim() !== '') {
+            reihenValues.add(reihen.trim());
           }
         });
+        
+        // Sortiere und füge Optionen hinzu
+        const sortedReihen = Array.from(reihenValues).sort((a, b) => {
+          const numA = parseInt(a) || 0;
+          const numB = parseInt(b) || 0;
+          return numA - numB;
+        });
+        
+        sortedReihen.forEach(reihe => {
+          const option = document.createElement('option');
+          option.value = reihe;
+          option.textContent = reihe;
+          reihenFilter.appendChild(option);
+        });
       }
+      {% endif %}
 
-      // Initiale Farben setzen
-      setAvailabilityColors();
 
       function updateProductCount() {
         const visibleProducts = document.querySelectorAll(`#${sectionId} .product-card:not(.hidden)`);
@@ -557,17 +690,36 @@
       }
 
       function filterProducts() {
-        const availabilityValue = availabilityFilter.value;
+        const reihenValue = reihenFilter ? reihenFilter.value : '';
         const priceValue = priceFilter.value;
 
         filteredAndSortedProducts = Array.from(productCards).filter(card => {
-          const isAvailable = card.dataset.productAvailable === 'true';
+          // Reihen-Filter
+          if (reihenValue && reihenFilter) {
+            const cardReihen = card.dataset.productReihen || '';
+            const cardTitle = card.dataset.productTitle || '';
+            const cardTitleLower = cardTitle.toLowerCase();
           
-          // Verfügbarkeits-Filter
-          if (availabilityValue === 'available' && !isAvailable) {
-            return false;
-          } else if (availabilityValue === 'unavailable' && isAvailable) {
-            return false;
+            // Prüfe data-product-reihen Attribut
+            if (cardReihen && cardReihen === reihenValue) {
+              // Match gefunden, weiter mit diesem Produkt
+            } 
+            // Prüfe auch im Titel nach "X-reihig"
+            else if (reihenValue.includes('-reihig')) {
+              const searchNum = reihenValue.replace(/\D/g, '');
+              const titleMatch = cardTitleLower.match(/(\d+)-?reihig/);
+              if (titleMatch && titleMatch[1] === searchNum) {
+                // Match gefunden
+              } else {
+                return false; // Kein Match
+              }
+            } else if (cardReihen && cardReihen.includes(reihenValue)) {
+              // Partielle Übereinstimmung
+            } else if (cardTitleLower.includes(reihenValue.toLowerCase())) {
+              // Im Titel gefunden
+            } else {
+              return false; // Kein Match gefunden
+            }
           }
           
           return true;
@@ -610,7 +762,9 @@
       }
 
       // Event Listeners
-      availabilityFilter.addEventListener('change', filterProducts);
+      if (reihenFilter) {
+        reihenFilter.addEventListener('change', filterProducts);
+      }
       priceFilter.addEventListener('change', function() {
         if (this.value === 'low-high') {
           sortDropdown.value = 'price-asc';
@@ -752,6 +906,7 @@
       "content": "Produktinformationen"
     },
     { "type": "checkbox", "id": "show_price", "label": "Preis anzeigen", "default": true },
+    { "type": "checkbox", "id": "show_reihen_filter", "label": "Reihefilter", "default": false },
     { "type": "select", "id": "image_fit", "label": "Bildmodus", "default": "contain", "options": [
       { "value": "contain", "label": "Contain (empfohlen)" },
       { "value": "cover",   "label": "Cover" }

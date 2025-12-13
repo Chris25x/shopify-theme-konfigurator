@@ -66,13 +66,25 @@
             "image": "shopify://shop_images/Aufputz_Feuchtraum_Collection.png",
             "bg_style": "white"
           }
+        },
+        "tile_KHxqRj": {
+          "type": "tile",
+          "settings": {
+            "title": "Verbindungsklemmen Sets",
+            "subtitle": "Varianten 25, 50, 100 Stück",
+            "link": "shopify://pages/verbindungsklemmen",
+            "collection": "verbindungsklemmen",
+            "image": "shopify://shop_images/1024-7852353-DE_2a21e81a-dd79-4161-8535-8c73cdc90203.jpg",
+            "bg_style": "white"
+          }
         }
       },
       "block_order": [
         "tile_8zNixk",
         "tile_gyf3zk",
         "tile_phWD6f",
-        "tile_QThU6M"
+        "tile_QThU6M",
+        "tile_KHxqRj"
       ],
       "name": "Collections Grid (4 tiles)",
       "settings": {

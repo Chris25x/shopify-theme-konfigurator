@@ -3,9 +3,22 @@ class CartRemoveButton extends HTMLElement {
     super();
 
     this.addEventListener('click', (event) => {
+      // Prüfe, ob der Klick auf den SVG-Wrapper oder das SVG-Icon selbst erfolgt ist
+      const clickedElement = event.target;
+      const svgWrapper = clickedElement.closest('.svg-wrapper');
+      const svgIcon = clickedElement.closest('svg');
+      
+      // Nur ausführen, wenn auf den SVG-Wrapper oder das SVG-Icon geklickt wurde
+      if (!svgWrapper && !svgIcon && !clickedElement.matches('.svg-wrapper') && !clickedElement.matches('svg')) {
+        return; // Ignoriere den Klick, wenn nicht auf das Icon geklickt wurde
+      }
+      
       event.preventDefault();
+      event.stopPropagation();
       const cartItems = this.closest('cart-items') || this.closest('cart-drawer-items');
+      if (cartItems) {
       cartItems.updateQuantity(this.dataset.index, 0, event);
+      }
     });
   }
 }

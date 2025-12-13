@@ -196,9 +196,29 @@ if (!customElements.get('product-info')) {
           this.querySelector(`#Quantity-Rules-${this.dataset.section}`)?.classList.remove('hidden');
           this.querySelector(`#Volume-Note-${this.dataset.section}`)?.classList.remove('hidden');
 
+          // Prüfe Button-Status aus der HTML-Response
+          const submitButton = html.getElementById(`ProductSubmitButton-${this.sectionId}`);
+          let isDisabled = false;
+          let buttonText = null;
+          
+          if (submitButton) {
+            isDisabled = submitButton.hasAttribute('disabled');
+            buttonText = submitButton.querySelector('span')?.textContent?.trim();
+          }
+          
+          // Prüfe auch die Variante direkt - wenn verfügbar, Button aktivieren
+          if (variant && variant.available) {
+            isDisabled = false;
+            buttonText = null; // Standard-Text verwenden
+          } else if (variant && !variant.available) {
+            // Wenn Variante nicht verfügbar ist, Button deaktivieren
+            isDisabled = true;
+            buttonText = window.variantStrings.soldOut;
+          }
+          
           this.productForm?.toggleSubmitButton(
-            html.getElementById(`ProductSubmitButton-${this.sectionId}`)?.hasAttribute('disabled') ?? true,
-            window.variantStrings.soldOut
+            isDisabled,
+            buttonText || (isDisabled ? window.variantStrings.soldOut : undefined)
           );
 
           publish(PUB_SUB_EVENTS.variantChange, {

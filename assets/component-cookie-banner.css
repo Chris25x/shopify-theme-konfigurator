@@ -1,0 +1,411 @@
+/* ============================================
+   Shopify Cookie Banner - Modern Modal Design
+   ============================================ */
+
+/* Container & Overlay wie bei den Präferenzen
+   WICHTIG: Position / Ausrichtung bleibt bei Shopify-Einstellungen.
+   Daher hier keine Zentrierung oder feste Position setzen. */
+#shopify-pc__prefs {
+  /* Container nimmt keinen Einfluss auf die Positionierung des Banners */
+  position: fixed;
+  inset: 0;
+  z-index: 100000; /* Basis für Overlay/Banner/Dialog */
+  pointer-events: none;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#shopify-pc__prefs__overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  opacity: 0;
+  display: none;
+  pointer-events: none;
+  z-index: 100000; /* unter Banner/Dialog */
+  transition: opacity 0.2s ease;
+}
+
+#shopify-pc__prefs__overlay.is-visible {
+  display: block;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Z-Stack: Overlay < Banner < Präferenz-Dialog */
+
+.shopify-pc__banner__dialog {
+  padding: 0;
+}
+
+#shopify-pc__prefs__dialog {
+  position: fixed;
+  z-index: 100003; /* über dem Banner - höher als Banner z-index */
+  pointer-events: auto;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 10px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  display: none; /* initial verborgen */
+}
+
+#shopify-pc__prefs__dialog[aria-modal="true"] {
+  display: block; /* zeigen, wenn aktiv */
+}
+
+/* Dialog Header Titel */
+#shopify-pc__prefs__header-title {
+  font-size: 15px;
+}
+
+/* Dialog Intro */
+.shopify-pc__prefs__intro-main {
+  font-size: 15px;
+}
+
+.shopify-pc__prefs__intro-main h3 {
+  font-size: 15px;
+}
+
+.shopify-pc__prefs__intro-main p {
+  font-size: 13px;
+}
+
+/* Dialog Essential Input */
+.shopify-pc__prefs__essential-input {
+  font-size: 15px;
+}
+
+/* Dialog Option */
+.shopify-pc__prefs__option p {
+  font-size: 13px;
+}
+
+.shopify-pc__prefs__option label {
+  font-size: 15px;
+}
+
+/* Checkbox SVG Icons kleiner machen */
+.shopify-pc__prefs__option svg[data-icon-type="unchecked"],
+.shopify-pc__prefs__option svg[data-icon-type="checked"],
+.shopify-pc__prefs__option svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Dialog Header Buttons - gleiche Größe wie Banner-Buttons */
+#shopify-pc__prefs__header-accept,
+#shopify-pc__prefs__header-decline,
+#shopify-pc__prefs__header-save {
+  height: 44px;
+  padding: 0 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid #000000;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-sizing: border-box;
+}
+
+/* Banner verstecken, wenn Dialog geöffnet ist */
+#shopify-pc__prefs__dialog[aria-modal="true"] ~ #shopify-pc__banner,
+#shopify-pc__prefs:has(#shopify-pc__prefs__dialog[aria-modal="true"]) #shopify-pc__banner {
+  display: none !important;
+}
+/* Haupt-Container: innerhalb des Containers, Position von Shopify respektieren */
+#shopify-pc__banner {
+  /* Position und Ausrichtung kommen von Shopify – nicht überschreiben */
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  bottom: auto !important;
+  right: auto !important;
+  z-index: 100001; /* Banner-Ebene */
+  background: transparent;
+  display: inline-block;
+  width: auto;
+  max-width: 100%;
+}
+
+/* Wrapper: Modal-Design, Position von Shopify respektieren */
+#shopify-pc__banner .shopify-pc__banner__wrapper {
+  position: relative;
+  max-width: 520px;
+  width: 100%;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 28px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  /* Ermöglicht Klicks innerhalb des Modals */
+  pointer-events: auto;
+  /* Smooth Animation */
+  animation: cookieBannerFadeIn 0.3s ease-out;
+  /* Margin für Zentrierung, falls Shopify es erlaubt */
+  margin: 0 auto;
+}
+
+@keyframes cookieBannerFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+
+/* Überschrift */
+#shopify-pc__banner__body-title {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.3;
+  margin: 0 0 16px 0;
+  color: #111111;
+}
+
+/* Fließtext */
+#shopify-pc__banner .shopify-pc__banner__body p {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #4b5563;
+  margin: 0;
+  max-width: 100%;
+}
+
+/* Link zur Datenschutzerklärung */
+#shopify-pc__banner__body-policy-link {
+  color: #005A9C;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease;
+}
+
+#shopify-pc__banner__body-policy-link:hover {
+  border-bottom-color: #005A9C;
+  text-decoration: none;
+}
+
+#shopify-pc__banner__body-policy-link:focus {
+  outline: 2px solid #005A9C;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Button-Gruppe */
+#shopify-pc__banner .shopify-pc__banner__btns {
+  display: flex;
+  gap: 8px;
+  flex-wrap: nowrap;
+  flex-direction: row;
+}
+
+/* Alle Buttons - Basis-Styling */
+#shopify-pc__banner .shopify-pc__banner__btns button {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 44px;
+  padding: 0 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid #000000;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-sizing: border-box;
+}
+
+/* Primärer Button: "Akzeptieren" */
+#shopify-pc__banner__btn-accept {
+  background: #000000;
+  color: #ffffff;
+  border: 1px solid #000000;
+  order: 1;
+}
+
+#shopify-pc__banner__btn-accept:hover {
+  background: #333333;
+  border-color: #000000;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+#shopify-pc__banner__btn-accept:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+#shopify-pc__banner__btn-accept:focus {
+  outline: 2px solid #000000;
+  outline-offset: 2px;
+}
+
+/* Sekundärer Button: "Einstellungen verwalten" */
+#shopify-pc__banner__btn-manage-prefs {
+  background: #ffffff;
+  color: #111111;
+  border: 1px solid #000000;
+  order: 2;
+}
+
+#shopify-pc__banner__btn-manage-prefs:hover {
+  background: #f9fafb;
+  border-color: #000000;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+#shopify-pc__banner__btn-manage-prefs:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+#shopify-pc__banner__btn-manage-prefs:focus {
+  outline: 2px solid #111111;
+  outline-offset: 2px;
+}
+
+/* Sekundärer Button: "Ablehnen" */
+#shopify-pc__banner__btn-decline {
+  background: #ffffff;
+  color: #111111;
+  border: 1px solid #000000;
+  order: 3;
+}
+
+#shopify-pc__banner__btn-decline:hover {
+  background: #f9fafb;
+  border-color: #000000;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+#shopify-pc__banner__btn-decline:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+#shopify-pc__banner__btn-decline:focus {
+  outline: 2px solid #111111;
+  outline-offset: 2px;
+}
+
+/* Button-Text (falls span verwendet wird) */
+#shopify-pc__banner .shopify-pc__banner__btns button span {
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+/* ============================================
+   Responsive: Mobile
+   ============================================ */
+@media screen and (max-width: 749px) {
+  /* Padding für Abstand zum Rand */
+  #shopify-pc__banner {
+    padding: 16px;
+  }
+
+  #shopify-pc__banner .shopify-pc__banner__wrapper {
+    max-width: 100%;
+    padding: 32px 24px;
+    border-radius: 10px;
+  }
+
+  /* Überschrift kleiner auf Mobile */
+  #shopify-pc__banner__body-title {
+    font-size: 20px;
+    margin-bottom: 12px;
+  }
+
+  /* Text kleiner auf Mobile */
+  #shopify-pc__banner .shopify-pc__banner__body p {
+    font-size: 14px;
+  }
+
+  /* Buttons nebeneinander, auch auf Mobile */
+  #shopify-pc__banner .shopify-pc__banner__btns {
+    flex-direction: row;
+    gap: 6px;
+  }
+
+  #shopify-pc__banner .shopify-pc__banner__btns button {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 0 8px;
+    font-size: 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    box-sizing: border-box;
+  }
+}
+
+/* ============================================
+   Accessibility: ARIA Modal
+   ============================================ */
+/* ARIA Modal wird durch position: fixed abgedeckt - keine zusätzlichen Styles nötig */
+
+/* ============================================
+   Anpassbare Variablen (für einfache Anpassungen)
+   ============================================ */
+:root {
+  /* Modal */
+  --cookie-banner-overlay-bg: rgba(0, 0, 0, 0.65);
+  --cookie-banner-modal-bg: #ffffff;
+  --cookie-banner-modal-max-width: 680px;
+  --cookie-banner-modal-padding: 40px;
+  --cookie-banner-modal-border-radius: 12px;
+  --cookie-banner-modal-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+
+  /* Typografie */
+  --cookie-banner-title-size: 24px;
+  --cookie-banner-title-weight: 700;
+  --cookie-banner-text-size: 15px;
+  --cookie-banner-text-color: #4b5563;
+
+  /* Buttons */
+  --cookie-banner-button-height: 44px;
+  --cookie-banner-button-border-radius: 6px;
+  --cookie-banner-button-gap: 12px;
+  --cookie-banner-primary-bg: #000000;
+  --cookie-banner-primary-color: #ffffff;
+  --cookie-banner-secondary-bg: #ffffff;
+  --cookie-banner-secondary-color: #111111;
+  --cookie-banner-secondary-border: #111111;
+
+  /* Mobile */
+  --cookie-banner-mobile-max-width: 90%;
+  --cookie-banner-mobile-padding: 32px 24px;
+}
+
+/* ============================================
+   Verstecktes Banner (wenn nicht sichtbar)
+   ============================================ */
+#shopify-pc__banner[hidden] {
+  display: none !important;
+}
+

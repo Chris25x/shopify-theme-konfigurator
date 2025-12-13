@@ -257,19 +257,33 @@ cart-remove-button .icon-remove {
 }
 
 .cart-item .loading__spinner {
+  position: absolute !important;
   top: 0;
   left: auto;
-  right: auto;
-  bottom: 0;
+  right: 0;
+  bottom: auto;
   padding: 0;
+  z-index: 1;
 }
 
 @media screen and (min-width: 750px) {
   .cart-item .loading__spinner {
     right: 0;
-    padding-top: 4.5rem;
+    top: 0;
+    padding-top: 0;
     bottom: auto;
   }
+}
+
+/* Stelle sicher, dass cart-item__totals relativ positioniert ist */
+.cart-item .cart-item__totals {
+  position: relative;
+}
+
+/* Preis soll über dem Spinner liegen */
+.cart-item .price.price--end {
+  position: relative;
+  z-index: 2;
 }
 
 .cart-item .loading__spinner:not(.hidden) ~ * {

@@ -29,6 +29,10 @@ class CartDrawer extends HTMLElement {
     if (triggeredBy) this.setActiveElement(triggeredBy);
     const cartDrawerNote = this.querySelector('[id^="Details-"] summary');
     if (cartDrawerNote && !cartDrawerNote.hasAttribute('role')) this.setSummaryAccessibility(cartDrawerNote);
+    
+    // Stelle sicher, dass visibility nicht auf hidden gesetzt ist
+    this.style.visibility = '';
+    
     // here the animation doesn't seem to always get triggered. A timeout seem to help
     setTimeout(() => {
       this.classList.add('animate', 'active');
@@ -52,7 +56,27 @@ class CartDrawer extends HTMLElement {
   close() {
     this.classList.remove('active');
     removeTrapFocus(this.activeElement);
+    
+    // Warte auf das Ende der Transition, bevor overflow-hidden entfernt wird
+    this.addEventListener(
+      'transitionend',
+      () => {
+        document.body.classList.remove('overflow-hidden');
+        // Stelle sicher, dass der Drawer auch nach der Transition ausgeblendet bleibt
+        if (!this.classList.contains('active')) {
+          this.style.visibility = 'hidden';
+        }
+      },
+      { once: true }
+    );
+    
+    // Fallback: Entferne overflow-hidden auch nach kurzer Zeit, falls transitionend nicht feuert
+    setTimeout(() => {
     document.body.classList.remove('overflow-hidden');
+      if (!this.classList.contains('active')) {
+        this.style.visibility = 'hidden';
+      }
+    }, 300);
   }
 
   setSummaryAccessibility(cartDrawerNote) {
@@ -71,16 +95,74 @@ class CartDrawer extends HTMLElement {
   }
 
   renderContents(parsedState) {
-    this.querySelector('.drawer__inner').classList.contains('is-empty') &&
-      this.querySelector('.drawer__inner').classList.remove('is-empty');
+    // Entferne is-empty Klasse vom cart-drawer Element und drawer__inner
+    this.classList.remove('is-empty');
+    const drawerInner = this.querySelector('.drawer__inner');
+    if (drawerInner) {
+      drawerInner.classList.remove('is-empty');
+    }
+    
+    // Verstecke drawer__inner-empty wenn vorhanden
+    const drawerInnerEmpty = this.querySelector('.drawer__inner-empty');
+    if (drawerInnerEmpty) {
+      drawerInnerEmpty.style.display = 'none';
+    }
+    
+    // Entferne is-empty Klasse von cart-drawer-items
+    const cartDrawerItems = this.querySelector('cart-drawer-items');
+    if (cartDrawerItems) {
+      cartDrawerItems.classList.remove('is-empty');
+    }
+    
     this.productId = parsedState.id;
     this.getSectionsToRender().forEach((section) => {
+      if (section.id === 'cart-icon-bubble') {
+        // Spezielle Behandlung für cart-icon-bubble: Aktualisiere den Inhalt des Links
+        const cartIconElement = document.getElementById('cart-icon-bubble');
+        // Versuche sowohl section.id als auch section.section zu verwenden
+        const sectionKey = section.section || section.id;
+        if (cartIconElement && parsedState.sections && parsedState.sections[sectionKey]) {
+          const sectionHTML = parsedState.sections[sectionKey];
+          
+          try {
+            // Parse den HTML-String
+            const parsedHTML = new DOMParser().parseFromString(sectionHTML, 'text/html');
+            
+            // Versuche .shopify-section zu finden (Standard-Format)
+            let content = parsedHTML.querySelector('.shopify-section');
+            if (content) {
+              cartIconElement.innerHTML = content.innerHTML;
+              return;
+            }
+            
+            // Versuche div mit shopify-section id zu finden
+            content = parsedHTML.querySelector('div[id*="shopify-section-cart-icon-bubble"]');
+            if (content) {
+              cartIconElement.innerHTML = content.innerHTML;
+              return;
+            }
+            
+            // Fallback: Verwende den Body-Inhalt direkt
+            if (parsedHTML.body && parsedHTML.body.innerHTML.trim()) {
+              cartIconElement.innerHTML = parsedHTML.body.innerHTML;
+            } else {
+              // Letzter Fallback: Verwende den HTML-String direkt (falls er bereits sauber ist)
+              cartIconElement.innerHTML = sectionHTML.trim();
+            }
+          } catch (error) {
+            console.error('Fehler beim Parsen der cart-icon-bubble Section:', error, sectionHTML);
+            // Fallback: Verwende den HTML-String direkt
+            cartIconElement.innerHTML = sectionHTML;
+          }
+        }
+      } else {
       const sectionElement = section.selector
         ? document.querySelector(section.selector)
         : document.getElementById(section.id);
 
       if (!sectionElement) return;
       sectionElement.innerHTML = this.getSectionInnerHTML(parsedState.sections[section.id], section.selector);
+      }
     });
 
     setTimeout(() => {

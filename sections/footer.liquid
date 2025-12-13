@@ -26,16 +26,42 @@
     }
   }
 
-  /* Verstecke Country/Region Selector Spalte im Footer */
+  /* Footer Localization - oben links positionieren */
+  .footer__content-bottom-wrapper {
+    justify-content: flex-start !important;
+    align-items: flex-start !important;
+  }
+  
   .footer__column.footer__localization {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+    order: -1 !important;
+    width: auto !important;
+    flex: 0 0 auto !important;
+  }
+  
+  /* Mobile: Länderauswahl mittig */
+  @media screen and (max-width: 749px) {
+    .footer__content-bottom-wrapper {
+      justify-content: center !important;
+      align-items: center !important;
+    }
+    
+    .footer__column.footer__localization {
+      align-items: center !important;
+      justify-content: center !important;
+      width: 100% !important;
+      flex: 1 1 100% !important;
+    }
+  }
+  
+  /* Verstecke Sprachauswahl im Footer */
+  .footer__localization localization-form:has(#FooterLanguageForm),
+  #FooterLanguageForm {
     display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-    height: 0 !important;
-    width: 0 !important;
-    overflow: hidden !important;
-    margin: 0 !important;
-    padding: 0 !important;
   }
 
   /* Zentriere die Info-Spalte im Footer */
@@ -311,7 +337,7 @@
         <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 15px;">
           <img 
             src="https://cdn.shopify.com/s/files/1/0944/8711/8089/files/hbLogo.png?v=1760953110" 
-            alt="Hausbau Logo" 
+            alt="Mitglied Haendlerbund Logo" 
             style="height: 48px; width: auto; opacity: 0.8;"
             loading="lazy"
           >
