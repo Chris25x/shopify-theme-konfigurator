@@ -2,14 +2,41 @@ class CartDrawer extends HTMLElement {
   constructor() {
     super();
 
+    // Prüfe, ob wir auf der Konfigurator-Seite sind und ob es ein mobiles Gerät ist
+    this.shouldRedirectToCartPage = this.isKonfiguratorPageOnMobile();
+    
     this.addEventListener('keyup', (evt) => evt.code === 'Escape' && this.close());
     this.querySelector('#CartDrawer-Overlay').addEventListener('click', this.close.bind(this));
     this.setHeaderCartIconAccessibility();
   }
 
+  isKonfiguratorPageOnMobile() {
+    // Prüfe, ob wir auf der Konfigurator-Seite sind
+    const isKonfiguratorPage = window.location.pathname.includes('/pages/konfigurator') || 
+                                document.body.classList.contains('konfigurator-page');
+    
+    if (!isKonfiguratorPage) return false;
+    
+    // Prüfe, ob es ein mobiles Touch-Gerät ist
+    const isTouchDevice = ('ontouchstart' in window) || 
+                          (navigator.maxTouchPoints > 0) || 
+                          (navigator.msMaxTouchPoints > 0) ||
+                          /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    return isTouchDevice;
+  }
+
   setHeaderCartIconAccessibility() {
     const cartLink = document.querySelector('#cart-icon-bubble');
     if (!cartLink) return;
+
+    // Wenn wir auf der Konfigurator-Seite mit mobilem Gerät sind, leite direkt zur Cart-Seite weiter
+    if (this.shouldRedirectToCartPage) {
+      cartLink.setAttribute('href', '/cart');
+      cartLink.removeAttribute('role');
+      cartLink.removeAttribute('aria-haspopup');
+      return; // Keine Event-Listener für Drawer-Öffnung hinzufügen
+    }
 
     cartLink.setAttribute('role', 'button');
     cartLink.setAttribute('aria-haspopup', 'dialog');
@@ -26,6 +53,12 @@ class CartDrawer extends HTMLElement {
   }
 
   open(triggeredBy) {
+    // Wenn wir auf der Konfigurator-Seite mit mobilem Gerät sind, leite direkt zur Cart-Seite weiter
+    if (this.shouldRedirectToCartPage) {
+      window.location.href = '/cart';
+      return;
+    }
+    
     if (triggeredBy) this.setActiveElement(triggeredBy);
     const cartDrawerNote = this.querySelector('[id^="Details-"] summary');
     if (cartDrawerNote && !cartDrawerNote.hasAttribute('role')) this.setSummaryAccessibility(cartDrawerNote);
@@ -166,6 +199,12 @@ class CartDrawer extends HTMLElement {
     });
 
     setTimeout(() => {
+      // Wenn wir auf der Konfigurator-Seite mit mobilem Gerät sind, leite direkt zur Cart-Seite weiter
+      if (this.shouldRedirectToCartPage) {
+        window.location.href = '/cart';
+        return;
+      }
+      
       this.querySelector('#CartDrawer-Overlay').addEventListener('click', this.close.bind(this));
       this.open();
     });

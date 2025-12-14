@@ -18,8 +18,8 @@
     }
   }
 
-  /* Cart-Item Container Styling - Wie cart-summary-card */
-  .cart-item {
+  /* Cart-Item Container Styling - Wie cart-summary-card - NUR für Cart-Seite, nicht für Cart-Drawer */
+  #main-cart-items .cart-item {
     background: #ffffff !important;
     border-radius: 16px !important;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
@@ -31,35 +31,35 @@
   }
 
   /* Erste und letzte Zelle für Desktop-Rundung */
-  .cart-item td:first-child {
+  #main-cart-items .cart-item td:first-child {
     border-top-left-radius: 16px !important;
     border-bottom-left-radius: 16px !important;
     vertical-align: middle !important;
   }
 
-  .cart-item td:last-child {
+  #main-cart-items .cart-item td:last-child {
     border-top-right-radius: 16px !important;
     border-bottom-right-radius: 16px !important;
     vertical-align: middle !important;
   }
 
-  .cart-item td {
+  #main-cart-items .cart-item td {
     vertical-align: middle !important;
     padding: 16px !important;
   }
 
   /* Cart-Item Name Styling - Kein Underline, kein Absprung */
-  .cart-item__name {
+  #main-cart-items .cart-item__name {
     text-decoration: none !important;
   }
 
-  .cart-item__name h4.break {
+  #main-cart-items .cart-item__name h4.break {
     text-decoration: none !important;
     line-height: 1.2 !important;
   }
 
   /* Produktbild standardisieren */
-  .cart-item__image-container {
+  #main-cart-items .cart-item__image-container {
     width: 80px !important;
     height: 80px !important;
     border-radius: 8px !important;
@@ -70,7 +70,7 @@
     background: #ffffff !important;
   }
 
-  .cart-item__image {
+  #main-cart-items .cart-item__image {
     width: 80px !important;
     height: 80px !important;
     object-fit: contain !important;
@@ -79,14 +79,14 @@
 
   /* Mobile: Standard Dawn Theme Größe mit weißen Containern */
   @media screen and (max-width: 749px) {
-    .cart-item {
+    #main-cart-items .cart-item {
       border-radius: 16px !important;
       min-height: auto !important;
       height: auto !important;
       overflow: hidden !important;
     }
 
-    .cart-item td {
+    #main-cart-items .cart-item td {
       vertical-align: middle !important;
       padding: 12px !important;
       height: auto !important;
@@ -94,18 +94,18 @@
     }
 
     /* Mobile: cart-item__totals right small-hide entfernen */
-    .cart-item__totals.right.small-hide {
+    #main-cart-items .cart-item__totals.right.small-hide {
       display: none !important;
     }
   }
 
-  .cart-item-spacer {
+  #main-cart-items .cart-item-spacer {
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
   }
 
-  .cart-item-spacer td {
+  #main-cart-items .cart-item-spacer td {
     background: transparent !important;
     border: none !important;
   }

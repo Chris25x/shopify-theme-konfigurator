@@ -517,6 +517,35 @@ cart-drawer-items {
   width: 100%;
   margin-left: auto;
   margin-right: auto;
+  /* Überschreibe Konfigurator-Button-Styles - stelle sicher, dass der Button blau ist */
+  background-color: rgba(var(--color-button), var(--alpha-button-background)) !important;
+  background: rgba(var(--color-button), var(--alpha-button-background)) !important;
+  color: rgb(var(--color-button-text)) !important;
+  border: 0 !important;
+  box-shadow: var(--shadow-horizontal-offset) var(--shadow-vertical-offset) var(--shadow-blur-radius) rgba(var(--color-shadow), var(--shadow-opacity)) !important;
+}
+
+.drawer__footer .cart__ctas .cart__checkout-button:hover {
+  background-color: rgba(var(--color-button), var(--alpha-button-background)) !important;
+  background: rgba(var(--color-button), var(--alpha-button-background)) !important;
+  color: rgb(var(--color-button-text)) !important;
+}
+
+/* "Weiter shoppen" Button im Cart-Drawer - stelle sicher, dass er blau ist */
+.cart-drawer .cart-drawer__empty-content .button,
+.cart-drawer__warnings .button {
+  background-color: rgba(var(--color-button), var(--alpha-button-background)) !important;
+  background: rgba(var(--color-button), var(--alpha-button-background)) !important;
+  color: rgb(var(--color-button-text)) !important;
+  border: 0 !important;
+  box-shadow: var(--shadow-horizontal-offset) var(--shadow-vertical-offset) var(--shadow-blur-radius) rgba(var(--color-shadow), var(--shadow-opacity)) !important;
+}
+
+.cart-drawer .cart-drawer__empty-content .button:hover,
+.cart-drawer__warnings .button:hover {
+  background-color: rgba(var(--color-button), var(--alpha-button-background)) !important;
+  background: rgba(var(--color-button), var(--alpha-button-background)) !important;
+  color: rgb(var(--color-button-text)) !important;
 }
 
 .drawer__footer .cart__ctas > * + * {

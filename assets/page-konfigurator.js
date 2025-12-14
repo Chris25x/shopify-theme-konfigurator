@@ -4198,6 +4198,18 @@ let rowCounter = 1;
           })
         });
 
+        // Prüfe, ob es ein mobiles Touch-Gerät ist
+        const isTouchDevice = ('ontouchstart' in window) || 
+                              (navigator.maxTouchPoints > 0) || 
+                              (navigator.msMaxTouchPoints > 0) ||
+                              /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        
+        // Wenn mobiles Gerät auf Konfigurator-Seite, direkt zur Cart-Seite weiterleiten
+        if (isTouchDevice) {
+          window.location.href = '/cart';
+          return;
+        }
+        
         // Prüfe, ob Cart Drawer existiert
         const cartDrawer = document.querySelector('cart-drawer');
         const cartNotification = document.querySelector('cart-notification');
@@ -4221,7 +4233,7 @@ let rowCounter = 1;
           });
         } else {
           // Kein Cart Drawer vorhanden, weiterleiten zur Cart-Seite
-        window.location.href = '/cart';
+          window.location.href = '/cart';
         }
       } catch (error) {
         console.error('Fehler beim Hinzufügen zum Warenkorb:', error);
