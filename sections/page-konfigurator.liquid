@@ -15,6 +15,7 @@
   <!-- Inter Schriftart (Theme Standard) -->
   <!-- Konfigurator CSS -->
   <link href="{{ 'page-konfigurator.css' | asset_url }}" rel="stylesheet">
+  {{ 'quantity-popover.css' | asset_url | stylesheet_tag }}
 </head>
 <body class="konfigurator-page">
   
@@ -371,18 +372,37 @@
   <main class="container konfigurator" role="main" aria-label="Sicherungskasten Konfigurator">
     <div class="konfigurator-top-gap"></div>
     <!-- Statusleiste -->
-    <div class="status-bar">
-      <div class="status-step active" id="step1">
-        <i class="fas fa-cog"></i> Konfiguration
+    <div class="statusbar" aria-label="Fortschritt Konfigurator">
+      <div class="step step--active" id="step1" data-icon="fas fa-cog">
+        <div class="step__icon"><i class="fas fa-cog" aria-hidden="true"></i></div>
+        <div class="step__text">
+          <div class="step__label">Konfiguration</div>
+          <div class="step__sub">Aktueller Schritt</div>
+        </div>
       </div>
-      <div class="status-step" id="step2">
-        <i class="fas fa-box"></i> Verteilerkasten
+      <div class="statusbar__connector" aria-hidden="true"></div>
+      <div class="step step--todo" id="step2" data-icon="fas fa-box">
+        <div class="step__icon"><i class="fas fa-box" aria-hidden="true"></i></div>
+        <div class="step__text">
+          <div class="step__label">Verteilerkasten</div>
+          <div class="step__sub">Ausstehend</div>
+        </div>
       </div>
-      <div class="status-step" id="step3">
-        <i class="fas fa-wrench"></i> Verdrahtung
+      <div class="statusbar__connector" aria-hidden="true"></div>
+      <div class="step step--todo" id="step3" data-icon="fas fa-wrench">
+        <div class="step__icon"><i class="fas fa-wrench" aria-hidden="true"></i></div>
+        <div class="step__text">
+          <div class="step__label">Verdrahtung</div>
+          <div class="step__sub">Ausstehend</div>
+        </div>
       </div>
-      <div class="status-step" id="step4">
-        <i class="fas fa-check-circle"></i> Zusammenfassung
+      <div class="statusbar__connector" aria-hidden="true"></div>
+      <div class="step step--todo" id="step4" data-icon="fas fa-file-alt">
+        <div class="step__icon"><i class="fas fa-file-alt" aria-hidden="true"></i></div>
+        <div class="step__text">
+          <div class="step__label">Zusammenfassung</div>
+          <div class="step__sub">Ausstehend</div>
+        </div>
       </div>
     </div>
 
@@ -540,11 +560,73 @@
         <div style="text-align: center; margin: 20px 0;">
           <div style="max-width: 1200px; margin: 20px auto; padding: 20px; background-color: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
             <h2 style="margin-top: 0;">Verteilerkasten</h2>
+            <p class="montageart-subtitle" style="font-size: 15px; color: #64748b; margin: 10px 0 22px; line-height: 1.45;">Wählen Sie die Montageart des Verteilers. Dies beeinflusst Bauform und Preis.</p>
           <div style="margin-bottom: 30px;">
-            <div class="dropdown-container" style="margin-bottom: 20px;">
-              <button id="montageart-btn" class="button dropdown-btn" type="button" aria-haspopup="menu" aria-expanded="false" style="width: 300px; justify-content: center;" onclick="openDropdownMenu('montageart', this)">
-                <i class="fas fa-cog"></i> Bitte wählen Sie die Montageart
-              </button>
+            <div class="montageart-cards-container">
+              <!-- Card 1: Kein Verteilerkasten benötigt -->
+              <div class="montageart-card" data-montageart="Kein Verteilerkasten benötigt" style="position: relative; flex: 1; min-width: 280px; max-width: 320px; background: #fff; border: 2px solid #e5e7eb; border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.2s ease;">
+                <input type="radio" name="montageart-option" value="Kein Verteilerkasten benötigt" class="montageart-radio" style="position: absolute; top: 16px; right: 16px; width: 20px; height: 20px; cursor: pointer;">
+                <div style="text-align: left;">
+                  <h3 style="font-size: 1.6rem; font-weight: 600; color: #111827; margin: 0 0 12px;">Kein Verteilerkasten benötigt</h3>
+                  <p style="font-size: 1.4rem; color: #6b7280; line-height: 1.5; margin: 0 0 20px;">Ich benötige keinen Verteilerkasten<br>(z. B. bereits vorhanden oder nur Komponentenbestellung).</p>
+                  <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                    <div class="montageart-price" data-montageart="Kein Verteilerkasten benötigt" style="font-size: 1.6rem; font-weight: 600; color: #005A9C;">0,00 €</div>
+                    <div style="font-size: 1.3rem; color: #6b7280;">Ohne Kasten</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 2: Aufputz-Montage -->
+              <div class="montageart-card" data-montageart="Aufputz-Montage" style="position: relative; flex: 1; min-width: 280px; max-width: 320px; background: #fff; border: 2px solid #e5e7eb; border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.2s ease;">
+                <input type="radio" name="montageart-option" value="Aufputz-Montage" class="montageart-radio" checked style="position: absolute; top: 16px; right: 16px; width: 20px; height: 20px; cursor: pointer; accent-color: #005A9C;">
+                <div style="text-align: left;">
+                  <h3 style="font-size: 1.6rem; font-weight: 600; color: #111827; margin: 0 0 12px;">Aufputz-Montage</h3>
+                  <p style="font-size: 1.4rem; color: #6b7280; line-height: 1.5; margin: 0 0 20px;">Klassische Montage auf der Wand. Ideal bei sichtbarer Installation.</p>
+                  <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                    <div class="montageart-price" data-montageart="Aufputz-Montage" style="font-size: 1.6rem; font-weight: 600; color: #005A9C;">+49,44 €</div>
+                    <div style="font-size: 1.3rem; color: #6b7280;">Auf der Wand</div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Card 3: Aufputz (Feuchtraum)-Montage -->
+              <div class="montageart-card" data-montageart="Aufputz(Feuchtraum)-Montage" style="position: relative; flex: 1; min-width: 280px; max-width: 320px; background: #fff; border: 2px solid #e5e7eb; border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.2s ease;">
+                <input type="radio" name="montageart-option" value="Aufputz(Feuchtraum)-Montage" class="montageart-radio" style="position: absolute; top: 16px; right: 16px; width: 20px; height: 20px; cursor: pointer;">
+                <div style="text-align: left;">
+                  <h3 style="font-size: 1.6rem; font-weight: 600; color: #111827; margin: 0 0 12px;">Aufputz (Feuchtraum)-<br>Montage</h3>
+                  <p style="font-size: 1.4rem; color: #6b7280; line-height: 1.5; margin: 0 0 20px;">Für Keller, Waschküche oder andere feuchte Umgebungen geeignet.</p>
+                  <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                    <div class="montageart-price" data-montageart="Aufputz(Feuchtraum)-Montage" style="font-size: 1.6rem; font-weight: 600; color: #005A9C;">+60,07 €</div>
+                    <div style="font-size: 1.3rem; color: #6b7280;">Feuchtraum</div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Card 4: Unterputz-Montage -->
+              <div class="montageart-card" data-montageart="Unterputz-Montage" style="position: relative; flex: 1; min-width: 280px; max-width: 320px; background: #fff; border: 2px solid #e5e7eb; border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.2s ease;">
+                <input type="radio" name="montageart-option" value="Unterputz-Montage" class="montageart-radio" style="position: absolute; top: 16px; right: 16px; width: 20px; height: 20px; cursor: pointer;">
+                <div style="text-align: left;">
+                  <h3 style="font-size: 1.6rem; font-weight: 600; color: #111827; margin: 0 0 12px;">Unterputz-Montage</h3>
+                  <p style="font-size: 1.4rem; color: #6b7280; line-height: 1.5; margin: 0 0 20px;">Bündig in der Wand. Sauberes Erscheinungsbild, häufige Standardwahl.</p>
+                  <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                    <div class="montageart-price" data-montageart="Unterputz-Montage" style="font-size: 1.6rem; font-weight: 600; color: #005A9C;">+61,83 €</div>
+                    <div style="font-size: 1.3rem; color: #6b7280;">Bündig</div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Card 5: Hohlwand-Montage -->
+              <div class="montageart-card" data-montageart="Hohlwand-Montage" style="position: relative; flex: 1; min-width: 280px; max-width: 320px; background: #fff; border: 2px solid #e5e7eb; border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.2s ease;">
+                <input type="radio" name="montageart-option" value="Hohlwand-Montage" class="montageart-radio" style="position: absolute; top: 16px; right: 16px; width: 20px; height: 20px; cursor: pointer;">
+                <div style="text-align: left;">
+                  <h3 style="font-size: 1.6rem; font-weight: 600; color: #111827; margin: 0 0 12px;">Hohlwand-Montage</h3>
+                  <p style="font-size: 1.4rem; color: #6b7280; line-height: 1.5; margin: 0 0 20px;">Für Trockenbauwände (z. B. Rigips). Stabiler Sitz in Hohlwänden.</p>
+                  <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                    <div class="montageart-price" data-montageart="Hohlwand-Montage" style="font-size: 1.6rem; font-weight: 600; color: #005A9C;">+69,46 €</div>
+                    <div style="font-size: 1.3rem; color: #6b7280;">Trockenbau</div>
+                  </div>
+                </div>
+              </div>
               
             </div>
           </div>
@@ -556,12 +638,48 @@
         <div style="text-align: center; margin: 20px 0;">
           <div style="max-width: 1200px; margin: 20px auto; padding: 20px; background-color: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
             <h2 style="margin-top: 0;">Verdrahtung</h2>
+            <p class="verdrahtung-subtitle" style="font-size: 15px; color: #64748b; margin: 10px 0 22px; line-height: 1.45;">Wählen Sie, ob Ihr Sicherungskasten vormontiert und verdrahtet geliefert werden soll.</p>
           <div style="margin-bottom: 30px;">
-            <div class="dropdown-container" style="margin-bottom: 20px;">
-              <button id="verdrahtung-btn" class="button dropdown-btn" type="button" aria-haspopup="menu" aria-expanded="false" style="width: 450px; justify-content: center;" onclick="openDropdownMenu('verdrahtung', this)">
-                <i class="fas fa-plug"></i> Verdrahtungsoption
-              </button>
+            <div class="verdrahtung-cards-container" style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+              <!-- Card 1: Selbstverdrahtung -->
+              <div class="verdrahtung-card" data-verdrahtung="Nur Einzelteile (ohne Verdrahtung & Zubehör)" style="position: relative; flex: 1; min-width: 280px; max-width: 320px; background: #fff; border: 2px solid #e5e7eb; border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.2s ease;">
+                <input type="radio" name="verdrahtung-option" value="Nur Einzelteile (ohne Verdrahtung & Zubehör)" class="verdrahtung-radio" style="position: absolute; top: 16px; right: 16px; width: 20px; height: 20px; cursor: pointer;">
+                <div style="text-align: left;">
+                  <h3 style="font-size: 1.6rem; font-weight: 600; color: #111827; margin: 0 0 12px;">Selbstverdrahtung</h3>
+                  <p style="font-size: 1.4rem; color: #6b7280; line-height: 1.5; margin: 0 0 20px;">Lieferung einzelner Komponenten. Für Elektriker oder Eigenmontage.</p>
+                  <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                    <div style="font-size: 1.6rem; font-weight: 600; color: #005A9C;">0,00 €</div>
+                    <div style="font-size: 1.3rem; color: #6b7280;">Keine Vormontage</div>
+                  </div>
+                </div>
+              </div>
               
+              <!-- Card 2: Zubehör-Set für Verdrahtung -->
+              <div class="verdrahtung-card" data-verdrahtung="Verdrahtungszubehör (ohne Vormontage & Verdrahtung)" style="position: relative; flex: 1; min-width: 280px; max-width: 320px; background: #fff; border: 2px solid #e5e7eb; border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.2s ease;">
+                <input type="radio" name="verdrahtung-option" value="Verdrahtungszubehör (ohne Vormontage & Verdrahtung)" class="verdrahtung-radio" style="position: absolute; top: 16px; right: 16px; width: 20px; height: 20px; cursor: pointer;">
+                <div style="text-align: left;">
+                  <h3 style="font-size: 1.6rem; font-weight: 600; color: #111827; margin: 0 0 12px;">Zubehör-Set für Verdrahtung</h3>
+                  <p style="font-size: 1.4rem; color: #6b7280; line-height: 1.5; margin: 0 0 20px;">Alle benötigten Verdrahtungsteile enthalten. Montage erfolgt bauseits.</p>
+                  <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                    <div style="font-size: 1.6rem; font-weight: 600; color: #005A9C;">+15,00 €</div>
+                    <div style="font-size: 1.3rem; color: #6b7280;">Material inkl.</div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Card 3: Vormontiert & verdrahtet (Empfohlen) -->
+              <div class="verdrahtung-card verdrahtung-card--recommended" data-verdrahtung="Vormontage & Verdrahtung" style="position: relative; flex: 1; min-width: 280px; max-width: 320px; background: #fff; border: 2px solid #e5e7eb; border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.2s ease;">
+                <span class="verdrahtung-recommended-badge" style="position: absolute; top: -10px; left: 16px; background: #005A9C; color: #fff; padding: 4px 12px; border-radius: 12px; font-size: 1.2rem; font-weight: 600;">Empfohlen</span>
+                <input type="radio" name="verdrahtung-option" value="Vormontage & Verdrahtung" class="verdrahtung-radio" checked style="position: absolute; top: 16px; right: 16px; width: 20px; height: 20px; cursor: pointer; accent-color: #005A9C;">
+                <div style="text-align: left;">
+                  <h3 style="font-size: 1.6rem; font-weight: 600; color: #111827; margin: 0 0 12px;">Vormontiert & verdrahtet</h3>
+                  <p style="font-size: 1.4rem; color: #6b7280; line-height: 1.5; margin: 0 0 20px;">Anschlussfertig geliefert. Spart Zeit & vermeidet Fehler.</p>
+                  <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                    <div style="font-size: 1.6rem; font-weight: 600; color: #005A9C;">+20,00 €</div>
+                    <div style="font-size: 1.3rem; color: #6b7280;">Anschlussfertig</div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -569,61 +687,162 @@
     </div>
 
     <div id="page4" class="page">
-        <div style="text-align: center; margin: 20px 0;">
-          <div style="max-width: 1200px; margin: 20px auto; padding: 20px; background-color: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-            <h2 style="margin-top: 0;">Zusammenfassung</h2>
-          <div style="margin-bottom: 30px;">
-            <div class="summary-row free">
-              <div class="summary-info-label">Name/Referenz</div>
-              <div class="summary-info-value"><span id="summaryVerteilerName">Nicht angegeben</span></div>
-              <div class="summary-info-label">Position im Verteiler</div>
-              <div class="summary-info-value"><span id="summaryPosition">Oben</span></div>
-              <div class="summary-info-label">Anzahl der Reihen</div>
-              <div class="summary-info-value"><span id="summaryRowCount">1</span></div>
-              <div class="summary-info-label">Belegte Einheiten</div>
-              <div class="summary-info-value"><span id="summaryUsedUnits">0</span></div>
-              <div class="summary-info-label">Montageart</div>
-              <div class="summary-info-value"><span id="summaryMontageart">Nicht ausgewählt</span></div>
-              <div class="summary-info-label">Verdrahtungsoption</div>
-              <div class="summary-info-value"><span id="summaryVerdrahtung">Nicht ausgewählt</span></div>
-              <div class="summary-info-label">Marke</div>
-              <div class="summary-info-value"><span id="summaryMarke">Gewiss</span></div>
-              <div class="summary-info-label">Sonstige Hinweise</div>
-              <div class="summary-info-value"><span id="summarySonstigeHinweise">—</span></div>
+      <div class="summary-header">
+        <h1 class="summary-header__title">Zusammenfassung</h1>
+        <p class="summary-header__subtitle">Prüfe deine Angaben – du kannst einzelne Bereiche jederzeit bearbeiten.</p>
+      </div>
+      <div class="summary-layout">
+        <!-- Linke Spalte: Konfigurationsdetails und Elemente -->
+        <div class="summary-left">
+          <!-- Konfigurationsdetails Card -->
+          <div class="kd-card">
+            <div class="kd-header">
+              <h2 class="kd-title">Konfigurationsdetails</h2>
+              <button class="kd-editBtn" onclick="showPage(1)" type="button">
+                <i class="fas fa-edit"></i> Bearbeiten
+              </button>
             </div>
-
-            <div style="text-align: left; margin-bottom: 20px;">
-              <h3 style="color: #005A9C; margin-bottom: 15px;">Verwendete Elemente</h3>
-              <div id="summaryElements" style="margin-bottom: 10px;"></div>
+            <div class="kd-content">
+              <div class="kd-row">
+                <div class="kd-key">Name/Referenz</div>
+                <div class="kd-val"><span id="summaryVerteilerName">Nicht angegeben</span></div>
+              </div>
+              <div class="kd-row">
+                <div class="kd-key">Position im Verteiler</div>
+                <div class="kd-val"><span id="summaryPosition">Oben</span></div>
+              </div>
+              <div class="kd-row">
+                <div class="kd-key">Anzahl der Reihen</div>
+                <div class="kd-val"><span id="summaryRowCount">1</span></div>
+              </div>
+              <div class="kd-row">
+                <div class="kd-key">Belegte Einheiten</div>
+                <div class="kd-val"><span id="summaryUsedUnits">0</span></div>
+              </div>
+              <div class="kd-row">
+                <div class="kd-key">Montageart</div>
+                <div class="kd-val"><span id="summaryMontageart">Nicht ausgewählt</span></div>
+              </div>
+              <div class="kd-row">
+                <div class="kd-key">Verdrahtungsoption</div>
+                <div class="kd-val"><span id="summaryVerdrahtung">Nicht ausgewählt</span></div>
+              </div>
+              <div class="kd-row">
+                <div class="kd-key">Marke</div>
+                <div class="kd-val"><span id="summaryMarke">Gewiss</span></div>
+              </div>
+              <div class="kd-row">
+                <div class="kd-key">Sonstige Hinweise</div>
+                <div class="kd-val kd-val--normal"><span id="summarySonstigeHinweise">—</span></div>
+              </div>
             </div>
           </div>
 
-          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-top: 30px; gap: 20px; flex-wrap: wrap;">
-            <div style="display: flex; flex-direction: column; gap: 8px;">
-              <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
-                <div style="display: flex; align-items: center;">
-                  <strong style="margin-right: 10px;">Gesamtpreis inkl. MwSt.:</strong>
-                  <span id="summaryTotalPrice" aria-live="polite">0 €</span>
-                </div>
-                <div style="display: flex; align-items: center; margin-left: auto;">
-                  <strong id="labelAnzahl" style="margin-right: 10px;">Anzahl:</strong>
-                  <input type="number" id="verteilerAnzahl" aria-labelledby="labelAnzahl" min="0" max="10" value="1" style="
-                    width: 60px;
-                    padding: 5px;
-                    border: 1px solid #dddddd;
-                    border-radius: 4px;
-                    margin-left: 4px;
-                  " onchange="updateGesamtpreis()">
-                </div>
+          <!-- Verwendete Elemente Card -->
+          <div class="kd-card">
+            <div class="kd-header">
+              <div>
+                <h2 class="kd-title">Verwendete Elemente</h2>
               </div>
-              <div style="font-size: 0.9em; color: #4b5563;">
-                inkl. MwSt. • kostenloser Versand • Lieferzeit 2–5 Werktage
+              <button id="downloadPdf" class="kd-downloadBtn" type="button">
+                <i class="fas fa-download" aria-hidden="true"></i>
+                <span>Konfiguration herunterladen</span>
+              </button>
+            </div>
+            <div class="kd-content">
+              <div id="summaryElements"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rechte Spalte: Preis Card -->
+        <div class="summary-right price-sticky">
+          <div class="price-card">
+            <div class="price-card__header">
+              <div class="price-card__headerRow">
+                <div>
+                  <div class="price-card__title">Gesamtpreis</div>
+                  <div class="price-card__subtitle">inkl. MwSt.</div>
+                </div>
+                <div class="price-card__priceBox">
+                  <div class="price-card__price"><span id="summaryTotalPrice" aria-live="polite">0 €</span></div>
+                </div>
               </div>
             </div>
-            <button id="downloadPdf" class="button button--outline" type="button">
-              <i class="fas fa-file-pdf"></i> Konfiguration herunterladen
-            </button>
-          </div> 
+            <div class="price-card__content">
+              <div class="price-trust">
+                <div class="price-trust__item">
+                  <i class="fas fa-check-circle price-trust__icon" aria-hidden="true"></i>
+                  <span>Kostenloser Versand</span>
+                </div>
+                <div class="price-trust__item">
+                  <i class="fas fa-check-circle price-trust__icon" aria-hidden="true"></i>
+                  <span>Lieferung in 2–5 Werktagen</span>
+                </div>
+                <div class="price-trust__item">
+                  <i class="fas fa-check-circle price-trust__icon" aria-hidden="true"></i>
+                  <span>Fachmännisch geprüft</span>
+                </div>
+              </div>
+              <div class="price-sep"></div>
+              <div class="qty-row">
+                <div>
+                  <div class="qty-row__label" id="labelAnzahl">Anzahl</div>
+                  <div class="qty-row__hint">Gleiche Konfiguration</div>
+                </div>
+                <quantity-input class="quantity cart-quantity">
+                  <button class="quantity__button" name="minus" type="button">
+                    <span class="visually-hidden">Menge verringern</span>
+                    <span class="svg-wrapper">
+                      {{- 'icon-minus.svg' | inline_asset_content -}}
+                    </span>
+                  </button>
+                  <input
+                    class="quantity__input"
+                    type="number"
+                    id="verteilerAnzahl"
+                    aria-labelledby="labelAnzahl"
+                    min="1"
+                    max="10"
+                    step="1"
+                    value="1"
+                    onchange="updateGesamtpreis()"
+                  >
+                  <button class="quantity__button" name="plus" type="button">
+                    <span class="visually-hidden">Menge erhöhen</span>
+                    <span class="svg-wrapper">
+                      {{- 'icon-plus.svg' | inline_asset_content -}}
+                    </span>
+                  </button>
+                </quantity-input>
+              </div>
+              <button id="addToCartButton" class="price-cta" type="button" style="display: none;">
+                <i class="fas fa-shopping-cart" aria-hidden="true"></i>
+                <span>In den Warenkorb legen</span>
+              </button>
+            </div>
+          </div>
+          
+          <!-- Hinweise Container -->
+          <div class="price-details">
+            <div class="price-details__content">
+              <div class="price-details__row">
+                <div class="price-details__icon">
+                  <i class="fas fa-info-circle" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <div class="price-details__title">Inklusive</div>
+                  <div class="price-details__desc">Diese Konfiguration enthält folgende Standardkomponenten:</div>
+                  <div class="price-details__tags">
+                    <span class="price-details__tag" id="tagNPEKlemme">N und PE Klemme</span>
+                    <span class="price-details__tag" id="tagPhasenschiene" style="display: none;">Phasenschiene</span>
+                    <span class="price-details__tag" id="tagBeruehrungsschutz" style="display: none;">Berührungsschutz</span>
+                    <span class="price-details__tag" id="tagBlindabdeckstreifen" style="display: none;">Blindabdeckstreifen</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -638,6 +857,7 @@
   </div>
  
   <!-- Konfigurator JavaScript -->
+  <script src="{{ 'quantity-popover.js' | asset_url }}" defer></script>
   <script src="{{ 'page-konfigurator.js' | asset_url }}" defer></script>
   <!-- Konfigurator Produktdaten -->
   <script id="konfigurator-products" type="application/json">
@@ -818,3 +1038,4 @@
   ]
 }
 {% endschema %}
+

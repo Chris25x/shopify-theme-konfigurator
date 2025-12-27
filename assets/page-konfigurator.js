@@ -616,6 +616,7 @@ let rowCounter = 1;
               updateInfoBox();
               if (typeof currentPage !== 'undefined' && currentPage === 4) {
                 updateGesamtpreis();
+                updateInclusiveTags();
               }
             }
           })
@@ -701,6 +702,8 @@ let rowCounter = 1;
 
     function getVerdrahtungVariantId() {
       if (!selectedVerdrahtung) return null;
+      // Bei „Selbstverdrahtung“ (Nur Einzelteile) wird kein Produkt erzeugt
+      if (selectedVerdrahtung === 'Nur Einzelteile (ohne Verdrahtung & Zubehör)') return null;
       const byRows = verdrahtungVariantMap[selectedVerdrahtung];
       if (!byRows) return null;
       // Berücksichtige Zusatzreihe row1_2 als eigenständige Reihe
@@ -749,6 +752,8 @@ let rowCounter = 1;
 
     function getMontageartVariantId() {
       if (!selectedMontageart) return null;
+      // Bei „Kein Verteilerkasten benötigt“ wird kein Produkt erzeugt
+      if (selectedMontageart === 'Kein Verteilerkasten benötigt') return null;
       const byRows = montageartVariantMap[selectedMontageart];
       if (!byRows) return null;
       // Berücksichtige Zusatzreihe row1_2 als eigenständige Reihe
@@ -855,15 +860,10 @@ let rowCounter = 1;
           usedRows.add(i + 1);
           usedRows.add(i + 2);
         } else if (sequenceLength >= 4) {
-          // 4+ FI-Reihen → teile in 2er-Paare auf
-          for (let j = i; j < i + sequenceLength - 1; j += 2) {
-            if (j + 1 <= i + sequenceLength - 1) {
-              twoFiRowsPairs.push([j, j + 1]);
+          // 4+ FI-Reihen → keine Phasenschiene, markiere alle Reihen als verwendet
+          for (let j = i; j < i + sequenceLength; j++) {
               usedRows.add(j);
-              usedRows.add(j + 1);
             }
-          }
-          // Wenn ungerade Anzahl, bleibt die letzte Reihe übrig (wird später mit normaler Phasenschiene behandelt)
         } else if (sequenceLength === 1) {
           // Einzelne FI-Reihe → wird später mit normaler Phasenschiene behandelt
           usedRows.add(i);
@@ -1067,15 +1067,10 @@ let rowCounter = 1;
           usedRows.add(i + 1);
           usedRows.add(i + 2);
         } else if (sequenceLength >= 4) {
-          // 4+ FI-Reihen → teile in 2er-Paare auf
-          for (let j = i; j < i + sequenceLength - 1; j += 2) {
-            if (j + 1 <= i + sequenceLength - 1) {
-              twoFiRowsPairs.push([j, j + 1]);
+          // 4+ FI-Reihen → keine Phasenschiene, markiere alle Reihen als verwendet
+          for (let j = i; j < i + sequenceLength; j++) {
               usedRows.add(j);
-              usedRows.add(j + 1);
             }
-          }
-          // Wenn ungerade Anzahl, bleibt die letzte Reihe übrig (wird später mit normaler Phasenschiene behandelt)
         } else if (sequenceLength === 1) {
           // Einzelne FI-Reihe → wird später mit normaler Phasenschiene behandelt
           usedRows.add(i);
@@ -1190,6 +1185,39 @@ let rowCounter = 1;
       return result;
     }
 
+    // Funktion zum Aktualisieren der "Inklusive" Tags basierend auf tatsächlich benötigten Produkten
+    function updateInclusiveTags() {
+      const automaticProducts = calculateAutomaticProducts();
+      
+      // Prüfe ob Phasenschiene benötigt wird
+      const hasPhasenschiene = automaticProducts.phasenschiene.count > 0 || 
+                               automaticProducts.twoFiPhasenschiene.count > 0 || 
+                               automaticProducts.threeFiPhasenschiene.count > 0;
+      
+      // Prüfe ob Berührungsschutz benötigt wird
+      const hasBeruehrungsschutz = automaticProducts.beruehrungsschutz.count > 0;
+      
+      // Prüfe ob Blindabdeckstreifen benötigt wird
+      const hasBlindabdeckstreifen = automaticProducts.blindabdeckstreifen.count > 0;
+      
+      // Zeige/Verstecke Tags entsprechend
+      const tagPhasenschiene = document.getElementById('tagPhasenschiene');
+      const tagBeruehrungsschutz = document.getElementById('tagBeruehrungsschutz');
+      const tagBlindabdeckstreifen = document.getElementById('tagBlindabdeckstreifen');
+      
+      if (tagPhasenschiene) {
+        tagPhasenschiene.style.display = hasPhasenschiene ? 'inline-flex' : 'none';
+      }
+      
+      if (tagBeruehrungsschutz) {
+        tagBeruehrungsschutz.style.display = hasBeruehrungsschutz ? 'inline-flex' : 'none';
+      }
+      
+      if (tagBlindabdeckstreifen) {
+        tagBlindabdeckstreifen.style.display = hasBlindabdeckstreifen ? 'inline-flex' : 'none';
+      }
+    }
+
     function updateInfoBox() {
       try {
         const rowCountElement = document.getElementById("rowCount");
@@ -1212,7 +1240,8 @@ let rowCounter = 1;
         const qtyInput = document.getElementById("verteilerAnzahl");
         if (qtyInput) {
           const parsed = parseInt(qtyInput.value);
-          qty = isNaN(parsed) ? 1 : Math.max(0, Math.min(10, parsed));
+          qty = isNaN(parsed) ? 1 : Math.max(1, Math.min(10, parsed));
+          qtyInput.value = qty;
         }
         const totalWithQty = sum * qty;
         totalPriceElement.textContent = totalWithQty.toFixed(2) + " €";
@@ -1226,6 +1255,12 @@ let rowCounter = 1;
       setupRow(1);
       updateInfoBox();
       updateSummary();
+      
+      // Setup Verdrahtung Cards
+      setupVerdrahtungCards();
+      
+      // Setup Montageart Cards
+      setupMontageartCards();
       
       // Zeichenzähler für Sonstige Hinweise und Höhenanpassung
       const sonstigeHinweiseTextarea = document.getElementById('sonstigeHinweise');
@@ -1406,6 +1441,14 @@ let rowCounter = 1;
         }
       });
 
+      // Event-Listener für addToCartButton (nur auf page4)
+      const addToCartButton = document.getElementById("addToCartButton");
+      if (addToCartButton) {
+        addToCartButton.addEventListener("click", () => {
+          addToCart();
+        });
+      }
+
       document.getElementById("nextButton").addEventListener("click", () => {
         if (currentPage < 4) {
           // Pflichtauswahl auf Seite 2 (Verteilerkasten) bevor wir zu Seite 3 wechseln
@@ -1416,10 +1459,10 @@ let rowCounter = 1;
           }
           // Pflichtauswahl auf Seite 3 (Verdrahtung) bevor wir zu Seite 4 wechseln
           if (currentPage === 3) {
-            const verdrahtungBtn = document.getElementById('verdrahtung-btn');
-            const verdrahtungText = (selectedVerdrahtung || (verdrahtungBtn ? verdrahtungBtn.textContent.trim() : ''));
+            const verdrahtungRadio = document.querySelector('input[name="verdrahtung-option"]:checked');
+            const verdrahtungText = selectedVerdrahtung || (verdrahtungRadio ? verdrahtungRadio.value : '');
             let errorBox = document.getElementById("verdrahtung-error");
-            if (!verdrahtungText || verdrahtungText === 'Verdrahtungsoption') {
+            if (!verdrahtungText) {
               if (!errorBox) {
                 errorBox = document.createElement("div");
                 errorBox.id = "verdrahtung-error";
@@ -1431,8 +1474,8 @@ let rowCounter = 1;
                 errorBox.style.maxWidth = "600px";
                 errorBox.style.textAlign = "center";
                 errorBox.textContent = "Bitte wählen Sie eine Verdrahtungsoption aus.";
-                // Füge die Fehlermeldung unterhalb der Dropdowns ein
-                const verdrahtungBox = document.querySelector('#page3 .dropdown-container');
+                // Füge die Fehlermeldung unterhalb der Cards ein
+                const verdrahtungBox = document.querySelector('#page3 .verdrahtung-cards-container');
                 if (verdrahtungBox && verdrahtungBox.parentNode) {
                   verdrahtungBox.parentNode.insertBefore(errorBox, verdrahtungBox.nextSibling);
                 }
@@ -1488,15 +1531,6 @@ let rowCounter = 1;
             };
             trackKonfiguratorStep(3, trackingData.step_name, trackingData);
           }
-        } else if (currentPage === 4) {
-          // Google Pixel Tracking für "In den Warenkorb"
-          trackKonfiguratorCart({
-            product: 'Vollständige Sicherungskasten-Konfiguration',
-            configuration_complete: true,
-            final_step: true
-          });
-          
-          addToCart();
         }
         showPage(currentPage);
       });
@@ -1626,6 +1660,9 @@ let rowCounter = 1;
     }
 
     function showPage(pageNumber) {
+      // Aktuelle Seite aktualisieren
+      currentPage = pageNumber;
+      
       // Alle Seiten ausblenden
       document.querySelectorAll('.page').forEach(page => {
         page.classList.remove('active');
@@ -1642,19 +1679,8 @@ let rowCounter = 1;
       // Scroll-Verhalten beim Seitenwechsel
       if (pageNumber > 1) {
         if (pageNumber === 4) {
-          // Bei Page 4 (Zusammenfassung): automatisch zum Button scrollen (nur auf Desktop)
-          const isMobile = window.innerWidth <= 768 || ('ontouchstart' in window || navigator.maxTouchPoints > 0);
-          if (!isMobile) {
-            const nextButtonElement = document.getElementById('nextButton');
-            if (nextButtonElement) {
-              setTimeout(() => {
-                const rect = nextButtonElement.getBoundingClientRect();
-                const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
-                const target = Math.max(0, rect.bottom + currentScroll - window.innerHeight + 70);
-                smoothScrollTo(target, 900);
-              }, 200);
-            }
-          }
+          // Bei Page 4 (Zusammenfassung): Kein automatisches Scrollen
+          // Scroll-Logik deaktiviert
         } else if (pageNumber === 2 || pageNumber === 3) {
           const nextButtonElement = document.getElementById('nextButton');
           if (nextButtonElement) {
@@ -1702,28 +1728,59 @@ let rowCounter = 1;
       // NEU: Bei Anzeige der Zusammenfassung die Preise aktualisieren
       if (pageNumber === 4) {
         updateInfoBox();
+        updateInclusiveTags();
       }
 
       // Statusleiste aktualisieren
-      document.querySelectorAll('.status-step').forEach((step, index) => {
-        step.classList.remove('active', 'completed');
+      const statusSteps = document.querySelectorAll('.step');
+
+      statusSteps.forEach((step, index) => {
+        const icon = step.querySelector('.step__icon i');
+        const defaultIcon = step.dataset.icon || '';
+        const statusSub = step.querySelector('.step__sub');
+
+        step.classList.remove('step--active', 'step--done', 'step--todo');
+
         if (index + 1 === pageNumber) {
-          step.classList.add('active');
+          step.classList.add('step--active');
+          if (icon && defaultIcon) icon.className = defaultIcon;
+          if (statusSub) statusSub.textContent = 'Aktueller Schritt';
         } else if (index + 1 < pageNumber) {
-          step.classList.add('completed');
+          step.classList.add('step--done');
+          if (icon) icon.className = 'fas fa-check';
+          if (statusSub) statusSub.textContent = 'Abgeschlossen';
+        } else {
+          step.classList.add('step--todo');
+          if (icon && defaultIcon) icon.className = defaultIcon;
+          if (statusSub) statusSub.textContent = 'Ausstehend';
         }
       });
 
       // Button-Text aktualisieren
       const nextButton = document.getElementById("nextButton");
+      const addToCartButton = document.getElementById("addToCartButton");
+      
       if (pageNumber === 4) {
-        nextButton.innerHTML = '<i class="fas fa-shopping-cart"></i> In den Warenkorb legen';
-        nextButton.disabled = false;
+        // Auf page4: nextButton ausblenden, addToCartButton anzeigen
+        if (nextButton) {
+          nextButton.style.display = "none";
+          nextButton.classList.add('hidden-on-page4');
+        }
+        if (addToCartButton) {
+          addToCartButton.style.display = "inline-flex";
+          addToCartButton.disabled = false;
+        }
       } else {
-        nextButton.textContent = "Weiter";
-        // Button nur aktivieren, wenn er nicht "In den Warenkorb" ist
-        if (!nextButton.textContent.includes('Warenkorb')) {
+        // Auf anderen Seiten: nextButton anzeigen, addToCartButton ausblenden
+        if (nextButton) {
+          nextButton.style.display = "inline-block";
+          // Auf page3 spezielles Label, sonst Standard "Weiter"
+          nextButton.textContent = pageNumber === 3 ? "Zur Zusammenfassung" : "Weiter";
           nextButton.disabled = false;
+          nextButton.classList.remove('hidden-on-page4');
+        }
+        if (addToCartButton) {
+          addToCartButton.style.display = "none";
         }
       }
 
@@ -2510,19 +2567,211 @@ let rowCounter = 1;
       portal.style.display = 'none';
     }
 
+    function setupMontageartCards() {
+      // Add click handlers to cards
+      document.querySelectorAll('.montageart-card').forEach(card => {
+        card.addEventListener('click', function(e) {
+          // Don't trigger if clicking directly on the radio button
+          if (e.target.type === 'radio') {
+            return;
+          }
+          const option = this.getAttribute('data-montageart');
+          const radio = this.querySelector('.montageart-radio');
+          if (radio) {
+            radio.checked = true;
+          }
+          selectMontageart(option);
+        });
+      });
+      
+      // Add change handlers to radio buttons
+      document.querySelectorAll('input[name="montageart-option"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+          if (this.checked) {
+            selectMontageart(this.value);
+          }
+        });
+      });
+      
+      // Set default selection (Aufputz-Montage)
+      const defaultRadio = document.querySelector('input[name="montageart-option"][value="Aufputz-Montage"]');
+      if (defaultRadio && !selectedMontageart) {
+        defaultRadio.checked = true;
+        selectMontageart('Aufputz-Montage');
+      } else if (selectedMontageart) {
+        // Restore previous selection
+        const savedRadio = document.querySelector(`input[name="montageart-option"][value="${selectedMontageart}"]`);
+        if (savedRadio) {
+          savedRadio.checked = true;
+          selectMontageart(selectedMontageart);
+        }
+      }
+      
+      // Update prices dynamically when row count changes
+      updateMontageartPrices();
+    }
+    
+    function updateMontageartPrices() {
+      document.querySelectorAll('.montageart-price').forEach(priceEl => {
+        const montageart = priceEl.getAttribute('data-montageart');
+        if (!montageart) return;
+
+        // Temporär ausgewählte Montageart überschreiben, um den Preis für diese Option zu berechnen
+        const originalMontageart = selectedMontageart;
+        selectedMontageart = montageart;
+        const price = getMontageartPrice();
+        selectedMontageart = originalMontageart; // Ursprüngliche Auswahl wiederherstellen
+
+        if (typeof price === 'number' && price > 0) {
+          // price ist bereits in Euro (z. B. 49.44) → wie im Dropdown formatiert, aber mit führendem +
+          priceEl.textContent = '+' + formatPriceDE(price);
+        } else {
+          priceEl.textContent = '0,00 €';
+        }
+      });
+    }
+
     function selectMontageart(option) {
+      // Update radio button
+      const radio = document.querySelector(`input[name="montageart-option"][value="${option}"]`);
+      if (radio) {
+        radio.checked = true;
+      }
+      
+      // Update card styles
+      document.querySelectorAll('.montageart-card').forEach(card => {
+        card.classList.remove('montageart-card--selected');
+        const cardOption = card.getAttribute('data-montageart');
+        if (cardOption === option) {
+          card.classList.add('montageart-card--selected');
+        }
+      });
+      
+      // Update prices
+      updateMontageartPrices();
+      
+      // Legacy dropdown support (falls vorhanden)
       const dropdownBtn = document.getElementById('montageart-btn');
       if (dropdownBtn) dropdownBtn.innerHTML = `<i class="fas fa-cog"></i> ${option}`;
       closePortalDropdown();
+      
       selectedMontageart = option;
       updateInfoBox();
       updateSummary();
+      // Verfügbarkeit der Verdrahtungsoptionen (v. a. „Vormontiert & verdrahtet“) anpassen
+      updateVerdrahtungAvailability();
+    }
+
+    // Aktiviert/deaktiviert „Vormontiert & verdrahtet“ abhängig von der Montageart
+    function updateVerdrahtungAvailability() {
+      const noBoxSelected = selectedMontageart === 'Kein Verteilerkasten benötigt';
+      const vormontiertValue = 'Vormontage & Verdrahtung';
+      // Fallback, wenn kein Verteilerkasten benötigt wird → Zubehör-Set für Verdrahtung wählen
+      const fallbackValue = 'Verdrahtungszubehör (ohne Vormontage & Verdrahtung)';
+
+      const vormontiertRadio = document.querySelector(`input[name="verdrahtung-option"][value="${vormontiertValue}"]`);
+      const vormontiertCard = vormontiertRadio ? vormontiertRadio.closest('.verdrahtung-card') : null;
+
+      if (!vormontiertRadio || !vormontiertCard) return;
+
+      if (noBoxSelected) {
+        // Option deaktivieren und visuell ausgrauen
+        vormontiertRadio.disabled = true;
+        vormontiertCard.classList.add('verdrahtung-card--disabled');
+
+        // Falls aktuell ausgewählt, auf Zubehör-Set für Verdrahtung umschalten
+        if (vormontiertRadio.checked || selectedVerdrahtung === vormontiertValue) {
+          const fallbackRadio = document.querySelector(`input[name="verdrahtung-option"][value="${fallbackValue}"]`);
+          if (fallbackRadio) {
+            fallbackRadio.disabled = false;
+            fallbackRadio.checked = true;
+            selectVerdrahtung(fallbackValue);
+          } else {
+            vormontiertRadio.checked = false;
+            selectedVerdrahtung = '';
+            updateInfoBox();
+            updateSummary();
+          }
+        }
+      } else {
+        // Option wieder aktivieren
+        vormontiertRadio.disabled = false;
+        vormontiertCard.classList.remove('verdrahtung-card--disabled');
+      }
+    }
+    
+    function setupVerdrahtungCards() {
+      // Add click handlers to cards
+      document.querySelectorAll('.verdrahtung-card').forEach(card => {
+        card.addEventListener('click', function(e) {
+          // Deaktivierte Karten nicht auswählbar
+          if (this.classList.contains('verdrahtung-card--disabled')) {
+            return;
+          }
+          // Don't trigger if clicking directly on the radio button
+          if (e.target.type === 'radio') {
+            return;
+          }
+          const option = this.getAttribute('data-verdrahtung');
+          const radio = this.querySelector('.verdrahtung-radio');
+          if (radio) {
+            radio.checked = true;
+          }
+          selectVerdrahtung(option);
+        });
+      });
+      
+      // Add change handlers to radio buttons
+      document.querySelectorAll('input[name="verdrahtung-option"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+          if (this.disabled) {
+            return;
+          }
+          if (this.checked) {
+            selectVerdrahtung(this.value);
+          }
+        });
+      });
+      
+      // Set default selection (Vormontage & Verdrahtung)
+      const defaultRadio = document.querySelector('input[name="verdrahtung-option"][value="Vormontage & Verdrahtung"]');
+      if (defaultRadio && !selectedVerdrahtung) {
+        defaultRadio.checked = true;
+        selectVerdrahtung('Vormontage & Verdrahtung');
+      } else if (selectedVerdrahtung) {
+        // Restore previous selection
+        const savedRadio = document.querySelector(`input[name="verdrahtung-option"][value="${selectedVerdrahtung}"]`);
+        if (savedRadio) {
+          savedRadio.checked = true;
+          selectVerdrahtung(selectedVerdrahtung);
+        }
+      }
+
+      // Initialen Zustand abhängig von der gewählten Montageart setzen
+      updateVerdrahtungAvailability();
     }
 
     function selectVerdrahtung(option) {
+      // Update radio button
+      const radio = document.querySelector(`input[name="verdrahtung-option"][value="${option}"]`);
+      if (radio) {
+        radio.checked = true;
+      }
+      
+      // Update card styles
+      document.querySelectorAll('.verdrahtung-card').forEach(card => {
+        card.classList.remove('verdrahtung-card--selected');
+        const cardOption = card.getAttribute('data-verdrahtung');
+        if (cardOption === option) {
+          card.classList.add('verdrahtung-card--selected');
+        }
+      });
+      
+      // Legacy dropdown support (falls vorhanden)
       const dropdownBtn = document.getElementById('verdrahtung-btn');
       if (dropdownBtn) dropdownBtn.innerHTML = `<i class="fas fa-plug"></i> ${option}`;
       closePortalDropdown();
+      
       selectedVerdrahtung = option; // Speichere die ausgewählte Option
       updateInfoBox();
       updateSummary();
@@ -2609,6 +2858,11 @@ let rowCounter = 1;
         const nameOut = document.getElementById('summaryVerteilerName');
         if (nameOut) nameOut.textContent = nameValue || 'Nicht angegeben';
         updateGesamtpreis();
+        
+        // Update Montageart prices when row count changes
+        if (typeof updateMontageartPrices === 'function') {
+          updateMontageartPrices();
+        }
         
         // Zweispaltige Tabelle: links Reihe, rechts die Elemente spaltenweise
         const grid = document.createElement('div');
@@ -2766,10 +3020,11 @@ let rowCounter = 1;
     }
 
     function updateGesamtpreis() {
-      let anzahl = parseInt(document.getElementById("verteilerAnzahl").value);
-      if (isNaN(anzahl)) anzahl = 0;
-      anzahl = Math.max(0, Math.min(10, anzahl));
-      document.getElementById("verteilerAnzahl").value = anzahl;
+      const input = document.getElementById("verteilerAnzahl");
+      let anzahl = parseInt(input?.value);
+      if (isNaN(anzahl)) anzahl = 1;
+      anzahl = Math.max(1, Math.min(10, anzahl));
+      if (input) input.value = anzahl;
       
       // Basispreis vereinheitlicht und mit Anzahl multipliziert
       const basis = calculateBaseSum();
@@ -3748,15 +4003,10 @@ let rowCounter = 1;
           usedRows.add(i + 1);
           usedRows.add(i + 2);
         } else if (sequenceLength >= 4) {
-          // 4+ FI-Reihen → teile in 2er-Paare auf
-          for (let j = i; j < i + sequenceLength - 1; j += 2) {
-            if (j + 1 <= i + sequenceLength - 1) {
-              twoFiRowsPairs.push([j, j + 1]);
+          // 4+ FI-Reihen → keine Phasenschiene, markiere alle Reihen als verwendet
+          for (let j = i; j < i + sequenceLength; j++) {
               usedRows.add(j);
-              usedRows.add(j + 1);
             }
-          }
-          // Wenn ungerade Anzahl, bleibt die letzte Reihe übrig (wird später mit normaler Phasenschiene behandelt)
         } else if (sequenceLength === 1) {
           // Einzelne FI-Reihe → wird später mit normaler Phasenschiene behandelt
           usedRows.add(i);
@@ -4206,7 +4456,7 @@ let rowCounter = 1;
         
         // Wenn mobiles Gerät auf Konfigurator-Seite, direkt zur Cart-Seite weiterleiten
         if (isTouchDevice) {
-          window.location.href = '/cart';
+        window.location.href = '/cart';
           return;
         }
         
@@ -4243,6 +4493,13 @@ let rowCounter = 1;
 
     // Bestehende addToCart Funktion überschreiben
     function addToCart() {
+      // Google Pixel Tracking für "In den Warenkorb"
+      trackKonfiguratorCart({
+        product: 'Vollständige Sicherungskasten-Konfiguration',
+        configuration_complete: true,
+        final_step: true
+      });
+      
       const selectedProducts = getAllSelectedProducts();
       if (selectedProducts.length > 0) {
         addToShopifyCart(selectedProducts);
@@ -5847,11 +6104,10 @@ let rowCounter = 1;
       function validatePage(currentPage) {
         // Pflichtauswahl auf Seite 2 (Verteilerkasten)
         if (currentPage === 2) {
-          const btn = document.getElementById('montageart-btn');
-          const btnText = btn ? btn.textContent.trim() : '';
-          const montageartText = selectedMontageart || btnText;
+          const montageartRadio = document.querySelector('input[name="montageart-option"]:checked');
+          const montageartText = selectedMontageart || (montageartRadio ? montageartRadio.value : '');
           let errorBox = document.getElementById("verteiler-error");
-          if (!montageartText || montageartText === 'Bitte wählen Sie die Montageart') {
+          if (!montageartText) {
             if (!errorBox) {
               errorBox = document.createElement("div");
               errorBox.id = "verteiler-error";
@@ -5863,10 +6119,10 @@ let rowCounter = 1;
               errorBox.style.maxWidth = "600px";
               errorBox.style.textAlign = "center";
               errorBox.textContent = "Bitte wählen Sie eine Montageart aus.";
-              // Füge die Fehlermeldung unterhalb der Dropdowns ein
-              const dropdowns = document.querySelectorAll('#page2 .dropdown-container');
-              if (dropdowns.length > 0 && dropdowns[0].parentNode) {
-                dropdowns[0].parentNode.insertBefore(errorBox, dropdowns[0].nextSibling);
+              // Füge die Fehlermeldung unterhalb der Cards ein
+              const cardsContainer = document.querySelector('#page2 .montageart-cards-container');
+              if (cardsContainer && cardsContainer.parentNode) {
+                cardsContainer.parentNode.insertBefore(errorBox, cardsContainer.nextSibling);
               }
             }
             return false;

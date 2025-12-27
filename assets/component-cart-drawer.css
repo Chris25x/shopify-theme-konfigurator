@@ -62,6 +62,15 @@ cart-drawer:not(.is-empty) .cart-drawer__collection {
   display: none;
 }
 
+/* Entferne Focus-Ring bei Quantity-Input im Cart-Drawer */
+cart-drawer .quantity__input:focus,
+cart-drawer .quantity__input:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  background-color: inherit !important;
+}
+
 .cart-drawer__warnings--has-collection .cart__login-title {
   margin-top: 2.5rem;
 }
@@ -256,7 +265,11 @@ cart-drawer-items {
 }
 
 .cart-drawer .cart-item__image {
-  max-width: 100%;
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  max-width: 80px;
+  max-height: 80px;
 }
 
 

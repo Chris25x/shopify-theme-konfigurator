@@ -194,6 +194,43 @@
     }
   }
 
+  /* Navigation-Links im Header immer schwarz darstellen (Desktop & Dropdown/Mega-Menü) */
+  .header__inline-menu .header__menu-item,
+  .header__inline-menu .header__menu-item span,
+  .header__inline-menu .mega-menu__link {
+    color: #000 !important;
+  }
+
+  .header__inline-menu .mega-menu__link--active,
+  .header__inline-menu .mega-menu__link:hover,
+  .header__inline-menu .header__menu-item:hover,
+  .header__inline-menu .header__menu-item:hover span {
+    color: #000 !important;
+  }
+
+  /* Nav-Items: Unterstreichung nur beim Hover (nicht dauerhaft im Ruhe-Zustand) */
+  .header__inline-menu .list-menu__item--active,
+  .header__inline-menu .mega-menu__link--active,
+  .header__inline-menu .header__active-menu-item {
+    text-decoration: none;
+  }
+
+  .header__inline-menu .header__menu-item span,
+  .header__inline-menu .mega-menu__link {
+    text-decoration: none;
+  }
+
+  .header__inline-menu .header__menu-item:hover span,
+  .header__inline-menu .mega-menu__link:hover,
+  .header__inline-menu .header__active-menu-item:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.3rem;
+  }
+
+  .header__inline-menu .mega-menu__link--active:hover {
+    text-decoration-thickness: 0.2rem;
+  }
+
   /* === Header Icons (Login + Cart + Konfigurator) === */
   :root{
     --primary: #005A9C;
@@ -913,9 +950,9 @@
     <div class="header-info-bar" style="display: none;">
       <div class="info-box" id="infoBox">
         <div class="info-box__row">
-          <div>Anzahl der Reihen: <span id="rowCount">1</span></div>
-          <div>Verbrauchte Einheiten: <span id="usedUnits">0</span></div>
-          <div>Gesamtpreis inkl. MwSt.: <span id="totalPrice" aria-live="polite">0 €</span></div>
+          <div>Reihen: <span id="rowCount">1</span></div>
+          <div>Einheiten: <span id="usedUnits">0</span></div>
+          <div>Gesamt: <span id="totalPrice" aria-live="polite">0 €</span></div>
         </div>
       </div>
     </div>

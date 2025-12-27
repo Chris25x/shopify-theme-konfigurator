@@ -160,6 +160,11 @@ class CartItems extends HTMLElement {
   updateQuantity(line, quantity, event, name, variantId) {
     this.enableLoading(line);
 
+    // Scroll-Position im Cart-Drawer speichern
+    const cartDrawerWrapper = document.querySelector('cart-drawer');
+    const scrollableContainer = cartDrawerWrapper ? cartDrawerWrapper.querySelector('cart-drawer-items') || cartDrawerWrapper.querySelector('.drawer__cart-items-wrapper') || cartDrawerWrapper.querySelector('.drawer__contents') : null;
+    const savedScrollTop = scrollableContainer ? scrollableContainer.scrollTop : 0;
+
     const body = JSON.stringify({
       line,
       quantity,
@@ -212,16 +217,47 @@ class CartItems extends HTMLElement {
           }
           this.updateLiveRegions(line, message);
 
+          // Scroll-Container nach dem Update erneut suchen (kann neu erstellt worden sein)
+          const updatedCartDrawerWrapper = document.querySelector('cart-drawer');
+          const updatedScrollableContainer = updatedCartDrawerWrapper ? updatedCartDrawerWrapper.querySelector('cart-drawer-items') || updatedCartDrawerWrapper.querySelector('.drawer__cart-items-wrapper') || updatedCartDrawerWrapper.querySelector('.drawer__contents') : null;
+
+          // Scroll-Position wiederherstellen, bevor Focus gesetzt wird
+          if (updatedScrollableContainer && savedScrollTop !== undefined) {
+            updatedScrollableContainer.scrollTop = savedScrollTop;
+          }
+
           const lineItem =
             document.getElementById(`CartItem-${line}`) || document.getElementById(`CartDrawer-Item-${line}`);
           if (lineItem && lineItem.querySelector(`[name="${name}"]`)) {
-            cartDrawerWrapper
-              ? trapFocus(cartDrawerWrapper, lineItem.querySelector(`[name="${name}"]`))
-              : lineItem.querySelector(`[name="${name}"]`).focus();
+            const inputElement = lineItem.querySelector(`[name="${name}"]`);
+            if (cartDrawerWrapper) {
+              // Focus ohne Scroll setzen
+              if (inputElement && typeof inputElement.focus === 'function') {
+                inputElement.focus({ preventScroll: true });
+              }
+              trapFocus(cartDrawerWrapper, inputElement);
+            } else {
+              inputElement.focus({ preventScroll: true });
+            }
           } else if (parsedState.item_count === 0 && cartDrawerWrapper) {
             trapFocus(cartDrawerWrapper.querySelector('.drawer__inner-empty'), cartDrawerWrapper.querySelector('a'));
           } else if (document.querySelector('.cart-item') && cartDrawerWrapper) {
-            trapFocus(cartDrawerWrapper, document.querySelector('.cart-item__name'));
+            const firstCartItemName = document.querySelector('.cart-item__name');
+            if (firstCartItemName) {
+              firstCartItemName.focus({ preventScroll: true });
+            }
+            trapFocus(cartDrawerWrapper, firstCartItemName);
+          }
+
+          // Scroll-Position erneut wiederherstellen nach Focus (für den Fall, dass Focus doch gescrollt hat)
+          if (updatedScrollableContainer && savedScrollTop !== undefined) {
+            // Kurz verzögern, um sicherzustellen, dass alle Layout-Updates abgeschlossen sind
+            requestAnimationFrame(() => {
+              const finalScrollableContainer = updatedCartDrawerWrapper ? updatedCartDrawerWrapper.querySelector('cart-drawer-items') || updatedCartDrawerWrapper.querySelector('.drawer__cart-items-wrapper') || updatedCartDrawerWrapper.querySelector('.drawer__contents') : null;
+              if (finalScrollableContainer) {
+                finalScrollableContainer.scrollTop = savedScrollTop;
+              }
+            });
           }
         });
 

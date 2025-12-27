@@ -47,6 +47,15 @@
   }
 }
 
+/* Entferne Focus-Ring bei Quantity-Input in Cart-Notification */
+cart-notification .quantity__input:focus,
+cart-notification .quantity__input:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  background-color: inherit !important;
+}
+
 @media screen and (min-width: 990px) {
   .cart-notification-wrapper:is(.page-width) > .cart-notification {
     right: 4rem;
@@ -111,6 +120,14 @@
   display: inline-flex;
   margin-right: 1.5rem;
   margin-top: 0.5rem;
+}
+
+.cart-notification-product__image img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  max-width: 80px;
+  max-height: 80px;
 }
 
 .cart-notification-product__image:after {
