@@ -1678,42 +1678,28 @@ let rowCounter = 1;
       
       // Scroll-Verhalten beim Seitenwechsel
       if (pageNumber > 1) {
-        if (pageNumber === 4) {
-          // Bei Page 4 (Zusammenfassung): Kein automatisches Scrollen
-          // Scroll-Logik deaktiviert
-        } else if (pageNumber === 2 || pageNumber === 3) {
-          const nextButtonElement = document.getElementById('nextButton');
-          if (nextButtonElement) {
-            setTimeout(() => {
-              const rect = nextButtonElement.getBoundingClientRect();
-              const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
-              const target = Math.max(0, rect.bottom + currentScroll - window.innerHeight + 70);
-              window.scrollTo({
-                top: target,
-                behavior: 'smooth'
-              });
-            }, 200);
-          } else {
-            // Bei Page 2 und 3: Section-Container in den Fokus bringen mit Offset
-          const sectionContainer = document.querySelector('.page-konfigurator-section');
-          if (sectionContainer) {
-              const rect = sectionContainer.getBoundingClientRect();
+        if (pageNumber === 2 || pageNumber === 3 || pageNumber === 4) {
+          // Bei Page 2, 3 und 4: Status-Bar am oberen Bildschirmrand positionieren mit 25px Abstand
+          setTimeout(() => {
+            const statusBar = document.querySelector('.statusbar');
+            if (statusBar) {
+              const rect = statusBar.getBoundingClientRect();
               const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-              const offset = 150; // Offset in Pixeln (unterhalb des Headers)
+              const offset = 25; 
               const targetPosition = rect.top + scrollTop - offset;
               
               window.scrollTo({
                 top: Math.max(0, targetPosition),
                 behavior: 'smooth'
-            });
-          } else {
+              });
+            } else {
               // Fallback: Scroll mit Offset nach oben
-            window.scrollTo({
-                top: 150,
-              behavior: 'smooth'
-            });
+              window.scrollTo({
+                top: 25,
+                behavior: 'smooth'
+              });
             }
-          }
+          }, 200);
         } else {
           // Bei anderen Seiten: Normal nach oben scrollen
           window.scrollTo({
@@ -2662,7 +2648,7 @@ let rowCounter = 1;
       updateVerdrahtungAvailability();
     }
 
-    // Aktiviert/deaktiviert „Vormontiert & verdrahtet“ abhängig von der Montageart
+    // Aktiviert/deaktiviert „Vormontiert & verdrahtet" abhängig von der Montageart
     function updateVerdrahtungAvailability() {
       const noBoxSelected = selectedMontageart === 'Kein Verteilerkasten benötigt';
       const vormontiertValue = 'Vormontage & Verdrahtung';
@@ -2697,6 +2683,13 @@ let rowCounter = 1;
         // Option wieder aktivieren
         vormontiertRadio.disabled = false;
         vormontiertCard.classList.remove('verdrahtung-card--disabled');
+        
+        // Wenn vorher "Verdrahtungszubehör" ausgewählt war (weil "kein Verteilerkasten" aktiv war),
+        // dann automatisch auf "Vormontage & Verdrahtung" umschalten (empfohlene Option)
+        if (selectedVerdrahtung === fallbackValue) {
+          vormontiertRadio.checked = true;
+          selectVerdrahtung(vormontiertValue);
+        }
       }
     }
     
