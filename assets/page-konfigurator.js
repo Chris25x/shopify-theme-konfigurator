@@ -1623,13 +1623,21 @@ let rowCounter = 1;
         sectionHeader.classList.remove('shopify-section-header-sticky', 'shopify-section-header-hidden');
       }
       
-      // Info-Bar sichtbar machen, sobald DOM geladen ist
+      // Info-Bar sichtbar machen und sticky setzen
       const infoBar = document.querySelector('.header-info-bar');
       if (infoBar) {
+        // Stelle sicher, dass Info-Bar sticky bleibt
+        infoBar.style.position = 'sticky';
+        infoBar.style.top = '0';
+        infoBar.style.zIndex = '12';
         // Kurze Verzögerung, um sicherzustellen, dass Layout berechnet ist
         requestAnimationFrame(function() {
           requestAnimationFrame(function() {
             infoBar.style.display = 'block';
+            // Erneut sticky setzen, falls überschrieben wurde
+            infoBar.style.position = 'sticky';
+            infoBar.style.top = '0';
+            infoBar.style.zIndex = '12';
           });
         });
       }
