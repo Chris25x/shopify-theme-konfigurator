@@ -1,25 +1,5 @@
 /* Konfigurator CSS - Extracted from page-konfigurator.liquid */
 
-/* Header nicht sticky auf Konfigurator-Seite */
-body.konfigurator-page .section-header,
-body.konfigurator-page sticky-header .section-header {
-  position: relative !important;
-  top: auto !important;
-  z-index: auto !important;
-}
-
-/* Deaktiviere auch die JavaScript-basierte Sticky-Funktionalität */
-body.konfigurator-page .section-header.shopify-section-header-sticky {
-  position: relative !important;
-  top: auto !important;
-}
-
-/* Stelle sicher, dass Header-Wrapper keine Overflow-Eigenschaften hat, die sticky verhindern */
-body.konfigurator-page .header-wrapper,
-body.konfigurator-page sticky-header {
-  overflow: visible !important;
-}
-
 /* Verdrahtung Cards Styles */
 .verdrahtung-cards-container {
   display: flex;
@@ -1233,17 +1213,8 @@ body:has(#page4.active) .button-container #nextButton {
   border-bottom: 1px solid #e2e8f0;
   box-shadow: 0 10px 20px rgba(15, 23, 42, 0.08);
   backdrop-filter: blur(6px);
-  position: sticky !important;
-  top: 0 !important;
-  z-index: 12 !important;
-}
-
-/* Sicherstellen, dass Info-Bar sticky bleibt, auch wenn Header-Wrapper relative ist */
-body.konfigurator-page .header-wrapper .header-info-bar,
-body.konfigurator-page sticky-header .header-info-bar {
-  position: sticky !important;
-  top: 0 !important;
-  z-index: 12 !important;
+  position: relative;
+  z-index: 12;
 }
 
 /* Info Box */

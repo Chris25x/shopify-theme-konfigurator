@@ -481,6 +481,7 @@ a.product__text {
 .product-main .global-media-settings {
   background: #ffffff !important;
   background-color: #ffffff !important;
+  border: none !important;
 }
 
 .product__media-item-main {
@@ -491,6 +492,8 @@ a.product__text {
   height: 100%;
   opacity: 0;
   transition: opacity 0.3s ease;
+  padding: 10px;
+  box-sizing: border-box;
 }
 
 .product__media-item-main.active {
@@ -534,7 +537,8 @@ a.product__text {
   overflow: hidden;
   background: #ffffff !important;   /* Explizit weißer Hintergrund */
   background-color: #ffffff !important;
-  padding: 0;
+  padding: 5px;
+  box-sizing: border-box;
   cursor: pointer;
   transition: box-shadow .2s ease, transform .06s ease;
 }
@@ -558,6 +562,10 @@ a.product__text {
   height: 100%;
   object-fit: contain;
   display: block;
+}
+
+.product-thumb .global-media-settings {
+  border: none !important;
 }
 
 /* Aktiver Zustand - doppelter schwarzer Rahmen */
@@ -1112,26 +1120,49 @@ button.product-thumb.is-active {
       max-height: 0;
       overflow: hidden;
       transition: max-height 0.3s ease;
-      background-color: #f8fafc;
+      background-color: #fff;
     }
 
     .description-content.active {
-      max-height: 1000px;
+      max-height: none;
     }
 
     .description-content .product__description {
-      padding: 20px;
+      padding: 20px 20px 10px 20px;
       margin: 0;
-      color: #475569;
+      font-size: 14px;
+      font-weight: 600;
+      color: #1e293b !important;
       line-height: 1.6;
     }
 
     .description-content .product__description p {
       margin-bottom: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #1e293b !important;
     }
 
     .description-content .product__description p:last-child {
       margin-bottom: 0;
+    }
+
+    .description-content .product__description * {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1e293b !important;
+      opacity: 1 !important;
+    }
+
+    /* Entferne leeres div mit mt-3 w-full empty:hidden */
+    .description-content .product__description div.mt-3.w-full,
+    .description-content .product__description .mt-3.w-full {
+      display: none !important;
+    }
+
+    /* Entferne auch das innere div mit text-center und br */
+    .description-content .product__description div.text-center:has(br:only-child) {
+      display: none !important;
     }
 
 @media screen and (max-width: 749px) {
