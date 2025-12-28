@@ -1,5 +1,19 @@
 /* Konfigurator CSS - Extracted from page-konfigurator.liquid */
 
+/* Header nicht sticky auf Konfigurator-Seite */
+body.konfigurator-page .section-header,
+body.konfigurator-page sticky-header .section-header {
+  position: relative !important;
+  top: auto !important;
+  z-index: auto !important;
+}
+
+/* Deaktiviere auch die JavaScript-basierte Sticky-Funktionalität */
+body.konfigurator-page .section-header.shopify-section-header-sticky {
+  position: relative !important;
+  top: auto !important;
+}
+
 /* Verdrahtung Cards Styles */
 .verdrahtung-cards-container {
   display: flex;

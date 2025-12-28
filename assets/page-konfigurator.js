@@ -1614,6 +1614,15 @@ let rowCounter = 1;
       // Konfigurator Tracking initialisieren
       initializeKonfiguratorTracking();
       
+      // Header nicht sticky auf Konfigurator-Seite
+      const sectionHeader = document.querySelector('.section-header');
+      if (sectionHeader) {
+        sectionHeader.style.position = 'relative';
+        sectionHeader.style.top = 'auto';
+        sectionHeader.style.zIndex = 'auto';
+        sectionHeader.classList.remove('shopify-section-header-sticky', 'shopify-section-header-hidden');
+      }
+      
       // Info-Bar sichtbar machen, sobald DOM geladen ist
       const infoBar = document.querySelector('.header-info-bar');
       if (infoBar) {
