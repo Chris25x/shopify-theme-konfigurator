@@ -1227,7 +1227,8 @@ body:has(#page4.active) .button-container #nextButton {
   border-bottom: 1px solid #e2e8f0;
   box-shadow: 0 10px 20px rgba(15, 23, 42, 0.08);
   backdrop-filter: blur(6px);
-  position: relative;
+  position: sticky;
+  top: 0;
   z-index: 12;
 }
 
