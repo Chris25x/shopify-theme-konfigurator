@@ -241,6 +241,9 @@ let rowCounter = 1;
     let currentPage = 1;
     let selectedVerdrahtung = ''; // Neue Variable für die Verdrahtungsauswahl
     let selectedMontageart = ''; // Neue Variable für die Montageart-Auswahl
+    let hasUserSelectedVerdrahtung = false; // Verfolgt, ob der Benutzer bereits eine manuelle Auswahl getroffen hat
+    let hasVisitedPage2 = false; // Verfolgt, ob der Benutzer bereits Page 2 besucht hat
+    let hasVisitedPage3 = false; // Verfolgt, ob der Benutzer bereits Page 3 besucht hat
     let isFirstRowAtBottom = false; // Neue Variable für die Position der ersten Reihe
     let sectionAOrder = [];
 
@@ -793,18 +796,22 @@ let rowCounter = 1;
           }
         });
       }
-      // Verdrahtung (falls Mapping vorhanden)
-      const vIdVerd = getVerdrahtungVariantId();
-      if (vIdVerd) {
-        const verdrahtungPrice = getVariantPrice(vIdVerd);
-        sum += verdrahtungPrice;
-        // Verdrahtung Preis hinzugefügt
+      // Verdrahtung (falls Mapping vorhanden) - nur wenn Page 3 bereits besucht wurde
+      if (hasVisitedPage3) {
+        const vIdVerd = getVerdrahtungVariantId();
+        if (vIdVerd) {
+          const verdrahtungPrice = getVariantPrice(vIdVerd);
+          sum += verdrahtungPrice;
+          // Verdrahtung Preis hinzugefügt
+        }
       }
-      // Montageart (abhängig von Reihenanzahl)
-      if (selectedMontageart) {
-        const montagePrice = getMontageartPrice();
-        sum += montagePrice;
-        // Montageart Preis hinzugefügt
+      // Montageart (abhängig von Reihenanzahl) - nur wenn Page 2 bereits besucht wurde
+      if (hasVisitedPage2) {
+        if (selectedMontageart) {
+          const montagePrice = getMontageartPrice();
+          sum += montagePrice;
+          // Montageart Preis hinzugefügt
+        }
       }
       
       // Phasenschiene für jeden FI-Bereich hinzufügen
@@ -1373,6 +1380,14 @@ let rowCounter = 1;
           setupRow(rowCounter);
           updateInfoBox();
           updateSummary();
+          
+          // Update prices on cards when row count changes
+          if (typeof updateMontageartPrices === 'function') {
+            updateMontageartPrices();
+          }
+          if (typeof updateVerdrahtungPrices === 'function') {
+            updateVerdrahtungPrices();
+          }
 
           // Füge den FI-/Leitungsschutzschalter zur neuen Reihe hinzu
           const fiProduct = {
@@ -1663,6 +1678,28 @@ let rowCounter = 1;
       // Aktuelle Seite aktualisieren
       currentPage = pageNumber;
       
+      // Flags setzen, wenn die entsprechenden Seiten besucht werden
+      // und Info-Box aktualisieren, damit Preise sofort berechnet werden
+      if (pageNumber >= 2 && !hasVisitedPage2) {
+        hasVisitedPage2 = true;
+        // Info-Box aktualisieren, damit Montageart-Preis sofort berechnet wird
+        if (typeof updateInfoBox === 'function') {
+          updateInfoBox();
+        }
+      } else if (pageNumber >= 2) {
+        hasVisitedPage2 = true;
+      }
+      
+      if (pageNumber >= 3 && !hasVisitedPage3) {
+        hasVisitedPage3 = true;
+        // Info-Box aktualisieren, damit Verdrahtungs-Preis sofort berechnet wird
+        if (typeof updateInfoBox === 'function') {
+          updateInfoBox();
+        }
+      } else if (pageNumber >= 3) {
+        hasVisitedPage3 = true;
+      }
+      
       // Alle Seiten ausblenden
       document.querySelectorAll('.page').forEach(page => {
         page.classList.remove('active');
@@ -1690,6 +1727,18 @@ let rowCounter = 1;
       if (pageNumber === 4) {
         updateInfoBox();
         updateInclusiveTags();
+      }
+      
+      // Update prices on cards when showing Page 2 or Page 3
+      if (pageNumber === 2) {
+        if (typeof updateMontageartPrices === 'function') {
+          updateMontageartPrices();
+        }
+      }
+      if (pageNumber === 3) {
+        if (typeof updateVerdrahtungPrices === 'function') {
+          updateVerdrahtungPrices();
+        }
       }
 
       // Statusleiste aktualisieren
@@ -2279,9 +2328,9 @@ let rowCounter = 1;
             { label: 'Hohlwand-Montage', action: () => selectMontageart('Hohlwand-Montage'), key: 'Hohlwand-Montage' }
           ]
         : [
-            { label: 'Nur Einzelteile (ohne Verdrahtung & Zubehör)', action: () => selectVerdrahtung('Nur Einzelteile (ohne Verdrahtung & Zubehör)'), key: 'Nur Einzelteile (ohne Verdrahtung & Zubehör)' },
-            { label: 'Verdrahtungszubehör (ohne Vormontage & Verdrahtung)', action: () => selectVerdrahtung('Verdrahtungszubehör (ohne Vormontage & Verdrahtung)'), key: 'Verdrahtungszubehör (ohne Vormontage & Verdrahtung)' },
-            { label: 'Vormontage & Verdrahtung', action: () => selectVerdrahtung('Vormontage & Verdrahtung'), key: 'Vormontage & Verdrahtung' }
+            { label: 'Nur Einzelteile (ohne Verdrahtung & Zubehör)', action: () => selectVerdrahtung('Nur Einzelteile (ohne Verdrahtung & Zubehör)', true), key: 'Nur Einzelteile (ohne Verdrahtung & Zubehör)' },
+            { label: 'Verdrahtungszubehör (ohne Vormontage & Verdrahtung)', action: () => selectVerdrahtung('Verdrahtungszubehör (ohne Vormontage & Verdrahtung)', true), key: 'Verdrahtungszubehör (ohne Vormontage & Verdrahtung)' },
+            { label: 'Vormontage & Verdrahtung', action: () => selectVerdrahtung('Vormontage & Verdrahtung', true), key: 'Vormontage & Verdrahtung' }
           ];
       
       const portal = ensurePortalDropdown();
@@ -2610,6 +2659,10 @@ let rowCounter = 1;
       
       // Update prices
       updateMontageartPrices();
+      // Auch Verdrahtungspreise aktualisieren, da sie von der Montageart abhängen können
+      if (typeof updateVerdrahtungPrices === 'function') {
+        updateVerdrahtungPrices();
+      }
       
       // Legacy dropdown support (falls vorhanden)
       const dropdownBtn = document.getElementById('montageart-btn');
@@ -2685,7 +2738,7 @@ let rowCounter = 1;
           if (radio) {
             radio.checked = true;
           }
-          selectVerdrahtung(option);
+          selectVerdrahtung(option, true); // Manuelle Benutzerauswahl
         });
       });
       
@@ -2696,18 +2749,29 @@ let rowCounter = 1;
             return;
           }
           if (this.checked) {
-            selectVerdrahtung(this.value);
+            selectVerdrahtung(this.value, true); // Manuelle Benutzerauswahl
           }
         });
       });
       
-      // Set default selection (Vormontage & Verdrahtung)
-      const defaultRadio = document.querySelector('input[name="verdrahtung-option"][value="Vormontage & Verdrahtung"]');
-      if (defaultRadio && !selectedVerdrahtung) {
-        defaultRadio.checked = true;
-        selectVerdrahtung('Vormontage & Verdrahtung');
+      // Set default selection (Vormontage & Verdrahtung) - nur beim ersten Durchlauf
+      // Wenn der Benutzer bereits eine Auswahl getroffen hat, diese wiederherstellen
+      if (hasUserSelectedVerdrahtung && selectedVerdrahtung) {
+        // Restore previous selection (Benutzer hat bereits eine Auswahl getroffen)
+        const savedRadio = document.querySelector(`input[name="verdrahtung-option"][value="${selectedVerdrahtung}"]`);
+        if (savedRadio) {
+          savedRadio.checked = true;
+          selectVerdrahtung(selectedVerdrahtung);
+        }
+      } else if (!hasUserSelectedVerdrahtung && !selectedVerdrahtung) {
+        // Nur beim ersten Durchlauf: Standardauswahl setzen
+        const defaultRadio = document.querySelector('input[name="verdrahtung-option"][value="Vormontage & Verdrahtung"]');
+        if (defaultRadio) {
+          defaultRadio.checked = true;
+          selectVerdrahtung('Vormontage & Verdrahtung');
+        }
       } else if (selectedVerdrahtung) {
-        // Restore previous selection
+        // Fallback: Wenn selectedVerdrahtung gesetzt ist, aber hasUserSelectedVerdrahtung nicht, dann wiederherstellen
         const savedRadio = document.querySelector(`input[name="verdrahtung-option"][value="${selectedVerdrahtung}"]`);
         if (savedRadio) {
           savedRadio.checked = true;
@@ -2717,9 +2781,32 @@ let rowCounter = 1;
 
       // Initialen Zustand abhängig von der gewählten Montageart setzen
       updateVerdrahtungAvailability();
+      
+      // Update prices dynamically when row count changes
+      updateVerdrahtungPrices();
+    }
+    
+    function updateVerdrahtungPrices() {
+      document.querySelectorAll('.verdrahtung-price').forEach(priceEl => {
+        const verdrahtung = priceEl.getAttribute('data-verdrahtung');
+        if (!verdrahtung) return;
+
+        // Temporär ausgewählte Verdrahtung überschreiben, um den Preis für diese Option zu berechnen
+        const originalVerdrahtung = selectedVerdrahtung;
+        selectedVerdrahtung = verdrahtung;
+        const price = getVerdrahtungPrice();
+        selectedVerdrahtung = originalVerdrahtung; // Ursprüngliche Auswahl wiederherstellen
+
+        if (typeof price === 'number' && price > 0) {
+          // price ist bereits in Euro (z. B. 20.00) → wie im Dropdown formatiert, aber mit führendem +
+          priceEl.textContent = '+' + formatPriceDE(price);
+        } else {
+          priceEl.textContent = '0,00 €';
+        }
+      });
     }
 
-    function selectVerdrahtung(option) {
+    function selectVerdrahtung(option, isUserSelection = false) {
       // Update radio button
       const radio = document.querySelector(`input[name="verdrahtung-option"][value="${option}"]`);
       if (radio) {
@@ -2741,6 +2828,12 @@ let rowCounter = 1;
       closePortalDropdown();
       
       selectedVerdrahtung = option; // Speichere die ausgewählte Option
+      
+      // Markiere als manuelle Auswahl, wenn der Benutzer die Auswahl getroffen hat
+      if (isUserSelection) {
+        hasUserSelectedVerdrahtung = true;
+      }
+      
       updateInfoBox();
       updateSummary();
     }
@@ -6172,6 +6265,14 @@ let rowCounter = 1;
       // Aktualisiere die Info-Box
       updateInfoBox();
       updateSummary();
+      
+      // Update prices on cards when row count changes
+      if (typeof updateMontageartPrices === 'function') {
+        updateMontageartPrices();
+      }
+      if (typeof updateVerdrahtungPrices === 'function') {
+        updateVerdrahtungPrices();
+      }
     }
 
     function removeRow(rowNumber) {
@@ -6234,6 +6335,14 @@ let rowCounter = 1;
         rowCounter--;
         updateInfoBox();
         updateSummary();
+        
+        // Update prices on cards when row count changes
+        if (typeof updateMontageartPrices === 'function') {
+          updateMontageartPrices();
+        }
+        if (typeof updateVerdrahtungPrices === 'function') {
+          updateVerdrahtungPrices();
+        }
       } catch (error) {
         console.error("Fehler beim Entfernen der Reihe:", error.message);
         showError("Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.");

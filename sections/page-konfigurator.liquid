@@ -648,7 +648,7 @@
                   <h3 style="font-size: 1.6rem; font-weight: 600; color: #111827; margin: 0 0 12px;">Selbstverdrahtung</h3>
                   <p style="font-size: 1.4rem; color: #6b7280; line-height: 1.5; margin: 0 0 20px;">Lieferung einzelner Komponenten ohne Verdrahungsmaterial.</p>
                   <div style="display: flex; justify-content: space-between; align-items: flex-end;">
-                    <div style="font-size: 1.6rem; font-weight: 600; color: #005A9C;">0,00 €</div>
+                    <div class="verdrahtung-price" data-verdrahtung="Nur Einzelteile (ohne Verdrahtung & Zubehör)" style="font-size: 1.6rem; font-weight: 600; color: #005A9C;">0,00 €</div>
                     <div style="font-size: 1.3rem; color: #6b7280;">Keine Vormontage</div>
                   </div>
                 </div>
@@ -661,7 +661,7 @@
                   <h3 style="font-size: 1.6rem; font-weight: 600; color: #111827; margin: 0 0 12px;">Zubehör-Set für Verdrahtung</h3>
                   <p style="font-size: 1.4rem; color: #6b7280; line-height: 1.5; margin: 0 0 20px;">Verdrahtungsleitungen (farbig) inkl. Aderendhülsen und Verdrahtungszubehör.</p>
                   <div style="display: flex; justify-content: space-between; align-items: flex-end;">
-                    <div style="font-size: 1.6rem; font-weight: 600; color: #005A9C;">+15,00 €</div>
+                    <div class="verdrahtung-price" data-verdrahtung="Verdrahtungszubehör (ohne Vormontage & Verdrahtung)" style="font-size: 1.6rem; font-weight: 600; color: #005A9C;">+15,00 €</div>
                     <div style="font-size: 1.3rem; color: #6b7280;">Material inkl.</div>
                   </div>
                 </div>
@@ -675,7 +675,7 @@
                   <h3 style="font-size: 1.6rem; font-weight: 600; color: #111827; margin: 0 0 12px;">Vormontiert & verdrahtet</h3>
                   <p style="font-size: 1.4rem; color: #6b7280; line-height: 1.5; margin: 0 0 20px;">Anschlussfertig geliefert. Spart Zeit & vermeidet Fehler.</p>
                   <div style="display: flex; justify-content: space-between; align-items: flex-end;">
-                    <div style="font-size: 1.6rem; font-weight: 600; color: #005A9C;">+20,00 €</div>
+                    <div class="verdrahtung-price" data-verdrahtung="Vormontage & Verdrahtung" style="font-size: 1.6rem; font-weight: 600; color: #005A9C;">+20,00 €</div>
                     <div style="font-size: 1.3rem; color: #6b7280;">Anschlussfertig</div>
                   </div>
                 </div>
@@ -698,9 +698,6 @@
           <div class="kd-card">
             <div class="kd-header">
               <h2 class="kd-title">Konfigurationsdetails</h2>
-              <button class="kd-editBtn" onclick="showPage(1)" type="button">
-                <i class="fas fa-edit"></i> Bearbeiten
-              </button>
             </div>
             <div class="kd-content">
               <div class="kd-row">
