@@ -1679,7 +1679,7 @@ let rowCounter = 1;
       // Scroll-Verhalten beim Seitenwechsel - etwas weiter runter
       if (pageNumber > 1) {
         window.scrollTo({
-          top: 200,
+          top: 100,
           behavior: 'smooth'
         });
       }
