@@ -75,15 +75,27 @@
           </span>
         </button>
         </h2>
-        <div class="cart-drawer__free-shipping-header">
-          <span class="svg-wrapper">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" class="icon icon-checkmark" viewBox="0 0 24 24">
-              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
-              <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-            </svg>
-          </span>
-          Kostenloser Versand
-        </div>
+        {%- if localization.country.iso_code == 'DE' -%}
+          <div class="cart-drawer__free-shipping-header">
+            <span class="svg-wrapper">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" class="icon icon-checkmark" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
+                <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              </svg>
+            </span>
+            Kostenloser Versand
+          </div>
+        {%- else -%}
+          <div class="cart-drawer__shipping-info-header">
+            <span class="svg-wrapper">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" class="icon icon-info" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
+                <path d="M12 16V12M12 8H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </span>
+            Versandkosten werden im Checkout berechnet.
+          </div>
+        {%- endif -%}
       </div>
       <cart-drawer-items
         {% if cart == empty %}
@@ -524,7 +536,7 @@
                 assign shipping_url = '#'
               endif
             -%}
-            inkl. MwSt. und <a href="{{ shipping_url }}" class="cart-drawer__shipping-link">Versand</a>
+            inkl. MwSt., zzgl. <a href="{{ shipping_url }}" class="cart-drawer__shipping-link">Versand</a>
           </small>
 
         <!-- CTAs -->
