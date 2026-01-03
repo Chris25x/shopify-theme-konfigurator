@@ -1676,37 +1676,12 @@ let rowCounter = 1;
         trackKonfiguratorPageView();
       }
       
-      // Scroll-Verhalten beim Seitenwechsel
+      // Scroll-Verhalten beim Seitenwechsel - etwas weiter runter
       if (pageNumber > 1) {
-        if (pageNumber === 2 || pageNumber === 3 || pageNumber === 4) {
-          // Bei Page 2, 3 und 4: Status-Bar am oberen Bildschirmrand positionieren mit 25px Abstand
-          setTimeout(() => {
-            const statusBar = document.querySelector('.statusbar');
-            if (statusBar) {
-              const rect = statusBar.getBoundingClientRect();
-              const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-              const offset = 25; 
-              const targetPosition = rect.top + scrollTop - offset;
-              
-              window.scrollTo({
-                top: Math.max(0, targetPosition),
-                behavior: 'smooth'
-              });
-            } else {
-              // Fallback: Scroll mit Offset nach oben
-              window.scrollTo({
-                top: 25,
-                behavior: 'smooth'
-              });
-            }
-          }, 200);
-        } else {
-          // Bei anderen Seiten: Normal nach oben scrollen
-          window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-          });
-        }
+        window.scrollTo({
+          top: 200,
+          behavior: 'smooth'
+        });
       }
 
       // Reihenklemmen entfernt
