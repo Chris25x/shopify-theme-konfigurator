@@ -1980,6 +1980,16 @@ body:has(#page4.active) .button-container #nextButton {
   transform: translateY(1px); 
 }
 
+/* Add to Cart Button auf page4 - spezifische Farbe ohne !important */
+#page4 #addToCartButton.price-cta {
+  background: #005A9C;
+}
+
+#page4 #addToCartButton.price-cta:hover {
+  background: #00467a;
+  opacity: 1;
+}
+
 /* footer tip */
 .price-tip{
   margin-top: 10px;
