@@ -235,13 +235,65 @@ document.addEventListener('DOMContentLoaded', () => {
     new ProductMediaGallery(galleryContainer);
   }
 
-  // Initialize description toggles
-  const descriptionToggles = document.querySelectorAll('.description-toggle');
-  descriptionToggles.forEach(toggle => {
-    toggle.addEventListener('click', function() {
+  initDescriptionToggles();
+
+  // Update technical details when variant changes (Dawn-style pub/sub)
+  if (typeof subscribe === 'function' && typeof PUB_SUB_EVENTS !== 'undefined' && PUB_SUB_EVENTS?.variantChange) {
+    subscribe(PUB_SUB_EVENTS.variantChange, (event) => {
+      const data = event?.data;
+      if (!data?.sectionId || !data?.html) return;
+
+      const sectionId = data.sectionId;
+      const html = data.html;
+
+      const sourceToggle = html.getElementById(`technical-toggle-${sectionId}`);
+      const sourceContent = html.getElementById(`technical-content-${sectionId}`);
+      const destToggle = document.getElementById(`technical-toggle-${sectionId}`);
+      const destContent = document.getElementById(`technical-content-${sectionId}`);
+
+      // If the new variant has no tech details, remove existing block if present.
+      if (!sourceToggle || !sourceContent) {
+        const destContainer = destToggle?.closest('.product-description-container');
+        if (destContainer) destContainer.remove();
+        return;
+      }
+
+      // If block already exists, just replace inner HTML to keep listeners on the button.
+      if (destToggle && destContent) {
+        destToggle.innerHTML = sourceToggle.innerHTML;
+        destContent.innerHTML = sourceContent.innerHTML;
+        return;
+      }
+
+      // Otherwise insert the whole container after the product description container.
+      const sourceContainer = sourceToggle.closest('.product-description-container');
+      if (!sourceContainer) return;
+
+      const productDetailsToggle = document.getElementById(`description-toggle-${sectionId}`);
+      const productDetailsContainer = productDetailsToggle?.closest('.product-description-container');
+      if (!productDetailsContainer) return;
+
+      const newContainer = document.importNode(sourceContainer, true);
+      productDetailsContainer.insertAdjacentElement('afterend', newContainer);
+
+      // Bind click handler for newly inserted toggle(s)
+      initDescriptionToggles(newContainer);
+    });
+  }
+});
+
+function initDescriptionToggles(root = document) {
+  const toggles = root.querySelectorAll('.description-toggle');
+  toggles.forEach((toggle) => {
+    if (toggle.dataset.descriptionToggleInit === 'true') return;
+    toggle.dataset.descriptionToggleInit = 'true';
+
+    toggle.addEventListener('click', function () {
       const content = document.getElementById(this.id.replace('toggle', 'content'));
+      if (!content) return;
+
       const isActive = this.classList.contains('active');
-      
+
       if (isActive) {
         this.classList.remove('active');
         content.classList.remove('active');
@@ -251,4 +303,4 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });
-});
+}

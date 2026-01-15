@@ -1154,6 +1154,34 @@ button.product-thumb.is-active {
       opacity: 1 !important;
     }
 
+    /* --- Technische Details (Metafelder) --- */
+    .description-content .product-technical-details {
+      margin: 0;
+    }
+
+    .description-content .product-technical-details__row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 8px 0;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    .description-content .product-technical-details__row:first-child {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .description-content .product-technical-details__label,
+    .description-content .product-technical-details__value {
+      margin: 0;
+    }
+
+    .description-content .product-technical-details__value {
+      text-align: right;
+      white-space: nowrap;
+    }
+
     /* Entferne leeres div mit mt-3 w-full empty:hidden */
     .description-content .product__description div.mt-3.w-full,
     .description-content .product__description .mt-3.w-full {

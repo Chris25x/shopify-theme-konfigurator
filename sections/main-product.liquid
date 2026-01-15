@@ -279,6 +279,77 @@
                     </div>
                   </div>
                 {%- endif -%}
+
+                {%- liquid
+                  assign tech_reihen = product.metafields.custom.reihen
+                  if tech_reihen == blank
+                    assign tech_reihen = product.selected_or_first_available_variant.metafields.custom.reihen
+                  endif
+
+                  assign tech_tiefe = product.metafields.custom.tiefe
+                  if tech_tiefe == blank
+                    assign tech_tiefe = product.selected_or_first_available_variant.metafields.custom.tiefe
+                  endif
+
+                  assign tech_breite = product.metafields.custom.breite
+                  if tech_breite == blank
+                    assign tech_breite = product.selected_or_first_available_variant.metafields.custom.breite
+                  endif
+
+                  assign tech_hohe = product.metafields.custom.hohe
+                  if tech_hohe == blank
+                    assign tech_hohe = product.selected_or_first_available_variant.metafields.custom.hohe
+                  endif
+
+                  assign has_tech_details = false
+                  if tech_reihen != blank or tech_tiefe != blank or tech_breite != blank or tech_hohe != blank
+                    assign has_tech_details = true
+                  endif
+                -%}
+
+                {%- if has_tech_details -%}
+                  <div class="product-description-container">
+                    <button type="button" class="description-toggle" id="technical-toggle-{{ section.id }}">
+                      <span class="description-label">Technische Details</span>
+                      <span class="description-arrow">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path class="plus-vertical" d="M12 5V19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                          <path class="plus-horizontal" d="M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                      </span>
+                    </button>
+                    <div class="description-content" id="technical-content-{{ section.id }}">
+                      <div class="product__description rte quick-add-hidden">
+                        <dl class="product-technical-details">
+                          {%- if tech_reihen != blank -%}
+                            <div class="product-technical-details__row">
+                              <dt class="product-technical-details__label">Reihen</dt>
+                              <dd class="product-technical-details__value">{{ tech_reihen | metafield_text }}</dd>
+                            </div>
+                          {%- endif -%}
+                          {%- if tech_tiefe != blank -%}
+                            <div class="product-technical-details__row">
+                              <dt class="product-technical-details__label">Tiefe</dt>
+                              <dd class="product-technical-details__value">{{ tech_tiefe | metafield_text }}</dd>
+                            </div>
+                          {%- endif -%}
+                          {%- if tech_breite != blank -%}
+                            <div class="product-technical-details__row">
+                              <dt class="product-technical-details__label">Breite</dt>
+                              <dd class="product-technical-details__value">{{ tech_breite | metafield_text }}</dd>
+                            </div>
+                          {%- endif -%}
+                          {%- if tech_hohe != blank -%}
+                            <div class="product-technical-details__row">
+                              <dt class="product-technical-details__label">Höhe</dt>
+                              <dd class="product-technical-details__value">{{ tech_hohe | metafield_text }}</dd>
+                            </div>
+                          {%- endif -%}
+                        </dl>
+                      </div>
+                    </div>
+                  </div>
+                {%- endif -%}
                     {%- liquid
                       assign volume_pricing_array = product.selected_or_first_available_variant.quantity_price_breaks | sort: 'quantity' | reverse
                       assign current_qty_for_volume_pricing = cart_qty | plus: product.selected_or_first_available_variant.quantity_rule.min
