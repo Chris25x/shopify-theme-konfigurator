@@ -573,7 +573,7 @@ let rowCounter = 1;
     const options = [
       { name: "Leitungsschutzschalter 1 polig", size: 1, img: "https://cdn.shopify.com/s/files/1/0944/8711/8089/files/LSS1_freigestellt.png?v=1756108987", variantId: "55403256742153" },
       { name: "Leitungsschutzschalter 3 polig", size: 3, img: "https://cdn.shopify.com/s/files/1/0944/8711/8089/files/LSS3.png?v=1756113781", variantId: "55403132715273" },
-
+      { name: "Fi/Leitungsschutzschalter 1 polig", size: 2, img: "https://cdn.shopify.com/s/files/1/0944/8711/8089/files/Fi-Ls-Schalter.png?v=1768333062", variantId: "", onlyForFreeArea: true },
       { name: "Klingeltrafo", size: 2, img: "https://cdn.shopify.com/s/files/1/0944/8711/8089/files/Klingeltrafo_e9548037-333f-4341-aa85-229b61328c91.png?v=1756118852", variantId: "55403136254217" },
       { name: "Stromstoßschalter", size: 1, img: "https://cdn.shopify.com/s/files/1/0944/8711/8089/files/Stromstossschalter.png?v=1756148388", variantId: "55403138416905" },
       { name: "Sicherungssockel", size: 4.5, img: "https://cdn.shopify.com/s/files/1/0944/8711/8089/files/Sicherungssockel.png?v=1756209996", variantId: "55403158208777" },
@@ -1930,6 +1930,12 @@ let rowCounter = 1;
           event.stopPropagation(); // Verhindert das Schließen des Dropdowns
           const dropdown = this.nextElementSibling;
           const willOpen = dropdown.style.display !== "block";
+          
+          // Aktualisiere die Optionen beim Öffnen des Dropdowns
+          if (willOpen && dropdown.updateOptions) {
+            dropdown.updateOptions();
+          }
+          
           dropdown.style.display = willOpen ? "block" : "none";
           dropdownButton.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
           dropdown.setAttribute('aria-hidden', willOpen ? 'false' : 'true');
@@ -1963,21 +1969,45 @@ let rowCounter = 1;
       dropdown.id = dropdownId;
       dropdownButton.setAttribute('aria-controls', dropdownId);
 
-      options.forEach(option => {
-        const optionDiv = document.createElement("div");
-        optionDiv.className = "dropdown-option";
-        optionDiv.setAttribute('role','menuitem');
-        optionDiv.tabIndex = 0;
-        optionDiv.textContent = option.name;
-        optionDiv.addEventListener("click", () => addProductToRow(rowNumber, option));
-        optionDiv.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            addProductToRow(rowNumber, option);
-          }
+      // Funktion zum Aktualisieren der Dropdown-Optionen basierend auf dem aktuellen Status der Reihe
+      function updateDropdownOptions() {
+        // Leere das Dropdown
+        dropdown.innerHTML = '';
+
+        // Prüfe, ob diese Reihe ein "Freier Bereich ohne Sammel-Fi" ist
+        const rowContent = document.getElementById("row" + rowNumber + "Content");
+        const isFreeArea = rowContent && !Array.from(rowContent.getElementsByClassName('product-box')).some(box => {
+          return box.querySelector('img')?.alt === "FI-/Leitungsschutzschalter";
         });
-        dropdown.appendChild(optionDiv);
-      });
+
+        options.forEach(option => {
+          // Filtere Optionen: Wenn onlyForFreeArea true ist, nur anzeigen wenn es ein Freier Bereich ist
+          if (option.onlyForFreeArea && !isFreeArea) {
+            return; // Überspringe diese Option
+          }
+          // Wenn onlyForFreeArea nicht gesetzt ist, immer anzeigen
+
+          const optionDiv = document.createElement("div");
+          optionDiv.className = "dropdown-option";
+          optionDiv.setAttribute('role','menuitem');
+          optionDiv.tabIndex = 0;
+          optionDiv.textContent = option.name;
+          optionDiv.addEventListener("click", () => addProductToRow(rowNumber, option));
+          optionDiv.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              addProductToRow(rowNumber, option);
+            }
+          });
+          dropdown.appendChild(optionDiv);
+        });
+      }
+
+      // Initiale Optionen laden
+      updateDropdownOptions();
+
+      // Speichere die Update-Funktion für späteren Zugriff
+      dropdown.updateOptions = updateDropdownOptions;
 
       dropdownContainer.append(dropdownButton, dropdown);
       return dropdownContainer;
@@ -2999,6 +3029,12 @@ let rowCounter = 1;
                 const nennstrom = nennstromSelect ? nennstromSelect.value.trim() : '16';
                 const charakteristik = charakteristikSelect ? charakteristikSelect.value.trim() : 'B';
                 name = `${name} ${nennstrom}A, ${charakteristik}-Charakteristik`;
+              } else if (name === 'Fi/Leitungsschutzschalter 1 polig') {
+                const nennstromSelect = box.querySelector('select[id^="nennstrom-"]');
+                const charakteristikSelect = box.querySelector('select[id^="charakteristik-"]');
+                const nennstrom = nennstromSelect ? nennstromSelect.value.trim() : '16';
+                const charakteristik = charakteristikSelect ? charakteristikSelect.value.trim() : 'B';
+                name = `${name} ${nennstrom}A, ${charakteristik}-Charakteristik`;
               }
               reihenElemente.push(name);
             }
@@ -3254,6 +3290,12 @@ let rowCounter = 1;
                 if (nennstrom) name = `Sicherungssockel ${nennstrom}A`;
               }
               if (name === 'Leitungsschutzschalter 1 polig' || name === 'Leitungsschutzschalter 3 polig') {
+                const nennstromSelect = box.querySelector('select[id^="nennstrom-"]');
+                const charakteristikSelect = box.querySelector('select[id^="charakteristik-"]');
+                const nennstrom = nennstromSelect ? nennstromSelect.value.trim() : '16';
+                const charakteristik = charakteristikSelect ? charakteristikSelect.value.trim() : 'B';
+                name = `${name} ${nennstrom}A, ${charakteristik}-Charakteristik`;
+              } else if (name === 'Fi/Leitungsschutzschalter 1 polig') {
                 const nennstromSelect = box.querySelector('select[id^="nennstrom-"]');
                 const charakteristikSelect = box.querySelector('select[id^="charakteristik-"]');
                 const nennstrom = nennstromSelect ? nennstromSelect.value.trim() : '16';
@@ -3519,6 +3561,12 @@ let rowCounter = 1;
               if (nennstrom) name = `Sicherungssockel ${nennstrom}A`;
             }
             if (name === 'Leitungsschutzschalter 1 polig' || name === 'Leitungsschutzschalter 3 polig') {
+              const nennstromSelect = box.querySelector('select[id^="nennstrom-"]');
+              const charakteristikSelect = box.querySelector('select[id^="charakteristik-"]');
+              const nennstrom = nennstromSelect ? nennstromSelect.value.trim() : '16';
+              const charakteristik = charakteristikSelect ? charakteristikSelect.value.trim() : 'B';
+              name = `${name} ${nennstrom}A, ${charakteristik}-Charakteristik`;
+            } else if (name === 'Fi/Leitungsschutzschalter 1 polig') {
               const nennstromSelect = box.querySelector('select[id^="nennstrom-"]');
               const charakteristikSelect = box.querySelector('select[id^="charakteristik-"]');
               const nennstrom = nennstromSelect ? nennstromSelect.value.trim() : '16';
@@ -3920,6 +3968,18 @@ let rowCounter = 1;
                   quantity: 1
                 });
               }
+            } else if (productName === "Fi/Leitungsschutzschalter 1 polig") {
+              const nennstromSelect = box.querySelector('select[id^="nennstrom-"]');
+              const charakteristikSelect = box.querySelector('select[id^="charakteristik-"]');
+              let nennstrom = nennstromSelect ? nennstromSelect.value.trim() : '16';
+              let charakteristik = charakteristikSelect ? charakteristikSelect.value.trim() : 'B';
+              const variantId = getFiLss1pVariantId(nennstrom, charakteristik);
+              if (variantId) {
+                selectedProducts.push({
+                  id: parseInt(variantId),
+                  quantity: 1
+                });
+              }
             } else if (productName === "Leitungsschutzschalter 3 polig") {
               const nennstromSelect = box.querySelector('select[id^="nennstrom-"]');
               const charakteristikSelect = box.querySelector('select[id^="charakteristik-"]');
@@ -3969,6 +4029,15 @@ let rowCounter = 1;
             if (variantId) {
               selectedProducts.push({ id: parseInt(variantId), quantity: 1 });
             }
+          } else if (productName === "Fi/Leitungsschutzschalter 1 polig") {
+            const nennstromSelect = box.querySelector('select[id^="nennstrom-"]');
+            const charakteristikSelect = box.querySelector('select[id^="charakteristik-"]');
+            let nennstrom = nennstromSelect ? nennstromSelect.value.trim() : '16';
+            let charakteristik = charakteristikSelect ? charakteristikSelect.value.trim() : 'B';
+            const variantId = getFiLss1pVariantId(nennstrom, charakteristik);
+            if (variantId) {
+              selectedProducts.push({ id: parseInt(variantId), quantity: 1 });
+            }
           } else if (productName === "Leitungsschutzschalter 3 polig") {
             const nennstromSelect = box.querySelector('select[id^="nennstrom-"]');
             const charakteristikSelect = box.querySelector('select[id^="charakteristik-"]');
@@ -3984,6 +4053,58 @@ let rowCounter = 1;
               selectedProducts.push({ id: parseInt(variantId), quantity: 1 });
             }
           }
+        });
+      }
+      
+      // Hilfsfunktion: Prüft ob eine Reihe ein "Freier Bereich ohne Sammel-FI" ist
+      function isFreeAreaWithoutFi(rowContent) {
+        if (!rowContent) return false;
+        // Ein Freier Bereich ohne Sammel-FI hat KEINEN FI-/Leitungsschutzschalter
+        return !Array.from(rowContent.getElementsByClassName('product-box')).some(box => {
+          return box.querySelector('img')?.alt === "FI-/Leitungsschutzschalter";
+        });
+      }
+      
+      // Hilfsfunktion: Prüft ob zwei "Fi/Leitungsschutzschalter 1 polig" direkt nebeneinander sind
+      function hasTwoConsecutiveFiLss1p(rowContent) {
+        if (!rowContent) return false;
+        const productBoxes = Array.from(rowContent.getElementsByClassName('product-box'));
+        
+        // Durchlaufe alle Produktboxen und prüfe, ob zwei "Fi/Leitungsschutzschalter 1 polig" direkt nebeneinander sind
+        for (let i = 0; i < productBoxes.length - 1; i++) {
+          const currentBox = productBoxes[i];
+          const nextBox = productBoxes[i + 1];
+          
+          const currentName = currentBox.querySelector('img')?.alt;
+          const nextName = nextBox.querySelector('img')?.alt;
+          
+          if (currentName === "Fi/Leitungsschutzschalter 1 polig" && 
+              nextName === "Fi/Leitungsschutzschalter 1 polig") {
+            return true;
+          }
+        }
+        return false;
+      }
+      
+      // Prüfe alle Reihen auf zwei nebeneinander liegende "Fi/Leitungsschutzschalter 1 polig" in Freien Bereichen
+      for (let i = 1; i <= rowCounter; i++) {
+        const rowContent = document.getElementById(`row${i}Content`);
+        if (rowContent && isFreeAreaWithoutFi(rowContent) && hasTwoConsecutiveFiLss1p(rowContent)) {
+          // Füge PhasenschieneFiLs für diese Reihe hinzu
+          selectedProducts.push({
+            id: parseInt('56747921244425'),
+            quantity: 1
+          });
+        }
+      }
+      
+      // Prüfe auch row1Content_2
+      const row1Content2Check = document.getElementById('row1Content_2');
+      if (row1Content2Check && isFreeAreaWithoutFi(row1Content2Check) && hasTwoConsecutiveFiLss1p(row1Content2Check)) {
+        // Füge PhasenschieneFiLs für diese Reihe hinzu
+        selectedProducts.push({
+          id: parseInt('56747921244425'),
+          quantity: 1
         });
       }
       
@@ -4302,6 +4423,12 @@ let rowCounter = 1;
               const charakteristikSelect = box.querySelector('select[id^="charakteristik-"]');
                   const nennstrom = nennstromSelect ? nennstromSelect.value.trim() : '16';
                   const charakteristik = charakteristikSelect ? charakteristikSelect.value.trim() : 'B';
+              name = `1x ${name} ${nennstrom}A, ${charakteristik}-Charakteristik`;
+            } else if (name === 'Fi/Leitungsschutzschalter 1 polig') {
+              const nennstromSelect = box.querySelector('select[id^="nennstrom-"]');
+              const charakteristikSelect = box.querySelector('select[id^="charakteristik-"]');
+              const nennstrom = nennstromSelect ? nennstromSelect.value.trim() : '16';
+              const charakteristik = charakteristikSelect ? charakteristikSelect.value.trim() : 'B';
               name = `1x ${name} ${nennstrom}A, ${charakteristik}-Charakteristik`;
                 } else {
               name = `1x ${name}`;
@@ -4658,6 +4785,52 @@ let rowCounter = 1;
       }
     }
     
+    // Funktion zur Ermittlung der Variant-ID für Fi/Leitungsschutzschalter 1 polig basierend auf Marke, Nennstrom und Charakteristik
+    function getFiLss1pVariantId(nennstrom, charakteristik) {
+      nennstrom = String(nennstrom).trim();
+      charakteristik = String(charakteristik).trim().toUpperCase();
+      
+      if (selectedMarke === 'Gewiss') {
+        // Gewiss Variant-IDs (Platzhalter - noch zu befüllen)
+        const gewissMap = {
+          '6-B': '56755066536201',
+          '10-B': '56755066601737',
+          '13-B': '56755066667273',
+          '16-B': '56755066732809',
+          '20-B': '56755066798345',
+          '25-B': '56755066863881',
+          '32-B': '56755066929417',
+          '6-C': '56755066568969',
+          '10-C': '56755066634505',
+          '13-C': '56755066700041',
+          '16-C': '56755066765577',
+          '20-C': '56755066831113',
+          '25-C': '56755066896649',
+          '32-C': '56755066962185'
+        };
+        return gewissMap[`${nennstrom}-${charakteristik}`] || null;
+      } else {
+        // Hager Variant-IDs (Platzhalter - noch zu befüllen)
+        const hagerMap = {
+          '6-B': '56755064242441',
+          '10-B': '56755064307977',
+          '13-B': '56755064373513',
+          '16-B': '56755064439049',
+          '20-B': '56755064504585',
+          '25-B': '56755064570121',
+          '32-B': '56755064635657',
+          '6-C': '56755064275209',
+          '10-C': '56755064340745',
+          '13-C': '56755064406281',
+          '16-C': '56755064471817',
+          '20-C': '56755064537353',
+          '25-C': '56755064602889',
+          '32-C': '56755064668425'
+        };
+        return hagerMap[`${nennstrom}-${charakteristik}`] || null;
+      }
+    }
+    
     // Funktion zur Ermittlung der Variant-ID für Leitungsschutzschalter 3 polig basierend auf Marke, Nennstrom und Charakteristik
     function getLss3pVariantId(nennstrom, charakteristik) {
       nennstrom = String(nennstrom).trim();
@@ -4782,6 +4955,17 @@ let rowCounter = 1;
               const nennstrom = nennstromSelect.value.trim();
               const charakteristik = charakteristikSelect.value.trim();
               const newVariantId = getLss1pVariantId(nennstrom, charakteristik);
+              if (newVariantId) {
+                box.setAttribute('data-variant-id', newVariantId);
+              }
+            }
+          } else if (productName === "Fi/Leitungsschutzschalter 1 polig") {
+            const nennstromSelect = box.querySelector('select[id^="nennstrom-"]');
+            const charakteristikSelect = box.querySelector('select[id^="charakteristik-"]');
+            if (nennstromSelect && charakteristikSelect) {
+              const nennstrom = nennstromSelect.value.trim();
+              const charakteristik = charakteristikSelect.value.trim();
+              const newVariantId = getFiLss1pVariantId(nennstrom, charakteristik);
               if (newVariantId) {
                 box.setAttribute('data-variant-id', newVariantId);
               }
@@ -4984,6 +5168,8 @@ let rowCounter = 1;
         addFiDropdowns(productBox, element);
       } else if (element.name === "Leitungsschutzschalter 1 polig") {
         addLss1pDropdowns(productBox, element);
+      } else if (element.name === "Fi/Leitungsschutzschalter 1 polig") {
+        addFiLss1pDropdowns(productBox, element);
       } else if (element.name === "Leitungsschutzschalter 3 polig") {
         addLss3pDropdowns(productBox, element);
       } else if (element.name === "Sicherungssockel") {
@@ -5424,6 +5610,53 @@ let rowCounter = 1;
         const charakteristik = charakteristikSelect.value;
         // VariantID basierend auf Marke, Nennstrom und Charakteristik
         const variantId = getLss3pVariantId(nennstrom, charakteristik);
+        if (variantId) {
+          productBox.setAttribute('data-variant-id', variantId);
+        }
+        if (currentPage === 4) {
+          updateSummary();
+        }
+        updateInfoBox();
+      }
+      
+      nennstromSelect.addEventListener('change', updateVariantIdAndConfig);
+      charakteristikSelect.addEventListener('change', updateVariantIdAndConfig);
+      updateVariantIdAndConfig();
+    }
+
+    function addFiLss1pDropdowns(productBox, element) {
+      const dropdownsContainer = document.createElement("div");
+      dropdownsContainer.className = "fi-lss-1p-dropdowns";
+      
+      const dropdown = document.createElement("div");
+      dropdown.className = "fi-lss-1p-dropdown";
+      dropdown.innerHTML = `
+        <select id="nennstrom-${Date.now()}">
+          <option value="6">6A</option>
+          <option value="10">10A</option>
+          <option value="13">13A</option>
+          <option value="16" selected>16A</option>
+          <option value="20">20A</option>
+          <option value="25">25A</option>
+          <option value="32">32A</option>
+        </select>
+        <select id="charakteristik-${Date.now()}">
+          <option value="B" selected>B-Charakteristik</option>
+          <option value="C">C-Charakteristik</option>
+        </select>
+      `;
+      
+      dropdownsContainer.appendChild(dropdown);
+      productBox.insertBefore(dropdownsContainer, productBox.firstChild);
+      
+      const nennstromSelect = dropdown.querySelector('select[id^="nennstrom-"]');
+      const charakteristikSelect = dropdown.querySelector('select[id^="charakteristik-"]');
+      
+      function updateVariantIdAndConfig() {
+        const nennstrom = nennstromSelect.value;
+        const charakteristik = charakteristikSelect.value;
+        // VariantID basierend auf Marke, Nennstrom und Charakteristik
+        const variantId = getFiLss1pVariantId(nennstrom, charakteristik);
         if (variantId) {
           productBox.setAttribute('data-variant-id', variantId);
         }
@@ -6129,7 +6362,7 @@ let rowCounter = 1;
       const leitungsschutzschalterElements = rowContent.querySelectorAll('.product-box');
       leitungsschutzschalterElements.forEach(element => {
         const img = element.querySelector('img');
-        if (img && (img.alt === 'Leitungsschutzschalter 1 polig' || img.alt === 'Leitungsschutzschalter 3 polig')) {
+        if (img && (img.alt === 'Leitungsschutzschalter 1 polig' || img.alt === 'Leitungsschutzschalter 3 polig' || img.alt === 'Fi/Leitungsschutzschalter 1 polig')) {
           const size = parseFloat(element.dataset.size) || 0;
           totalLSUnits += size;
         }
