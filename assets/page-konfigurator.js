@@ -2651,6 +2651,197 @@ let rowCounter = 1;
       updateMontageartPrices();
     }
     
+    // Cache für Varianten-Metadaten
+    const variantMetafieldsCache = {};
+    const variantMetafieldsFetchInFlight = new Set();
+
+    // Funktion zum Abrufen der Varianten-Metadaten (custom.hohe, custom.breite, custom.tiefe)
+    function getVariantMetafields(variantId) {
+      variantId = String(variantId);
+      
+      // 1) Cache prüfen
+      if (variantId in variantMetafieldsCache) {
+        return variantMetafieldsCache[variantId];
+      }
+      
+      // 2) Suche in vorab geladenen Shopify-Daten (aus JSON-Script)
+      for (const product of shopifyProducts) {
+        for (const variant of product.variants) {
+          if (String(variant.id) === variantId) {
+            // Extrahiere Werte - unterstütze sowohl Objekte als auch direkte Werte
+            let hohe = variant.metafields?.custom?.hohe;
+            let breite = variant.metafields?.custom?.breite;
+            let tiefe = variant.metafields?.custom?.tiefe;
+            
+            // Wenn es Objekte sind, extrahiere den Wert
+            if (hohe && typeof hohe === 'object') {
+              hohe = hohe.value || hohe;
+            }
+            if (breite && typeof breite === 'object') {
+              breite = breite.value || breite;
+            }
+            if (tiefe && typeof tiefe === 'object') {
+              tiefe = tiefe.value || tiefe;
+            }
+            
+            // Konvertiere zu String, falls es noch nicht ist
+            hohe = hohe ? String(hohe) : null;
+            breite = breite ? String(breite) : null;
+            tiefe = tiefe ? String(tiefe) : null;
+            
+            const metafields = { hohe, breite, tiefe };
+            variantMetafieldsCache[variantId] = metafields;
+            return metafields;
+          }
+        }
+      }
+      
+      // 3) Live nachladen (Fallback, falls nicht im JSON-Script)
+      if (!variantMetafieldsFetchInFlight.has(variantId)) {
+        variantMetafieldsFetchInFlight.add(variantId);
+        fetch(`/variants/${variantId}.json`, { headers: { 'Accept': 'application/json' } })
+          .then(r => r.json())
+          .then(data => {
+            const v = data && data.variant ? data.variant : null;
+            if (v) {
+              // Unterstütze verschiedene Metadaten-Strukturen
+              let hohe = null, breite = null, tiefe = null;
+              
+              // Versuche verschiedene Pfade für Metadaten
+              if (v.metafields) {
+                // Struktur 1: v.metafields.custom.hohe.value
+                hohe = v.metafields?.custom?.hohe?.value || v.metafields?.custom?.hohe || null;
+                breite = v.metafields?.custom?.breite?.value || v.metafields?.custom?.breite || null;
+                tiefe = v.metafields?.custom?.tiefe?.value || v.metafields?.custom?.tiefe || null;
+              }
+              
+              // Alternative: Direkt aus variant.custom
+              if (!hohe && v.custom?.hohe) hohe = v.custom.hohe;
+              if (!breite && v.custom?.breite) breite = v.custom.breite;
+              if (!tiefe && v.custom?.tiefe) tiefe = v.custom.tiefe;
+              
+              const metafields = { hohe, breite, tiefe };
+              variantMetafieldsCache[variantId] = metafields;
+              // Dimensionen für alle Cards aktualisieren
+              updateMontageartDimensions();
+            } else {
+              variantMetafieldsCache[variantId] = { hohe: null, breite: null, tiefe: null };
+            }
+          })
+          .catch((err) => {
+            console.error(`Metadaten-Abruf fehlgeschlagen für VariantID ${variantId}:`, err);
+            variantMetafieldsCache[variantId] = { hohe: null, breite: null, tiefe: null };
+          })
+          .finally(() => {
+            variantMetafieldsFetchInFlight.delete(variantId);
+          });
+      }
+      
+      // Wenn wir hier ankommen, gibt es noch keine Metadaten
+      return { hohe: null, breite: null, tiefe: null };
+    }
+
+    // Hilfsfunktion zum Extrahieren des Wertes aus einem Metafield (Objekt oder direkter Wert)
+    function extractMetafieldValue(metafield) {
+      if (!metafield) return null;
+      if (typeof metafield === 'string' || typeof metafield === 'number') {
+        return String(metafield);
+      }
+      if (typeof metafield === 'object') {
+        // Versuche verschiedene mögliche Properties
+        return metafield.value || metafield.Value || metafield.data || metafield || null;
+      }
+      return null;
+    }
+
+    // Hilfsfunktion zum Entfernen von "mm" und Leerzeichen aus einem Wert
+    function cleanDimensionValue(value) {
+      if (!value) return null;
+      // Entferne "mm" und Leerzeichen, behalte nur die Zahl
+      return String(value).replace(/\s*mm\s*/gi, '').trim();
+    }
+
+    // Funktion zum Formatieren der Dimensionen im Format HxBxT
+    function formatDimensions(hohe, breite, tiefe) {
+      // Extrahiere Werte, falls sie Objekte sind
+      hohe = extractMetafieldValue(hohe);
+      breite = extractMetafieldValue(breite);
+      tiefe = extractMetafieldValue(tiefe);
+      
+      // Entferne "mm" aus den Werten
+      hohe = cleanDimensionValue(hohe);
+      breite = cleanDimensionValue(breite);
+      tiefe = cleanDimensionValue(tiefe);
+      
+      if (hohe && breite && tiefe) {
+        return {
+          label: 'Maße (H X B X T)',
+          values: `${hohe}x${breite}x${tiefe} mm`
+        };
+      }
+      return null;
+    }
+
+    // Funktion zum Aktualisieren der Dimensionen für alle Montageart-Cards
+    function updateMontageartDimensions() {
+      document.querySelectorAll('.montageart-card').forEach(card => {
+        const montageart = card.getAttribute('data-montageart');
+        const labelDiv = card.querySelector('div[style*="font-size: 1.3rem"][style*="color: #6b7280"]');
+        
+        if (!montageart || montageart === 'Kein Verteilerkasten benötigt') {
+          // Verstecke das Label-Div für "Kein Verteilerkasten benötigt"
+          if (labelDiv) {
+            labelDiv.style.display = 'none';
+          }
+          return;
+        }
+
+        // Ermittle Varianten-ID basierend auf aktueller Reihenanzahl
+        const byRows = montageartVariantMap[montageart];
+        if (!byRows) {
+          // Verstecke Label-Div, wenn keine Varianten-Map vorhanden
+          if (labelDiv) {
+            labelDiv.style.display = 'none';
+          }
+          return;
+        }
+
+        const actualRows = typeof getActualRowCount === 'function' ? getActualRowCount() : rowCounter;
+        const key = String(Math.max(1, Math.min(5, actualRows)));
+        const variantId = byRows[key];
+        
+        if (!variantId) {
+          // Verstecke Label-Div, wenn keine Varianten-ID vorhanden
+          if (labelDiv) {
+            labelDiv.style.display = 'none';
+          }
+          return;
+        }
+
+        // Hole Metadaten (aus Cache oder via Fetch)
+        const metafields = getVariantMetafields(variantId);
+        const dimensions = formatDimensions(metafields.hohe, metafields.breite, metafields.tiefe);
+
+        // Ersetze das Label-Div durch Dimensionen
+        if (labelDiv) {
+          if (dimensions && dimensions.label && dimensions.values) {
+            // Erstelle HTML-Struktur mit zwei Zeilen
+            labelDiv.innerHTML = `
+              <div style="font-weight: 500; margin-bottom: 2px; font-size: 1.2rem; color: #6b7280;">${dimensions.label}</div>
+              <div style="font-size: 1.2rem; opacity: 0.8; color: #6b7280;">${dimensions.values}</div>
+            `;
+            labelDiv.style.display = '';
+            labelDiv.style.flexDirection = 'column';
+            labelDiv.style.alignItems = 'flex-end';
+            labelDiv.style.textAlign = 'right';
+          } else {
+            // Wenn keine Dimensionen vorhanden, verstecke das Label-Div
+            labelDiv.style.display = 'none';
+          }
+        }
+      });
+    }
+
     function updateMontageartPrices() {
       document.querySelectorAll('.montageart-price').forEach(priceEl => {
         const montageart = priceEl.getAttribute('data-montageart');
@@ -2669,6 +2860,9 @@ let rowCounter = 1;
           priceEl.textContent = '0,00 €';
         }
       });
+      
+      // Aktualisiere auch Dimensionen
+      updateMontageartDimensions();
     }
 
     function selectMontageart(option) {
@@ -4208,8 +4402,15 @@ let rowCounter = 1;
         fiBereichCount++;
       }
       
+      // Prüfe ob Hager Phasenschienen ausgeschlossen werden sollen
+      // Bei 5 Reihen mit "Aufputz (Feuchtraum) Montage" (VariantID 56050086641929)
+      // sollen die Hager Phasenschienen (2er und 3er) nicht hinzugefügt werden
+      const actualRows = typeof getActualRowCount === 'function' ? getActualRowCount() : rowCounter;
+      const shouldExcludeHagerPhasenschienen = actualRows === 5 && montageVariantId === '56050086641929';
+      
       // Wenn drei aufeinanderfolgende FI-Reihen gefunden, füge 3xFI-Phasenschiene hinzu
-      if (hasThreeConsecutiveFiRows) {
+      // Außer bei 5 Reihen mit Aufputz (Feuchtraum) Montage
+      if (hasThreeConsecutiveFiRows && !shouldExcludeHagerPhasenschienen) {
         selectedProducts.push({
           id: parseInt('56371044450569'),
           quantity: anzahl
@@ -4218,7 +4419,8 @@ let rowCounter = 1;
       
       // Wenn zwei aufeinanderfolgende FI-Reihen gefunden, füge 2xFI-Phasenschiene hinzu
       // Jedes Paar wird einzeln berechnet (wenn 2 mal 2 FI-Reihen, dann 2x)
-      if (twoFiRowsPairs.length > 0) {
+      // Außer bei 5 Reihen mit Aufputz (Feuchtraum) Montage
+      if (twoFiRowsPairs.length > 0 && !shouldExcludeHagerPhasenschienen) {
         for (let i = 0; i < twoFiRowsPairs.length; i++) {
           selectedProducts.push({
             id: parseInt('56545562296585'),
