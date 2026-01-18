@@ -571,7 +571,6 @@
                   <p style="font-size: 1.4rem; color: #6b7280; line-height: 1.5; margin: 0 0 20px;">Ich benötige keinen Verteilerkasten<br>(z. B. bereits vorhanden oder nur Komponentenbestellung).</p>
                   <div style="display: flex; justify-content: space-between; align-items: flex-end;">
                     <div class="montageart-price" data-montageart="Kein Verteilerkasten benötigt" style="font-size: 1.6rem; font-weight: 600; color: #005A9C;">0,00 €</div>
-                    <div style="font-size: 1.3rem; color: #6b7280;">Ohne Kasten</div>
                   </div>
                 </div>
               </div>
@@ -584,7 +583,6 @@
                   <p style="font-size: 1.4rem; color: #6b7280; line-height: 1.5; margin: 0 0 20px;">Klassische Montage auf der Wand. Ideal bei sichtbarer Installation.</p>
                   <div style="display: flex; justify-content: space-between; align-items: flex-end;">
                     <div class="montageart-price" data-montageart="Aufputz-Montage" style="font-size: 1.6rem; font-weight: 600; color: #005A9C;">+49,44 €</div>
-                    <div style="font-size: 1.3rem; color: #6b7280;">Auf der Wand</div>
                   </div>
                 </div>
               </div>
@@ -597,7 +595,6 @@
                   <p style="font-size: 1.4rem; color: #6b7280; line-height: 1.5; margin: 0 0 20px;">Für Keller, Waschküche oder andere feuchte Umgebungen geeignet.</p>
                   <div style="display: flex; justify-content: space-between; align-items: flex-end;">
                     <div class="montageart-price" data-montageart="Aufputz(Feuchtraum)-Montage" style="font-size: 1.6rem; font-weight: 600; color: #005A9C;">+60,07 €</div>
-                    <div style="font-size: 1.3rem; color: #6b7280;">Feuchtraum</div>
                   </div>
                 </div>
               </div>
@@ -610,7 +607,6 @@
                   <p style="font-size: 1.4rem; color: #6b7280; line-height: 1.5; margin: 0 0 20px;">Bündig in der Wand. Sauberes Erscheinungsbild, häufige Standardwahl.</p>
                   <div style="display: flex; justify-content: space-between; align-items: flex-end;">
                     <div class="montageart-price" data-montageart="Unterputz-Montage" style="font-size: 1.6rem; font-weight: 600; color: #005A9C;">+61,83 €</div>
-                    <div style="font-size: 1.3rem; color: #6b7280;">Bündig</div>
                   </div>
                 </div>
               </div>
@@ -623,7 +619,6 @@
                   <p style="font-size: 1.4rem; color: #6b7280; line-height: 1.5; margin: 0 0 20px;">Für Trockenbauwände (z. B. Rigips). Stabiler Sitz in Hohlwänden.</p>
                   <div style="display: flex; justify-content: space-between; align-items: flex-end;">
                     <div class="montageart-price" data-montageart="Hohlwand-Montage" style="font-size: 1.6rem; font-weight: 600; color: #005A9C;">+69,46 €</div>
-                    <div style="font-size: 1.3rem; color: #6b7280;">Trockenbau</div>
                   </div>
                 </div>
               </div>
@@ -871,7 +866,14 @@
             "title": {{ variant.title | json }},
             "price": {{ variant.price | divided_by: 100.0 }},
             "sku": {{ variant.sku | json }},
-            "image": {{ variant.featured_image | img_url: '400x' | json }}
+            "image": {{ variant.featured_image | img_url: '400x' | json }},
+            "metafields": {
+              "custom": {
+                "hohe": {% if variant.metafields.custom.hohe %}{{ variant.metafields.custom.hohe | metafield_text | json }}{% else %}null{% endif %},
+                "breite": {% if variant.metafields.custom.breite %}{{ variant.metafields.custom.breite | metafield_text | json }}{% else %}null{% endif %},
+                "tiefe": {% if variant.metafields.custom.tiefe %}{{ variant.metafields.custom.tiefe | metafield_text | json }}{% else %}null{% endif %}
+              }
+            }
           }{%- unless forloop.last -%},{%- endunless -%}
         {%- endfor -%}
       ]

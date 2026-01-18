@@ -2775,8 +2775,8 @@ let rowCounter = 1;
       
       if (hohe && breite && tiefe) {
         return {
-          label: 'Maße (H X B X T)',
-          values: `${hohe}x${breite}x${tiefe} mm`
+          label: 'HxBxT in mm',
+          values: `${hohe}x${breite}x${tiefe}`
         };
       }
       return null;
@@ -2786,57 +2786,54 @@ let rowCounter = 1;
     function updateMontageartDimensions() {
       document.querySelectorAll('.montageart-card').forEach(card => {
         const montageart = card.getAttribute('data-montageart');
-        const labelDiv = card.querySelector('div[style*="font-size: 1.3rem"][style*="color: #6b7280"]');
-        
         if (!montageart || montageart === 'Kein Verteilerkasten benötigt') {
-          // Verstecke das Label-Div für "Kein Verteilerkasten benötigt"
-          if (labelDiv) {
-            labelDiv.style.display = 'none';
+          // Entferne Dimensionen-Anzeige, falls vorhanden
+          const existingDimensions = card.querySelector('.montageart-dimensions');
+          if (existingDimensions) {
+            existingDimensions.remove();
           }
           return;
         }
 
         // Ermittle Varianten-ID basierend auf aktueller Reihenanzahl
         const byRows = montageartVariantMap[montageart];
-        if (!byRows) {
-          // Verstecke Label-Div, wenn keine Varianten-Map vorhanden
-          if (labelDiv) {
-            labelDiv.style.display = 'none';
-          }
-          return;
-        }
+        if (!byRows) return;
 
         const actualRows = typeof getActualRowCount === 'function' ? getActualRowCount() : rowCounter;
         const key = String(Math.max(1, Math.min(5, actualRows)));
         const variantId = byRows[key];
         
-        if (!variantId) {
-          // Verstecke Label-Div, wenn keine Varianten-ID vorhanden
-          if (labelDiv) {
-            labelDiv.style.display = 'none';
-          }
-          return;
-        }
+        if (!variantId) return;
 
         // Hole Metadaten (aus Cache oder via Fetch)
         const metafields = getVariantMetafields(variantId);
         const dimensions = formatDimensions(metafields.hohe, metafields.breite, metafields.tiefe);
 
-        // Ersetze das Label-Div durch Dimensionen
-        if (labelDiv) {
+        // Finde oder erstelle Dimensionen-Anzeige
+        let dimensionsEl = card.querySelector('.montageart-dimensions');
+        if (!dimensionsEl) {
+          // Finde den Preis-Container (flex-Container mit Preis)
+          const priceContainer = card.querySelector('.montageart-price')?.parentNode;
+          if (priceContainer) {
+            dimensionsEl = document.createElement('div');
+            dimensionsEl.className = 'montageart-dimensions';
+            dimensionsEl.style.cssText = 'font-size: 1.2rem; color: #9ca3af; line-height: 1.4; text-align: right; display: flex; flex-direction: column; justify-content: flex-end;';
+            // Füge die Dimensionen in den gleichen flex-Container ein, neben dem Preis
+            priceContainer.appendChild(dimensionsEl);
+          }
+        }
+
+        // Aktualisiere Dimensionen-Anzeige
+        if (dimensionsEl) {
           if (dimensions && dimensions.label && dimensions.values) {
-            // Erstelle HTML-Struktur mit zwei Zeilen
-            labelDiv.innerHTML = `
-              <div style="font-weight: 500; margin-bottom: 2px; font-size: 1.2rem; color: #6b7280;">${dimensions.label}</div>
-              <div style="font-size: 1.2rem; opacity: 0.8; color: #6b7280;">${dimensions.values}</div>
+            // Erstelle HTML-Struktur mit zwei Zeilen, rechts ausgerichtet
+            dimensionsEl.innerHTML = `
+              <div style="font-weight: 500; margin-bottom: 2px; font-size: 1.2rem; text-align: right;">${dimensions.label}</div>
+              <div style="font-size: 1.2rem; opacity: 0.8; text-align: right;">${dimensions.values}</div>
             `;
-            labelDiv.style.display = '';
-            labelDiv.style.flexDirection = 'column';
-            labelDiv.style.alignItems = 'flex-end';
-            labelDiv.style.textAlign = 'right';
+            dimensionsEl.style.display = '';
           } else {
-            // Wenn keine Dimensionen vorhanden, verstecke das Label-Div
-            labelDiv.style.display = 'none';
+            dimensionsEl.style.display = 'none';
           }
         }
       });
@@ -4402,15 +4399,8 @@ let rowCounter = 1;
         fiBereichCount++;
       }
       
-      // Prüfe ob Hager Phasenschienen ausgeschlossen werden sollen
-      // Bei 5 Reihen mit "Aufputz (Feuchtraum) Montage" (VariantID 56050086641929)
-      // sollen die Hager Phasenschienen (2er und 3er) nicht hinzugefügt werden
-      const actualRows = typeof getActualRowCount === 'function' ? getActualRowCount() : rowCounter;
-      const shouldExcludeHagerPhasenschienen = actualRows === 5 && montageVariantId === '56050086641929';
-      
       // Wenn drei aufeinanderfolgende FI-Reihen gefunden, füge 3xFI-Phasenschiene hinzu
-      // Außer bei 5 Reihen mit Aufputz (Feuchtraum) Montage
-      if (hasThreeConsecutiveFiRows && !shouldExcludeHagerPhasenschienen) {
+      if (hasThreeConsecutiveFiRows) {
         selectedProducts.push({
           id: parseInt('56371044450569'),
           quantity: anzahl
@@ -4419,8 +4409,7 @@ let rowCounter = 1;
       
       // Wenn zwei aufeinanderfolgende FI-Reihen gefunden, füge 2xFI-Phasenschiene hinzu
       // Jedes Paar wird einzeln berechnet (wenn 2 mal 2 FI-Reihen, dann 2x)
-      // Außer bei 5 Reihen mit Aufputz (Feuchtraum) Montage
-      if (twoFiRowsPairs.length > 0 && !shouldExcludeHagerPhasenschienen) {
+      if (twoFiRowsPairs.length > 0) {
         for (let i = 0; i < twoFiRowsPairs.length; i++) {
           selectedProducts.push({
             id: parseInt('56545562296585'),
