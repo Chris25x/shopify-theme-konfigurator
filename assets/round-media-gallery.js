@@ -17,7 +17,7 @@ class ProductMediaGallery {
   init() {
     if (this.mainImages.length === 0) return;
     
-    // Set first image as active
+    // Set first image as active (will be overridden if variant is in URL)
     this.showSlide(0);
     
     // Add thumbnail click listeners
@@ -39,6 +39,16 @@ class ProductMediaGallery {
     
     // Add lazy loading
     this.addLazyLoading();
+    
+    // Check if page was loaded with a variant parameter (e.g., from cart)
+    // Wait a bit for product-info.js to load variant data, then update image
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('variant')) {
+      // Delay to allow product-info.js to load variant data
+      setTimeout(() => {
+        this.updateForVariant();
+      }, 300);
+    }
   }
   
   showSlide(index) {
@@ -231,8 +241,9 @@ class ProductMediaGallery {
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
   const galleryContainer = document.querySelector('.product-gallery');
+  let galleryInstance = null;
   if (galleryContainer) {
-    new ProductMediaGallery(galleryContainer);
+    galleryInstance = new ProductMediaGallery(galleryContainer);
   }
 
   initDescriptionToggles();
@@ -240,6 +251,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // Update technical details when variant changes (Dawn-style pub/sub)
   if (typeof subscribe === 'function' && typeof PUB_SUB_EVENTS !== 'undefined' && PUB_SUB_EVENTS?.variantChange) {
     subscribe(PUB_SUB_EVENTS.variantChange, (event) => {
+      // Also update media gallery when variant changes
+      if (galleryInstance) {
+        // Small delay to ensure variant data is fully loaded
+        setTimeout(() => {
+          galleryInstance.updateForVariant();
+        }, 100);
+      }
+      
       const data = event?.data;
       if (!data?.sectionId || !data?.html) return;
 
