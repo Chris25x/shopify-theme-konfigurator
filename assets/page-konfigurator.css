@@ -1479,7 +1479,7 @@ body:has(#page4.active) .button-container #nextButton {
 }
 
 .summary-header__title {
-  font-size: 28px;
+  font-size: 25px;
   font-weight: 700;
   color: var(--z-text);
   margin: 0 0 8px 0;
@@ -2802,6 +2802,39 @@ body:has(#page4.active) .button-container #nextButton {
 
 @media (max-width: 768px) {
   .konfigurator-top-gap { height: 220px !important; }
+}
+
+/* Konfigurator Page Title */
+.konfigurator-page-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #0f172a;
+  text-align: left;
+  margin: 0 0 16px 0;
+  padding: 0;
+  line-height: 1.2;
+}
+
+.konfigurator-page-subtitle {
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: #64748b;
+  text-align: left;
+  margin: 0 0 32px 0;
+  padding: 0;
+  line-height: 1.4;
+}
+
+@media (max-width: 768px) {
+  .konfigurator-page-title {
+    font-size: 2rem;
+    margin-bottom: 12px;
+  }
+  
+  .konfigurator-page-subtitle {
+    font-size: 1.25rem;
+    margin-bottom: 24px;
+  }
 }
 
 .konfigurator-bottom-gap {

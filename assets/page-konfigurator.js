@@ -1708,6 +1708,16 @@ let rowCounter = 1;
       // Aktuelle Seite anzeigen
       document.getElementById('page' + pageNumber).classList.add('active');
       
+      // H1 und H2 nur auf page1 anzeigen
+      const pageTitle = document.querySelector('.konfigurator-page-title');
+      const pageSubtitle = document.querySelector('.konfigurator-page-subtitle');
+      if (pageTitle) {
+        pageTitle.style.display = pageNumber === 1 ? 'block' : 'none';
+      }
+      if (pageSubtitle) {
+        pageSubtitle.style.display = pageNumber === 1 ? 'block' : 'none';
+      }
+      
       // GA4: Page View tracken beim initialen Laden von Seite 1
       if (pageNumber === 1) {
         trackKonfiguratorPageView();
@@ -4982,41 +4992,17 @@ let rowCounter = 1;
       charakteristik = String(charakteristik).trim().toUpperCase();
       
       if (selectedMarke === 'Gewiss') {
-        // Gewiss Variant-IDs (Platzhalter - noch zu befüllen)
+        // Gewiss Variant-IDs (nur 16A verfügbar)
         const gewissMap = {
-          '6-B': '56755066536201',
-          '10-B': '56755066601737',
-          '13-B': '56755066667273',
           '16-B': '56755066732809',
-          '20-B': '56755066798345',
-          '25-B': '56755066863881',
-          '32-B': '56755066929417',
-          '6-C': '56755066568969',
-          '10-C': '56755066634505',
-          '13-C': '56755066700041',
-          '16-C': '56755066765577',
-          '20-C': '56755066831113',
-          '25-C': '56755066896649',
-          '32-C': '56755066962185'
+          '16-C': '56755066765577'
         };
         return gewissMap[`${nennstrom}-${charakteristik}`] || null;
       } else {
-        // Hager Variant-IDs (Platzhalter - noch zu befüllen)
+        // Hager Variant-IDs (nur 16A verfügbar)
         const hagerMap = {
-          '6-B': '56755064242441',
-          '10-B': '56755064307977',
-          '13-B': '56755064373513',
           '16-B': '56755064439049',
-          '20-B': '56755064504585',
-          '25-B': '56755064570121',
-          '32-B': '56755064635657',
-          '6-C': '56755064275209',
-          '10-C': '56755064340745',
-          '13-C': '56755064406281',
-          '16-C': '56755064471817',
-          '20-C': '56755064537353',
-          '25-C': '56755064602889',
-          '32-C': '56755064668425'
+          '16-C': '56755064471817'
         };
         return hagerMap[`${nennstrom}-${charakteristik}`] || null;
       }
@@ -5823,13 +5809,7 @@ let rowCounter = 1;
       dropdown.className = "fi-lss-1p-dropdown";
       dropdown.innerHTML = `
         <select id="nennstrom-${Date.now()}">
-          <option value="6">6A</option>
-          <option value="10">10A</option>
-          <option value="13">13A</option>
           <option value="16" selected>16A</option>
-          <option value="20">20A</option>
-          <option value="25">25A</option>
-          <option value="32">32A</option>
         </select>
         <select id="charakteristik-${Date.now()}">
           <option value="B" selected>B-Charakteristik</option>
