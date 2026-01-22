@@ -103,7 +103,9 @@
             </svg>
           </div>
           <div class="contact-form-custom__info-text">
-            <strong>Telefon:</strong> {{ section.settings.phone | default: '01234 567890' }}<br>
+            {%- assign phone_number = section.settings.phone | default: '01234 567890' -%}
+            {%- assign phone_clean = phone_number | replace: ' ', '' | replace: '-', '' | replace: '(', '' | replace: ')', '' -%}
+            <strong>Telefon:</strong> <a href="tel:{{ phone_clean }}" class="contact-form-custom__phone-link">{{ phone_number }}</a><br>
             <span class="contact-form-custom__info-hours">(Mo-Fr 9-17 Uhr)</span>
           </div>
         </div>
@@ -312,6 +314,17 @@
   .contact-form-custom__info-hours {
     color: #6b7280;
     font-size: 1.3rem;
+  }
+
+  .contact-form-custom__phone-link {
+    color: #005A9C;
+    text-decoration: none;
+    transition: color 0.2s ease, text-decoration 0.2s ease;
+  }
+
+  .contact-form-custom__phone-link:hover {
+    color: #00467a;
+    text-decoration: underline;
   }
 
   .contact-form-custom__success {
