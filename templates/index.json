@@ -115,10 +115,7 @@
         "text_VHnwmF",
         "button_XJijRt"
       ],
-      "custom_css": [
-        ".image-with-text,.section--in-3-min {background: #f7f9fc;}",
-        ".image-with-text img {border-radius: 16px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);}"
-      ],
+      "custom_css": [],
       "name": "Bild mit Text (3 Minuten)",
       "settings": {
         "image": "shopify://shop_images/Vorher_Nacher.png",
@@ -132,7 +129,7 @@
         "mobile_content_alignment": "left",
         "section_color_scheme": "scheme-1",
         "color_scheme": "",
-        "padding_top": 100,
+        "padding_top": 52,
         "padding_bottom": 52
       }
     },
@@ -182,7 +179,7 @@
         "subtitle": "In nur drei Schritten zum individuell konfigurierten Sicherungskasten.",
         "cta_text": "",
         "cta_url": "",
-        "padding_top": 100,
+        "padding_top": 52,
         "padding_bottom": 52
       }
     },
@@ -235,7 +232,7 @@
         "subtitle": "Alle Vorteile deiner Konfiguration auf einen Blick. Klar strukturiert, verständlich und direkt relevant für dein Projekt.",
         "cta_text": "Jetzt konfigurieren",
         "cta_url": "shopify://pages/konfigurator",
-        "padding_top": 100,
+        "padding_top": 52,
         "padding_bottom": 52
       }
     },
@@ -247,7 +244,7 @@
         "title_font_weight": "800",
         "subtitle_font_size": 18,
         "subtitle_font_weight": "400",
-        "padding_top": 100,
+        "padding_top": 52,
         "padding_bottom": 52
       }
     },
@@ -265,7 +262,7 @@
         "cta1_url": "shopify://pages/konfigurator",
         "cta2_text": "Unsicher? Kurz beraten lassen",
         "cta2_url": "/#contact",
-        "padding_top": 100,
+        "padding_top": 52,
         "padding_bottom": 52
       }
     },
@@ -387,6 +384,7 @@
         "card_MiPtNA",
         "card_BcE7i6"
       ],
+      "disabled": true,
       "name": "Technical Details",
       "settings": {
         "title": "Optionen & Lieferumfang",
@@ -463,7 +461,7 @@
         "subtitle": "Die wichtigsten Fragen auf einen Blick.",
         "cta_text": "",
         "cta_url": "",
-        "padding_top": 100,
+        "padding_top": 52,
         "padding_bottom": 52
       }
     },
@@ -476,10 +474,10 @@
         "title_font_weight": "800",
         "button_text": "Nachricht senden",
         "disclaimer_text": "Installation nur durch Fachkräfte. Wir liefern geprüft.",
-        "phone": "0152 33896364",
+        "phone": "0155 11416336",
         "vde_text": "VDE-konforme Komponenten, Endprüfung dokumentiert",
         "made_in_germany": "Made in Germany",
-        "padding_top": 100,
+        "padding_top": 52,
         "padding_bottom": 100
       }
     }
