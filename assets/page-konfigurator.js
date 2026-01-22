@@ -1647,6 +1647,27 @@ let rowCounter = 1;
         prevButton.style.display = "none";
         prevButton.classList.add('hidden-on-page1');
       }
+      
+      // Toggle-Funktionalität für "Hinweise zur Verteilung"
+      const disclaimerToggle = document.getElementById('disclaimer-toggle');
+      const disclaimerCards = document.getElementById('disclaimer-cards');
+      if (disclaimerToggle && disclaimerCards) {
+        disclaimerToggle.addEventListener('click', function() {
+          const isExpanded = this.getAttribute('aria-expanded') === 'true';
+          const newExpandedState = !isExpanded;
+          this.setAttribute('aria-expanded', newExpandedState);
+          
+          if (isExpanded) {
+            // Zuklappen
+            disclaimerCards.classList.add('collapsed');
+            disclaimerCards.setAttribute('hidden', '');
+          } else {
+            // Aufklappen
+            disclaimerCards.classList.remove('collapsed');
+            disclaimerCards.removeAttribute('hidden');
+          }
+        });
+      }
     });
 
     function smoothScrollTo(targetPosition, duration = 800) {
@@ -4904,6 +4925,9 @@ let rowCounter = 1;
     function getHauptschalterVariantId() {
       if (selectedMarke === 'Gewiss') {
         return '56358318801161';
+      } else if (selectedMarke === 'Eaton') {
+        // Eaton Variant-ID für Hauptschalter
+        return '56770075951369'; 
       } else {
         // Hager (Standard)
         return '56050140479753';
@@ -4926,6 +4950,17 @@ let rowCounter = 1;
           '63-F': '56361421111561'
         };
         return gewissMap[`${nennstrom}-${charakteristik}`] || null;
+      } else if (selectedMarke === 'Eaton') {
+        // Eaton Variant-IDs für FI-Schalter
+        const eatonMap = {
+          '40-A': '56770257125641', 
+          '63-A': '56770257158409', 
+          '40-B': '56770257191177', 
+          '63-B': '56770257223945', 
+          '40-F': '56770257256713', 
+          '63-F': '56770257289481' 
+        };
+        return eatonMap[`${nennstrom}-${charakteristik}`] || null;
       } else {
         // Hager Variant-IDs (Standard)
         const hagerMap = {
@@ -4964,6 +4999,25 @@ let rowCounter = 1;
           '32-C': '56361425109257'
         };
         return gewissMap[`${nennstrom}-${charakteristik}`] || null;
+      } else if (selectedMarke === 'Eaton') {
+        // Eaton Variant-IDs für Leitungsschutzschalter 1-polig
+        const eatonMap = {
+          '6-B': '56770082898185',  
+          '10-B': '56770082930953', 
+          '13-B': '56770082963721',
+          '16-B': '56770082996489', 
+          '20-B': '56770083029257', 
+          '25-B': '56770083062025', 
+          '32-B': '56770083094793', 
+          '6-C': '56770083127561',   
+          '10-C': '56770083160329', 
+          '13-C': '56770083193097', 
+          '16-C': '56770083225865', 
+          '20-C': '56770083258633', 
+          '25-C': '56770083291401', 
+          '32-C': '56770083324169'  
+        };
+        return eatonMap[`${nennstrom}-${charakteristik}`] || null;
       } else {
         // Hager Variant-IDs (Standard)
         const hagerMap = {
@@ -4992,14 +5046,21 @@ let rowCounter = 1;
       charakteristik = String(charakteristik).trim().toUpperCase();
       
       if (selectedMarke === 'Gewiss') {
-        // Gewiss Variant-IDs (nur 16A verfügbar)
+        // Gewiss Variant-IDs 
         const gewissMap = {
           '16-B': '56755066732809',
           '16-C': '56755066765577'
         };
         return gewissMap[`${nennstrom}-${charakteristik}`] || null;
+      } else if (selectedMarke === 'Eaton') {
+        // Eaton Variant-IDs für FI/Leitungsschutzschalter 1-polig
+        const eatonMap = {
+          '16-B': '56770451144969', 
+          '16-C': '56770451177737'  
+        };
+        return eatonMap[`${nennstrom}-${charakteristik}`] || null;
       } else {
-        // Hager Variant-IDs (nur 16A verfügbar)
+        // Hager Variant-IDs 
         const hagerMap = {
           '16-B': '56755064439049',
           '16-C': '56755064471817'
@@ -5038,6 +5099,31 @@ let rowCounter = 1;
           '63-C': '56361429467401'
         };
         return gewissMap[`${nennstrom}-${charakteristik}`] || null;
+      } else if (selectedMarke === 'Eaton') {
+        // Eaton Variant-IDs für Leitungsschutzschalter 3-polig
+        const eatonMap = {
+          '6-B': '56770137653513',   
+          '10-B': '56770137686281', 
+          '13-B': '56770137719049', 
+          '16-B': '56770137751817', 
+          '20-B': '56770137784585', 
+          '25-B': '56770137817353', 
+          '32-B': '56770137850121', 
+          '40-B': '56770137882889', 
+          '50-B': '56770137915657', 
+          '63-B': '56770137948425', 
+          '6-C': '56770137981193',  
+          '10-C': '56770138013961', 
+          '13-C': '56770138046729', 
+          '16-C': '56770138079497', 
+          '20-C': '56770138112265', 
+          '25-C': '56770138177801', 
+          '32-C': '56770138210569', 
+          '40-C': '56770138243337', 
+          '50-C': '56770138276105', 
+          '63-C': '56770138308873' 
+        };
+        return eatonMap[`${nennstrom}-${charakteristik}`] || null;
       } else {
         // Hager Variant-IDs (Standard)
         const hagerMap = {
@@ -5887,8 +5973,6 @@ let rowCounter = 1;
 
       function updateVariantIdAndConfig() {
         const nennstrom = nennstromSelect.value;
-        // Platzhalter-Mapping: vorerst alle Werte auf die Standard-Variante,
-        // bis echte Variant-IDs vorliegen
         const variantMap = {
           '16': '56312732942601',
           '20': '56075256660233',

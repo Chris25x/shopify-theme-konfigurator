@@ -211,7 +211,7 @@
   <script>
     // Standard-Marke aus Section-Settings
     const DEFAULT_MARKE = '{{ default_marke }}';
-    const DEFAULT_MARKE_LOGO_URL = {% if default_marke == 'Gewiss' %}'https://cdn.shopify.com/s/files/1/0944/8711/8089/files/Gewiss-Logo.png?v=1761993681'{% else %}'https://cdn.shopify.com/s/files/1/0944/8711/8089/files/hager.png?v=1746554364'{% endif %};
+    const DEFAULT_MARKE_LOGO_URL = {% if default_marke == 'Gewiss' %}'https://cdn.shopify.com/s/files/1/0944/8711/8089/files/Gewiss.png?v=1769095061'{% elsif default_marke == 'Eaton' %}'https://cdn.shopify.com/s/files/1/0944/8711/8089/files/Eaton.png?v=1769090184'{% else %}'https://cdn.shopify.com/s/files/1/0944/8711/8089/files/Hager-Logo.png?v=1769094527'{% endif %};
     
     // Zusätzliche JavaScript-Sicherheit für Konfigurator-Seite
     document.addEventListener('DOMContentLoaded', function() {
@@ -412,14 +412,15 @@
     <div id="page1" class="page active">
       <!-- Hinweise zur Verteilung -->
       <div class="konfigurator-disclaimer">
-        <div class="konfigurator-disclaimer__header">
+        <button type="button" class="konfigurator-disclaimer__header" id="disclaimer-toggle" aria-expanded="true" aria-controls="disclaimer-cards">
           <i class="fas fa-clipboard-check"></i>
           <div>
             <h3 class="konfigurator-disclaimer__title">Hinweise zur Verteilung</h3>
             <p class="konfigurator-disclaimer__subtitle">Die wichtigsten Informationen im Überblick.</p>
           </div>
-        </div>
-        <div class="konfigurator-disclaimer__cards">
+          <i class="fas fa-chevron-down konfigurator-disclaimer__toggle-icon" aria-hidden="true"></i>
+        </button>
+        <div class="konfigurator-disclaimer__cards" id="disclaimer-cards">
           <div class="konfigurator-disclaimer__card">
             <i class="fas fa-bolt konfigurator-disclaimer__icon" aria-hidden="true"></i>
             <div class="konfigurator-disclaimer__card-content">
@@ -462,18 +463,26 @@
                      name="brandSelection"
                      value="Hager"
                      aria-label="Hager"
-                     data-logo-url="https://cdn.shopify.com/s/files/1/0944/8711/8089/files/hager.png?v=1746554364"
+                     data-logo-url="https://cdn.shopify.com/s/files/1/0944/8711/8089/files/Hager-Logo.png?v=1769094527"
                      {% if default_marke == 'Hager' %}checked{% endif %}>
-              <img src="https://cdn.shopify.com/s/files/1/0944/8711/8089/files/hager.png?v=1746554364" alt="Hager Logo" class="brand-radio-image" loading="lazy">
+              <img src="https://cdn.shopify.com/s/files/1/0944/8711/8089/files/Hager-Logo.png?v=1769094527" alt="Hager Logo" class="brand-radio-image" loading="lazy">
             </label>
             <label class="brand-radio-option{% if default_marke != 'Hager' %} is-selected{% endif %}">
               <input type="radio"
                      name="brandSelection"
                      value="Gewiss"
                      aria-label="Gewiss"
-                     data-logo-url="https://cdn.shopify.com/s/files/1/0944/8711/8089/files/Gewiss-Logo.png?v=1761993681"
+                     data-logo-url="https://cdn.shopify.com/s/files/1/0944/8711/8089/files/Gewiss.png?v=1769095061"
                      {% if default_marke != 'Hager' %}checked{% endif %}>
-              <img src="https://cdn.shopify.com/s/files/1/0944/8711/8089/files/Gewiss-Logo.png?v=1761993681" alt="Gewiss Logo" class="brand-radio-image" loading="lazy">
+              <img src="https://cdn.shopify.com/s/files/1/0944/8711/8089/files/Gewiss.png?v=1769095061" alt="Gewiss Logo" class="brand-radio-image" loading="lazy">
+            </label>
+            <label class="brand-radio-option">
+              <input type="radio"
+                     name="brandSelection"
+                     value="Eaton"
+                     aria-label="Eaton"
+                     data-logo-url="https://cdn.shopify.com/s/files/1/0944/8711/8089/files/Eaton.png?v=1769090184">
+              <img src="https://cdn.shopify.com/s/files/1/0944/8711/8089/files/Eaton.png?v=1769090184" alt="Eaton Logo" class="brand-radio-image" loading="lazy">
             </label>
           </div>
         </div>

@@ -201,11 +201,40 @@
   gap: 12px;
   padding: 16px 20px 12px 20px;
   border-bottom: 1px solid #e5e7eb;
+  background: none;
+  border: none;
+  border-bottom: 1px solid #e5e7eb;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
-.konfigurator-disclaimer__header i {
+.konfigurator-disclaimer__header:hover {
+  background-color: #f1f5f9;
+}
+
+.konfigurator-disclaimer__header:focus {
+  outline: 2px solid #005A9C;
+  outline-offset: -2px;
+}
+
+.konfigurator-disclaimer__header i:first-of-type {
   font-size: 20px;
   color: #005A9C;
+  flex-shrink: 0;
+}
+
+.konfigurator-disclaimer__toggle-icon {
+  font-size: 14px;
+  color: #64748b;
+  margin-left: auto;
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+
+.konfigurator-disclaimer__header[aria-expanded="false"] .konfigurator-disclaimer__toggle-icon {
+  transform: rotate(-90deg);
 }
 
 .konfigurator-disclaimer__title {
@@ -228,6 +257,17 @@
   padding: 16px 20px 20px 20px;
   background: #f7f9fc;
   border-radius: 0 0 8px 8px;
+  overflow: hidden;
+  transition: max-height 0.3s ease, padding 0.3s ease;
+  max-height: 1000px;
+}
+
+.konfigurator-disclaimer__cards[hidden],
+.konfigurator-disclaimer__cards.collapsed {
+  display: none;
+  max-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
 .konfigurator-disclaimer__card {
@@ -331,6 +371,7 @@
   position: relative;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
@@ -340,6 +381,9 @@
   font-size: 14px;
   color: #111827;
   user-select: none;
+  min-width: 140px;
+  width: 140px;
+  box-sizing: border-box;
 }
 
 .brand-radio-option input {
