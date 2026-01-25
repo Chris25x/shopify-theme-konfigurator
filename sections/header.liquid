@@ -949,10 +949,34 @@
   {% if template.name == 'page' and template.suffix == 'konfigurator' %}
     <div class="header-info-bar" style="display: none;">
       <div class="info-box" id="infoBox">
-        <div class="info-box__row">
-          <div>Reihen: <span id="rowCount">1</span></div>
-          <div>Einheiten: <span id="usedUnits">0</span></div>
-          <div>Gesamt: <span id="totalPrice" aria-live="polite">0 €</span></div>
+        <span id="totalPrice" class="visually-hidden" aria-live="polite">0 €</span>
+        <div class="info-box__top">
+          <div class="info-box__brandsCol">
+            <div class="info-box__row info-box__row--brands" aria-label="Preis pro Marke">
+              <div class="info-box__brandItem">
+                <img class="info-box__brandLogo" src="https://cdn.shopify.com/s/files/1/0944/8711/8089/files/Hager-Logo.png?v=1769094527" alt="Hager" loading="lazy">
+                <span id="totalPriceHager">—</span>
+              </div>
+              <div class="info-box__brandItem">
+                <img class="info-box__brandLogo" src="https://cdn.shopify.com/s/files/1/0944/8711/8089/files/Gewiss.png?v=1769095061" alt="Gewiss" loading="lazy">
+                <span id="totalPriceGewiss">—</span>
+              </div>
+              <div class="info-box__brandItem">
+                <img class="info-box__brandLogo" src="https://cdn.shopify.com/s/files/1/0944/8711/8089/files/Eaton.png?v=1769090184" alt="Eaton" loading="lazy">
+                <span id="totalPriceEaton">—</span>
+              </div>
+            </div>
+            {%- assign _country_code = localization.country.iso_code | default: 'DE' -%}
+            {%- if _country_code == 'DE' -%}
+              <div class="price-disclaimer">Gesamtpreis des Sicherungskastens inkl. 19% MwSt., inkl. Versand</div>
+            {%- else -%}
+              <div class="price-disclaimer">Gesamtpreis des Sicherungskastens inkl. 19% MwSt., exkl. Versand</div>
+            {%- endif -%}
+          </div>
+          <div class="info-box__stats" aria-label="Reihen und Einheiten">
+            <div class="info-box__stat">Reihen: <span id="rowCount">1</span></div>
+            <div class="info-box__stat">Einheiten: <span id="usedUnits">0</span></div>
+          </div>
         </div>
       </div>
     </div>

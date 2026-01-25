@@ -1225,6 +1225,76 @@ let rowCounter = 1;
       }
     }
 
+    // Berechnet den Preisanteil der markenabhängigen Komponenten (ohne Mengenfaktor)
+    // Marke wirkt sich laut UI ausschließlich auf Hauptschalter, FI-Schalter und Leitungsschutzschalter aus.
+    function calculateBrandDependentSubtotal(forBrand) {
+      const prevBrand = selectedMarke;
+      selectedMarke = forBrand;
+
+      let subtotal = 0;
+
+      const allRows = [];
+      for (let i = 1; i <= rowCounter; i++) {
+        const rowContent = document.getElementById(`row${i}Content`);
+        if (rowContent) allRows.push(rowContent);
+        const rowContent2 = document.getElementById(`row${i}Content_2`);
+        if (rowContent2) allRows.push(rowContent2);
+      }
+
+      allRows.forEach(rowContent => {
+        const productBoxes = rowContent.getElementsByClassName('product-box');
+        Array.from(productBoxes).forEach(box => {
+          const productName = box.querySelector('img')?.alt;
+          let variantId = null;
+
+          if (productName === "Hauptschalter") {
+            variantId = getHauptschalterVariantId();
+          } else if (productName === "FI-/Leitungsschutzschalter") {
+            const nennstromSelect = box.querySelector('select[id^="nennstrom-"]');
+            const charakteristikSelect = box.querySelector('select[id^="charakteristik-"]');
+            if (nennstromSelect && charakteristikSelect) {
+              variantId = getFiSchalterVariantId(nennstromSelect.value.trim(), charakteristikSelect.value.trim());
+            } else {
+              variantId = box.getAttribute('data-variant-id');
+            }
+          } else if (productName === "Leitungsschutzschalter 1 polig") {
+            const nennstromSelect = box.querySelector('select[id^="nennstrom-"]');
+            const charakteristikSelect = box.querySelector('select[id^="charakteristik-"]');
+            if (nennstromSelect && charakteristikSelect) {
+              variantId = getLss1pVariantId(nennstromSelect.value.trim(), charakteristikSelect.value.trim());
+            } else {
+              variantId = box.getAttribute('data-variant-id');
+            }
+          } else if (productName === "Fi/Leitungsschutzschalter 1 polig") {
+            const nennstromSelect = box.querySelector('select[id^="nennstrom-"]');
+            const charakteristikSelect = box.querySelector('select[id^="charakteristik-"]');
+            if (nennstromSelect && charakteristikSelect) {
+              variantId = getFiLss1pVariantId(nennstromSelect.value.trim(), charakteristikSelect.value.trim());
+            } else {
+              variantId = box.getAttribute('data-variant-id');
+            }
+          } else if (productName === "Leitungsschutzschalter 3 polig") {
+            const nennstromSelect = box.querySelector('select[id^="nennstrom-"]');
+            const charakteristikSelect = box.querySelector('select[id^="charakteristik-"]');
+            if (nennstromSelect && charakteristikSelect) {
+              variantId = getLss3pVariantId(nennstromSelect.value.trim(), charakteristikSelect.value.trim());
+            } else {
+              variantId = box.getAttribute('data-variant-id');
+            }
+          } else {
+            return;
+          }
+
+          if (variantId && variantId !== 'undefined') {
+            subtotal += getVariantPrice(variantId);
+          }
+        });
+      });
+
+      selectedMarke = prevBrand;
+      return subtotal;
+    }
+
     function updateInfoBox() {
       try {
         const rowCountElement = document.getElementById("rowCount");
@@ -1252,6 +1322,34 @@ let rowCounter = 1;
         }
         const totalWithQty = sum * qty;
         totalPriceElement.textContent = totalWithQty.toFixed(2) + " €";
+
+        // --- Preis pro Marke (Vergleich) ---
+        const totalPriceHagerEl = document.getElementById("totalPriceHager");
+        const totalPriceGewissEl = document.getElementById("totalPriceGewiss");
+        const totalPriceEatonEl = document.getElementById("totalPriceEaton");
+
+        if (totalPriceHagerEl || totalPriceGewissEl || totalPriceEatonEl) {
+          const subtotals = {
+            Hager: calculateBrandDependentSubtotal('Hager'),
+            Gewiss: calculateBrandDependentSubtotal('Gewiss'),
+            Eaton: calculateBrandDependentSubtotal('Eaton')
+          };
+
+          const currentBrand = selectedMarke || 'Hager';
+          const currentBrandSubtotal = Object.prototype.hasOwnProperty.call(subtotals, currentBrand)
+            ? subtotals[currentBrand]
+            : calculateBrandDependentSubtotal(currentBrand);
+
+          const totalsByBrand = {
+            Hager: (sum - currentBrandSubtotal + subtotals.Hager) * qty,
+            Gewiss: (sum - currentBrandSubtotal + subtotals.Gewiss) * qty,
+            Eaton: (sum - currentBrandSubtotal + subtotals.Eaton) * qty
+          };
+
+          if (totalPriceHagerEl) totalPriceHagerEl.textContent = totalsByBrand.Hager.toFixed(2) + " €";
+          if (totalPriceGewissEl) totalPriceGewissEl.textContent = totalsByBrand.Gewiss.toFixed(2) + " €";
+          if (totalPriceEatonEl) totalPriceEatonEl.textContent = totalsByBrand.Eaton.toFixed(2) + " €";
+        }
       } catch (error) {
         console.error("Fehler beim Aktualisieren der Info-Box:", error.message);
       }

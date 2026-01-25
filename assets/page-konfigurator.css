@@ -27,10 +27,6 @@
   transform: translateY(-2px);
 }
 
-.verdrahtung-card--recommended {
-  /* behält nur das Empfohlen-Badge, kein fester blauer Rahmen */
-}
-
 .verdrahtung-card--selected {
   background: #f1f6fb !important;
   border: 2px solid #005A9C !important;
@@ -1286,6 +1282,47 @@ body:has(#page4.active) .button-container #nextButton {
   justify-content: center;
 }
 
+.info-box__top {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 24px;
+}
+
+.info-box__brandsCol {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.info-box__row--brands {
+  justify-content: flex-start;
+}
+
+.info-box__stats {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-start;
+  font-size: 1.3rem;
+  border-left: 1px solid #e2e8f0;
+  padding-left: 16px;
+}
+
+.info-box__stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  color: #000;
+}
+
+.info-box__stat span {
+  color: var(--sb-muted);
+}
+
 .info-box__row div {
   display: inline-flex;
   align-items: center;
@@ -1299,6 +1336,25 @@ body:has(#page4.active) .button-container #nextButton {
   color: var(--sb-muted);
 }
 
+.info-box__brandItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.info-box__brandLogo {
+  height: 18px;
+  width: auto;
+  max-width: 90px;
+  object-fit: contain;
+  display: block;
+}
+
+.info-box__row .info-box__brandItem span {
+  font-weight: 500;
+  color: #000;
+}
+
 .info-box__row div:not(:last-child)::after {
   content: "•";
   margin-left: 12px;
@@ -1309,7 +1365,10 @@ body:has(#page4.active) .button-container #nextButton {
   font-size: 12px;
   color: var(--sb-muted);
   width: 100%;
-  margin-top: 4px;
+}
+
+.info-box__brandsCol .price-disclaimer {
+  text-align: left;
 }
 
 @media (max-width: 1024px) {
@@ -1325,6 +1384,18 @@ body:has(#page4.active) .button-container #nextButton {
     align-items: center;
     font-size: 1.4rem;
     text-align: center;
+  }
+
+  .info-box__top {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .info-box__stats {
+    align-items: center;
+    border-left: none;
+    padding-left: 0;
   }
 
   .info-box__row div {
