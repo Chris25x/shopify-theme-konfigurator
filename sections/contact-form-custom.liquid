@@ -110,6 +110,39 @@
           </div>
         </div>
 
+        {%- comment -%} wa.me: nur Ziffern, international (z.B. 4915511416336). {%- endcomment -%}
+        {%- assign wa_raw = section.settings.whatsapp_wa_number | default: section.settings.whatsapp_phone | default: section.settings.phone | default: '01234 567890' -%}
+        {%- assign wa_raw = wa_raw | replace: ' ', '' | replace: '-', '' | replace: '(', '' | replace: ')', '' | replace: '+', '' | replace: '.', '' | replace: '/', '' -%}
+        {%- assign wa_digits = '' -%}
+        {%- for i in (0..24) -%}
+          {%- assign c = wa_raw | slice: i, 1 -%}
+          {%- case c -%}
+            {%- when '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' -%}
+              {%- assign wa_digits = wa_digits | append: c -%}
+          {%- endcase -%}
+        {%- endfor -%}
+        {%- if section.settings.whatsapp_wa_number == blank -%}
+          {%- assign wa_first = wa_digits | slice: 0, 1 -%}
+          {%- assign wa_prefix2 = wa_digits | slice: 0, 2 -%}
+          {%- if wa_first == '0' and wa_digits.size > 1 -%}
+            {%- assign wa_rest = wa_digits | slice: 1, 20 -%}
+            {%- assign wa_digits = '49' | append: wa_rest -%}
+          {%- elsif wa_digits.size >= 10 and wa_prefix2 == '00' -%}
+            {%- assign wa_digits = wa_digits | replace_first: '00', '' -%}
+          {%- endif -%}
+        {%- endif -%}
+        {%- assign whatsapp_url = 'https://wa.me/' | append: wa_digits -%}
+        <div class="contact-form-custom__info-item contact-form-custom__info-item--chat">
+          <div class="contact-form-custom__info-icon contact-form-custom__info-icon--chat">
+            <span class="contact-form-custom__whatsapp-icon">{{- 'icon-whatsapp.svg' | inline_asset_content -}}</span>
+          </div>
+          <div class="contact-form-custom__info-text">
+            <span class="contact-form-custom__chat-label">Wir sind auch per WhatsApp erreichbar</span><br>
+            <span class="contact-form-custom__info-hours">(Mo-Fr 9-17 Uhr)</span><br>
+            <a href="{{ whatsapp_url }}" target="_blank" rel="noopener noreferrer" class="contact-form-custom__chat-cta" aria-label="WhatsApp Business Chat öffnen">Chat starten</a>
+          </div>
+        </div>
+
         <div class="contact-form-custom__info-item">
           <div class="contact-form-custom__info-icon">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -327,6 +360,42 @@
     text-decoration: underline;
   }
 
+  .contact-form-custom__info-item--chat .contact-form-custom__info-icon--chat {
+    color: #005A9C;
+  }
+
+  .contact-form-custom__whatsapp-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .contact-form-custom__whatsapp-icon svg {
+    width: 20px;
+    height: 20px;
+    display: block;
+  }
+
+  .contact-form-custom__chat-label {
+    font-weight: 500;
+    color: #374151;
+  }
+
+  .contact-form-custom__chat-cta {
+    display: inline-block;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #005A9C;
+    text-decoration: none;
+    margin-top: 2px;
+    transition: color 0.2s ease, text-decoration 0.2s ease;
+  }
+
+  .contact-form-custom__chat-cta:hover {
+    color: #00467a;
+    text-decoration: underline;
+  }
+
   .contact-form-custom__success {
     background: #d1fae5;
     color: #065f46;
@@ -454,6 +523,18 @@
       "id": "phone",
       "label": "Telefonnummer",
       "default": "01234 567890"
+    },
+    {
+      "type": "text",
+      "id": "whatsapp_wa_number",
+      "label": "WhatsApp wa.me Nummer (empfohlen)",
+      "info": "Nur Ziffern mit Ländercode, z.B. 4915511416336. Leer = wird aus Telefonnummer abgeleitet."
+    },
+    {
+      "type": "text",
+      "id": "whatsapp_phone",
+      "label": "WhatsApp-Nummer (Fallback)",
+      "info": "Nur wenn wa.me Nummer leer. Format: 0155 11416336 oder 4915511416336"
     },
     {
       "type": "text",
