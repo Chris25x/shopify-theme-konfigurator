@@ -49,6 +49,7 @@
         "gap": 20,
         "image_padding": 16,
         "show_price": true,
+        "show_reihen_filter": false,
         "image_fit": "contain"
       }
     }

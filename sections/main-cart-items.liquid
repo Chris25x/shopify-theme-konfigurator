@@ -173,19 +173,39 @@
                 </tr>
                 {%- for item in cart.items -%}
                   <tr class="cart-item" id="CartItem-{{ item.index | plus: 1 }}">
+                    {%- liquid
+                      assign nicht_klickbar = item.product.metafields.custom.nichtklickbarwarenkorb
+                      assign is_not_clickable = false
+                      if nicht_klickbar == 'wahr' or nicht_klickbar == true or nicht_klickbar == 'true' or nicht_klickbar == '1'
+                        assign is_not_clickable = true
+                      endif
+                    -%}
                     <td class="cart-item__media">
                       {% if item.image %}
                         <div class="cart-item__image-container gradient global-media-settings">
-                          <a href="{{ item.product.url }}" class="cart-item__image-link">
-                            <img
-                              src="{{ item.image | image_url: width: 300 }}"
-                              class="cart-item__image"
-                              alt="{{ item.image.alt | escape }}"
-                              loading="lazy"
-                              width="150"
-                              height="{{ 150 | divided_by: item.image.aspect_ratio | ceil }}"
-                            >
-                          </a>
+                          {%- if is_not_clickable -%}
+                            <span class="cart-item__image-link cart-item__image-link--disabled">
+                              <img
+                                src="{{ item.image | image_url: width: 300 }}"
+                                class="cart-item__image"
+                                alt="{{ item.image.alt | escape }}"
+                                loading="lazy"
+                                width="150"
+                                height="{{ 150 | divided_by: item.image.aspect_ratio | ceil }}"
+                              >
+                            </span>
+                          {%- else -%}
+                            <a href="{{ item.product.url }}" class="cart-item__image-link">
+                              <img
+                                src="{{ item.image | image_url: width: 300 }}"
+                                class="cart-item__image"
+                                alt="{{ item.image.alt | escape }}"
+                                loading="lazy"
+                                width="150"
+                                height="{{ 150 | divided_by: item.image.aspect_ratio | ceil }}"
+                              >
+                            </a>
+                          {%- endif -%}
                         </div>
                       {% endif %}
                     </td>
@@ -195,7 +215,11 @@
                         <p class="caption-with-letter-spacing">{{ item.product.vendor }}</p>
                       {%- endif -%}
 
-                      <a href="{{ item.product.url }}" class="cart-item__name h4 break link">{{ item.product.title | escape }}</a>
+                      {%- if is_not_clickable -%}
+                        <span class="cart-item__name h4 break link cart-item__name--disabled">{{ item.product.title | escape }}</span>
+                      {%- else -%}
+                        <a href="{{ item.product.url }}" class="cart-item__name h4 break link">{{ item.product.title | escape }}</a>
+                      {%- endif -%}
 
                       {%- if item.original_price != item.final_price -%}
                         <div class="cart-item__discounted-prices">

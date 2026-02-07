@@ -114,11 +114,22 @@
                 <table class="cart-items" role="table">
                   <tbody role="rowgroup">
                     {%- for item in cart.items -%}
+                      {%- liquid
+                        assign nicht_klickbar = item.product.metafields.custom.nichtklickbarwarenkorb
+                        assign is_not_clickable = false
+                        if nicht_klickbar == 'wahr' or nicht_klickbar == true or nicht_klickbar == 'true' or nicht_klickbar == '1'
+                          assign is_not_clickable = true
+                        endif
+                      -%}
                       <tr id="CartDrawer-Item-{{ item.index | plus: 1 }}" class="cart-item" role="row">
                         <td class="cart-item__media" role="cell" headers="CartDrawer-ColumnProductImage">
                           {% if item.image %}
                             {% comment %} Leave empty space due to a:empty CSS display: none rule {% endcomment %}
-                            <a href="{{ item.url }}" class="cart-item__link" tabindex="-1" aria-hidden="true"> </a>
+                            {%- if is_not_clickable -%}
+                              <span class="cart-item__link cart-item__link--disabled" tabindex="-1" aria-hidden="true"> </span>
+                            {%- else -%}
+                              <a href="{{ item.url }}" class="cart-item__link" tabindex="-1" aria-hidden="true"> </a>
+                            {%- endif -%}
                             <img
                               class="cart-item__image"
                               src="{{ item.image | image_url: width: 300 }}"
@@ -135,9 +146,15 @@
                             <p class="caption-with-letter-spacing light">{{ item.product.vendor }}</p>
                           {%- endif -%}
 
-                          <a href="{{ item.url }}" class="cart-item__name h4 break">
-                            {{- item.product.title | escape -}}
-                          </a>
+                          {%- if is_not_clickable -%}
+                            <span class="cart-item__name h4 break cart-item__name--disabled">
+                              {{- item.product.title | escape -}}
+                            </span>
+                          {%- else -%}
+                            <a href="{{ item.url }}" class="cart-item__name h4 break">
+                              {{- item.product.title | escape -}}
+                            </a>
+                          {%- endif -%}
 
                           {%- if item.original_price != item.final_price -%}
                             <div class="cart-item__discounted-prices product-option">

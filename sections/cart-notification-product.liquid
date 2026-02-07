@@ -1,5 +1,12 @@
 {%- if cart != empty -%}
   {%- for item in cart.items -%}
+    {%- liquid
+      assign nicht_klickbar = item.product.metafields.custom.nichtklickbarwarenkorb
+      assign is_not_clickable = false
+      if nicht_klickbar == 'wahr' or nicht_klickbar == true or nicht_klickbar == 'true' or nicht_klickbar == '1'
+        assign is_not_clickable = true
+      endif
+    -%}
     <div id="cart-notification-product-{{ item.key }}" class="cart-item">
       {%- if item.image -%}
         <div class="cart-notification-product__image global-media-settings">
@@ -16,7 +23,11 @@
         {%- if settings.show_vendor -%}
           <p class="caption-with-letter-spacing light">{{ item.product.vendor }}</p>
         {%- endif -%}
-        <a href="{{ item.product.url }}" class="cart-notification-product__name h4 link">{{ item.product.title | escape }}</a>
+        {%- if is_not_clickable -%}
+          <span class="cart-notification-product__name h4 link cart-notification-product__name--disabled">{{ item.product.title | escape }}</span>
+        {%- else -%}
+          <a href="{{ item.product.url }}" class="cart-notification-product__name h4 link">{{ item.product.title | escape }}</a>
+        {%- endif -%}
         <dl>
           {%- unless item.product.has_only_default_variant -%}
             {%- for option in item.options_with_values -%}

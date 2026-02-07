@@ -106,6 +106,17 @@ cart-items .title-wrapper-with-link {
   color: inherit;
 }
 
+.cart-item__name--disabled,
+.cart-item__image-link--disabled {
+  cursor: default;
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.cart-item__name--disabled:hover {
+  text-decoration: none;
+}
+
 .cart-item__price-wrapper > * {
   display: block;
   margin: 0;

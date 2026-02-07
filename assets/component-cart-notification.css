@@ -145,3 +145,13 @@ cart-notification .quantity__input:focus-visible {
   text-decoration: underline;
   color: inherit;
 }
+
+.cart-notification-product__name--disabled {
+  cursor: default;
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.cart-notification-product__name--disabled:hover {
+  text-decoration: none;
+}

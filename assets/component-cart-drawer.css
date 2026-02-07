@@ -766,6 +766,17 @@ cart-drawer-items::-webkit-scrollbar-track-piece {
   max-width: 100% !important;
 }
 
+.cart-drawer .cart-item__name--disabled,
+.cart-drawer .cart-item__link--disabled {
+  cursor: default;
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.cart-drawer .cart-item__name--disabled:hover {
+  text-decoration: none;
+}
+
 /* Preis */
 .cart-drawer .cart-item__details > .product-option,
 .cart-drawer .cart-item__old-price,
