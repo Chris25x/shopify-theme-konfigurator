@@ -866,11 +866,25 @@ let rowCounter = 1;
           usedRows.add(i);
           usedRows.add(i + 1);
           usedRows.add(i + 2);
-        } else if (sequenceLength >= 4) {
-          // 4+ FI-Reihen → keine Phasenschiene, markiere alle Reihen als verwendet
+        } else if (sequenceLength === 4) {
+          // 4 FI-Reihen → 2x "2xFI-Phasenschiene"
+          // Ausnahme: Aufputz (Feuchtraum) für 5 Reihen → aktuelles Verhalten (keine 2xPhasenschiene)
+          const actualRowsPhasen = typeof getActualRowCount === 'function' ? getActualRowCount() : rowCounter;
+          const isException = selectedMontageart === 'Aufputz(Feuchtraum)-Montage' && actualRowsPhasen === 5;
+          if (!isException) {
+            twoFiRowsPairs.push([i, i + 1], [i + 2, i + 3]);
+            usedRows.add(i);
+            usedRows.add(i + 1);
+            usedRows.add(i + 2);
+            usedRows.add(i + 3);
+          } else {
+            for (let j = i; j < i + 4; j++) usedRows.add(j);
+          }
+        } else if (sequenceLength >= 5) {
+          // 5+ FI-Reihen → keine Phasenschiene, markiere alle Reihen als verwendet
           for (let j = i; j < i + sequenceLength; j++) {
-              usedRows.add(j);
-            }
+            usedRows.add(j);
+          }
         } else if (sequenceLength === 1) {
           // Einzelne FI-Reihe → wird später mit normaler Phasenschiene behandelt
           usedRows.add(i);
@@ -1073,11 +1087,25 @@ let rowCounter = 1;
           usedRows.add(i);
           usedRows.add(i + 1);
           usedRows.add(i + 2);
-        } else if (sequenceLength >= 4) {
-          // 4+ FI-Reihen → keine Phasenschiene, markiere alle Reihen als verwendet
+        } else if (sequenceLength === 4) {
+          // 4 FI-Reihen → 2x "2xFI-Phasenschiene"
+          // Ausnahme: Aufputz (Feuchtraum) für 5 Reihen → aktuelles Verhalten (keine 2xPhasenschiene)
+          const actualRowsPhasen = typeof getActualRowCount === 'function' ? getActualRowCount() : rowCounter;
+          const isException = selectedMontageart === 'Aufputz(Feuchtraum)-Montage' && actualRowsPhasen === 5;
+          if (!isException) {
+            twoFiRowsPairs.push([i, i + 1], [i + 2, i + 3]);
+            usedRows.add(i);
+            usedRows.add(i + 1);
+            usedRows.add(i + 2);
+            usedRows.add(i + 3);
+          } else {
+            for (let j = i; j < i + 4; j++) usedRows.add(j);
+          }
+        } else if (sequenceLength >= 5) {
+          // 5+ FI-Reihen → keine Phasenschiene, markiere alle Reihen als verwendet
           for (let j = i; j < i + sequenceLength; j++) {
-              usedRows.add(j);
-            }
+            usedRows.add(j);
+          }
         } else if (sequenceLength === 1) {
           // Einzelne FI-Reihe → wird später mit normaler Phasenschiene behandelt
           usedRows.add(i);
@@ -4504,11 +4532,25 @@ let rowCounter = 1;
           usedRows.add(i);
           usedRows.add(i + 1);
           usedRows.add(i + 2);
-        } else if (sequenceLength >= 4) {
-          // 4+ FI-Reihen → keine Phasenschiene, markiere alle Reihen als verwendet
+        } else if (sequenceLength === 4) {
+          // 4 FI-Reihen → 2x "2xFI-Phasenschiene"
+          // Ausnahme: Aufputz (Feuchtraum) für 5 Reihen → aktuelles Verhalten (keine 2xPhasenschiene)
+          const actualRowsPhasen = typeof getActualRowCount === 'function' ? getActualRowCount() : rowCounter;
+          const isException = selectedMontageart === 'Aufputz(Feuchtraum)-Montage' && actualRowsPhasen === 5;
+          if (!isException) {
+            twoFiRowsPairs.push([i, i + 1], [i + 2, i + 3]);
+            usedRows.add(i);
+            usedRows.add(i + 1);
+            usedRows.add(i + 2);
+            usedRows.add(i + 3);
+          } else {
+            for (let j = i; j < i + 4; j++) usedRows.add(j);
+          }
+        } else if (sequenceLength >= 5) {
+          // 5+ FI-Reihen → keine Phasenschiene, markiere alle Reihen als verwendet
           for (let j = i; j < i + sequenceLength; j++) {
-              usedRows.add(j);
-            }
+            usedRows.add(j);
+          }
         } else if (sequenceLength === 1) {
           // Einzelne FI-Reihe → wird später mit normaler Phasenschiene behandelt
           usedRows.add(i);
